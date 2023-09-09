@@ -12,6 +12,5 @@ const proxy = {
 };
 
 module.exports = {
-  ...nextConfig,
   ...proxy,
 };
