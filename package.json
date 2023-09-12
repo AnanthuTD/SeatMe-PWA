@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "lint-staged":"lint-staged"
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.17.0",
+    "antd": "^5.9.0",
     "autoprefixer": "10.4.15",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
