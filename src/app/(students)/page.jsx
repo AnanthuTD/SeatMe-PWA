@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button, Form, InputNumber } from 'antd';
 import Tab from './tabs';
+import Segment from './segment';
 
 const layout = {
     labelCol: { span: 8 },
@@ -60,34 +61,34 @@ const App = () => {
     };
 
     return (
-        <div className='flex h-screen justify-around items-center flex-col'>
-            <section className='min-w-[50%]'>
-                <Form
-                    {...layout}
-                    form={form}
-                    name="control-hooks"
-                    onFinish={onFinish}
-                    style={{ maxWidth: 600 }}
-                >
-                    <Form.Item name="register number" label="Register Number" rules={[{
-                        required: true, type: 'number', validator: (rule, value) => { if (value < 100000 || value > 300000) return Promise.reject(`Invalid Register number`) }
-                    }]} className='ml-2'>
-                        <InputNumber  style={{width:'100%'}} name="reg_no" />
-                    </Form.Item>
+        <div className='flex h-screen flex-col w-full p-5 overflow-hidden'>
+            <section className='h-[40%] flex justify-center items-center w-full'>
+                <div className='min-w-[50%]'>
+                    <Form
+                        {...layout}
+                        form={form}
+                        name="control-hooks"
+                        onFinish={onFinish}
+                        style={{ maxWidth: 600 }}
+                    >
+                        <Form.Item name="register number" label="Register Number" rules={[{
+                            required: true, type: 'number', validator: (rule, value) => { if (value < 100000 || value > 300000) return Promise.reject(`Invalid Register number`) }
+                        }]}>
 
-                    <Form.Item {...tailLayout}>
-
-                        <SubmitButton form={form} />
-                        <Button htmlType="button" onClick={onReset} className='m-1'>
-                            Reset
-                        </Button>
-
-                    </Form.Item>
-                </Form>
+                            <InputNumber style={{ width: '100%' }} name="reg_no" />
+                        </Form.Item>
+                        <Form.Item {...tailLayout}>
+                            <SubmitButton form={form} />
+                            <Button htmlType="button" onClick={onReset} className='m-1'>
+                                Reset
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
             </section>
-            <section className='w-full'>
-                <div className='mx-auto w-fit'>
-                    <Tab/>
+            <section className='w-full h-[60%]'>
+                <div className='mx-auto w-full h-full'>
+                    <Segment />
                 </div>
             </section>
         </div >
