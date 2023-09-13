@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Button, Form, InputNumber } from 'antd';
-import Tab from './tabs';
 import Segment from './segment';
 
 const layout = {
