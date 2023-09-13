@@ -27,8 +27,7 @@ const SubmitButton = ({ form }) => {
     React.useEffect(() => {
         form.validateFields({ validateOnly: true }).then(
             () => {
-                form.getFieldValue('reg_no') > 100000 && form.getFieldValue('reg_no') < 300000 ?
-                    setSubmittable(true) : setSubmittable(false);
+                setSubmittable(true);
             },
             () => {
                 setSubmittable(false);
@@ -71,7 +70,7 @@ const App = () => {
                         style={{ maxWidth: 600 }}
                     >
                         <Form.Item name="register number" label="Register Number" rules={[{
-                            required: true, type: 'number', validator: (rule, value) => { if (value < 100000 || value > 300000) return Promise.reject(`Invalid Register number`) }
+                            required: true, type: 'number', min: 100000, max: 300000, message: 'Invalid Register number'
                         }]}>
 
                             <InputNumber style={{ width: '100%' }} name="reg_no" />
