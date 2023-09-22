@@ -79,7 +79,7 @@ const Login = () => (
       }}
     >
       <Button type="primary" htmlType="submit">
-        Submit
+        Login
       </Button>
     </Form.Item>
   </Form>
