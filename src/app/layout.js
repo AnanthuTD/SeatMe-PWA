@@ -11,12 +11,18 @@ export const metadata = {
     title: 'Seating Arrangement',
 };
 
-const RootLayout = ({ children }) => (
-    <html lang="en">
-        <body className={inter.className}>
-            <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-        </body>
-    </html>
-);
+import { AccountProvider } from '@/context/accountContext';
+
+const RootLayout = ({ children }) => {
+    return (
+        <html lang="en">
+            <body className={inter.className}>
+                <StyledComponentsRegistry>
+                    <AccountProvider>{children}</AccountProvider>
+                </StyledComponentsRegistry>
+            </body>
+        </html>
+    );
+};
 
 export default RootLayout;
