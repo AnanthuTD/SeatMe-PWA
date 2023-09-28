@@ -1,16 +1,14 @@
-'use client'
+// 'use client'
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
     AppstoreOutlined,
-    ContainerOutlined,
-    DesktopOutlined,
+    TeamOutlined,
+    OrderedListOutlined,
     MailOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    PieChartOutlined,
+    HomeOutlined,
 } from '@ant-design/icons';
-import { Button, Menu } from 'antd';
+import { Menu } from 'antd';
 function getItem(label, key, icon, children, type) {
     return {
         key,
@@ -21,11 +19,11 @@ function getItem(label, key, icon, children, type) {
     };
 }
 const items = [
-    getItem('Option 1', '1', <PieChartOutlined />),
-    getItem('Option 2', '2', <DesktopOutlined />),
-    getItem('Option 3', '3', <ContainerOutlined />),
+    getItem('Home', '1', <HomeOutlined />),
+    getItem('Staff', '2', <TeamOutlined />, [
+        getItem('Staffs List', '3', <OrderedListOutlined />),
+    ]),
     getItem('Navigation One', 'sub1', <MailOutlined />, [
-        getItem('Option 5', '5'),
         getItem('Option 6', '6'),
         getItem('Option 7', '7'),
         getItem('Option 8', '8'),
@@ -37,34 +35,15 @@ const items = [
     ]),
 ];
 const App = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const toggleCollapsed = () => {
-        setCollapsed(!collapsed);
-    };
     return (
-        <div
-            className='flex flex-col h-screen max-w-[256px]'
-        >
-            <Button
-                type="primary"
-                onClick={toggleCollapsed}
-                style={{
-                    marginBottom: 16,
-                }}
-                className='w-fit'
-            >
-                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            </Button>
-            <Menu
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
-                mode="inline"
-                // theme="dark"
-                inlineCollapsed={collapsed}
-                items={items}
-                className='flex-grow'
-            />
-        </div>
+
+        <Menu
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
+            mode="inline"
+            items={items}
+            className='flex-grow'
+        />
     );
 };
 export default App;

@@ -14,9 +14,20 @@ const App = ({ children }) => {
         token: { colorBgContainer },
     } = theme.useToken();
     return (
-        <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div className="demo-logo-vertical" />
+        <Layout className='h-screen'>
+            <Sider
+            className='flex-grow'
+            /* style={{
+                overflow: 'auto',
+                height: '100vh',
+                position: 'fixed',
+                left: 0,
+                top: 0,
+                bottom: 0,
+            }} */ trigger={null}
+                collapsible collapsed={collapsed}
+                theme='light'>
+                <div className="demo-logo-vertical">Logo</div>
                 <Menu />
             </Sider>
             <Layout>
@@ -39,6 +50,7 @@ const App = ({ children }) => {
                         minHeight: 280,
                         background: colorBgContainer,
                     }}
+                    className='flex-grow'
                 >
                     {children}
                 </Content>

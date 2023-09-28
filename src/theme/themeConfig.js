@@ -1,3 +1,4 @@
+'use client';
 /**@type {import("antd").ThemeConfig} */
 
 const theme = {

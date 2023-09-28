@@ -16,7 +16,7 @@ import { AccountProvider } from '@/context/accountContext';
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
-            <body className={inter.className}>
+            <body className={[inter.className, 'h-screen'].join(' ')}>
                 <StyledComponentsRegistry>
                     <AccountProvider>{children}</AccountProvider>
                 </StyledComponentsRegistry>
