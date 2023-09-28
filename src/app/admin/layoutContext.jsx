@@ -1,46 +1,21 @@
 'use client'
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { Layout, theme, Button } from 'antd';
-
-import Menu from './menu';
-
-const { Header, Content, Footer, Sider } = Layout;
-
-// Create a context to manage the layout theme
-const LayoutContext = createContext();
-
-// Create a custom hook to access the layout context
-const useLayoutContext = () => {
-    return useContext(LayoutContext);
-};
-
-const LayoutContextProvider = ({ children }) => {
-
+import { Layout, Button, theme } from 'antd';
+import Menu from './menu'
+const { Header, Sider, Content } = Layout;
+const App = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
-
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-
     return (
         <Layout>
-            <Sider
-                style={{
-                    overflowY: 'auto',
-                    overflowX: 'hidden',
-                    height: '100vh',
-                    position: 'fixed',
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: '250px'
-                }}
-                trigger={null} collapsible collapsed={collapsed}>
+            <Sider trigger={null} collapsible collapsed={collapsed}>
                 <div className="demo-logo-vertical" />
                 <Menu />
             </Sider>
@@ -59,30 +34,16 @@ const LayoutContextProvider = ({ children }) => {
                 </Header>
                 <Content
                     style={{
-                        margin: '24px 16px 0',
-                        overflow: 'initial',
+                        margin: '24px 16px',
+                        padding: 24,
+                        minHeight: 280,
+                        background: colorBgContainer,
                     }}
                 >
-                    <div
-                        style={{
-                            padding: 24,
-                            textAlign: 'center',
-                            background: colorBgContainer, // Use the context state for background color
-                        }}
-                    >
-                        {children}
-                    </div>
+                    {children}
                 </Content>
-                <Footer
-                    style={{
-                        textAlign: 'center',
-                    }}
-                >
-                    Ant Design ©2023 Created by Ant UED
-                </Footer>
             </Layout>
         </Layout>
     );
 };
-
-export { LayoutContextProvider, useLayoutContext };
+export default App;
