@@ -12,7 +12,16 @@ module.exports = {
                 'gradient-conic':
                     'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
             },
-            colors: {},
+            colors: {
+                maincolor: {
+                    50: '#1976d2',
+                },
+            },
+        },
+        screens: {
+            sm: '320px',
+            // => @media (min-width: 640px) { ... }
+            lg: '1024px',
         },
     },
     plugins: [require('tailwind-scrollbar')({ nocompatible: true })],

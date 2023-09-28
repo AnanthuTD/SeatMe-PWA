@@ -14,7 +14,7 @@ const onFinishFailed = (errorInfo) => {
 
 
 const Login = () => (
-  <div className='border-3 border-black p-10 shadow-xl'  >
+  <div className='border-2  border-maincolor-50 shadow-lg shadow-maincolor-50 p-10   rounded-lg  '  >
     <Form
     name="basic"
     labelCol={{
