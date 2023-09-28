@@ -1,6 +1,5 @@
 import React from 'react';
-import { Divider, List, Card } from 'antd';
-import VirtualList from 'rc-virtual-list';
+import { List } from 'antd';
 
 const data = [
     ['25/6/2023', 'METHODOLOGY OF PROGRAMMING', '1:30-4:30'],
