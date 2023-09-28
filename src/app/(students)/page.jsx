@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 import { Button, Form, InputNumber } from 'antd';
@@ -13,7 +13,7 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-/** 
+/**
  * @param {Object} props - The component's props.
  * @param {import('antd').FormInstance} props.form - The form instance to associate with the SubmitButton.
  * @returns {JSX.Element} - The rendered JSX element.
@@ -45,7 +45,6 @@ const SubmitButton = ({ form }) => {
 const App = () => {
     const [form] = Form.useForm();
 
-
     const onFinish = (values) => {
         console.log(values);
     };
@@ -59,9 +58,9 @@ const App = () => {
     };
 
     return (
-        <div className='flex h-screen flex-col w-full p-5 overflow-hidden'>
-            <section className='h-[40%] flex justify-center items-center w-full'>
-                <div className='min-w-[50%]'>
+        <div className="flex h-screen flex-col w-full p-5 overflow-hidden">
+            <section className="h-[40%] flex justify-center items-center w-full">
+                <div className="min-w-[50%]">
                     <Form
                         {...layout}
                         form={form}
@@ -69,27 +68,43 @@ const App = () => {
                         onFinish={onFinish}
                         style={{ maxWidth: 600 }}
                     >
-                        <Form.Item name="register number" label="Register Number" rules={[{
-                            required: true, type: 'number', min: 100000, max: 300000, message: 'Invalid Register number'
-                        }]}>
-
-                            <InputNumber style={{ width: '100%' }} name="reg_no" />
+                        <Form.Item
+                            name="register number"
+                            label="Register Number"
+                            rules={[
+                                {
+                                    required: true,
+                                    type: 'number',
+                                    min: 100000,
+                                    max: 300000,
+                                    message: 'Invalid Register number',
+                                },
+                            ]}
+                        >
+                            <InputNumber
+                                style={{ width: '100%' }}
+                                name="reg_no"
+                            />
                         </Form.Item>
                         <Form.Item {...tailLayout}>
                             <SubmitButton form={form} />
-                            <Button htmlType="button" onClick={onReset} className='m-1'>
+                            <Button
+                                htmlType="button"
+                                onClick={onReset}
+                                className="m-1"
+                            >
                                 Reset
                             </Button>
                         </Form.Item>
                     </Form>
                 </div>
             </section>
-            <section className='w-full h-[60%]'>
-                <div className='mx-auto w-full h-full'>
+            <section className="w-full h-[60%]">
+                <div className="mx-auto w-full h-full">
                     <Segment />
                 </div>
             </section>
-        </div >
+        </div>
     );
 };
 

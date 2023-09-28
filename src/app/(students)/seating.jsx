@@ -2,9 +2,9 @@ import React from 'react';
 import { Descriptions } from 'antd';
 
 /**
-    * Data items for the description list.
-    * @type {Array<import('antd').DescriptionsItemProps>}
-    */
+ * Data items for the description list.
+ * @type {Array<import('antd').DescriptionsItemProps>}
+ */
 const items = [
     {
         label: 'Building',
@@ -31,12 +31,14 @@ const items = [
 ];
 
 const Seating = () => {
-   return <Descriptions
-        // title="Responsive Descriptions"
-        bordered
-        column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
-        items={items}
-    />
+    return (
+        <Descriptions
+            // title="Responsive Descriptions"
+            bordered
+            column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+            items={items}
+        />
+    );
 };
 
 export default Seating;

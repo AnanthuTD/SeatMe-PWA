@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -16,12 +16,24 @@
   }
 } */
 
+<<<<<<< HEAD
 body {
  /* color: rgb(var(--foreground-rgb));
+=======
+/* body {
+  color: rgb(var(--foreground-rgb));
+>>>>>>> 613fe9cff74275272cb996ee8d6c2a86bfae0eea
   background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));*/
+}
+ */
+ .demo-logo-vertical {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255,255,255,.2);
+  border-radius: 6px;
 }
