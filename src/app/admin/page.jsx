@@ -1,7 +1,10 @@
 import React from 'react';
+import Menu from './menu';
 
 function Admin() {
-    return <div>Admin pages</div>;
+    return <>
+        <Menu />
+    </>;
 }
 
 export default Admin;
