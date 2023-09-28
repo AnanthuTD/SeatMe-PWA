@@ -1,12 +1,9 @@
-import React from 'react'
-import Login from '../../components/Login'
+import React from 'react';
+import Login from '../login/page';
 
 function page() {
-  return (
-    <div className='grid h-screen place-items-center  '  >
-        <Login/>
-    </div>
-  )
+    return (<>staff</>
+    );
 }
 
-export default page
+export default page;
