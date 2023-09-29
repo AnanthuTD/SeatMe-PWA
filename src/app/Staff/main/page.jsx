@@ -3,7 +3,7 @@
 import React from 'react'
 import Navbar from './navbar'
 import Calendar from './calender'
-import Roomdetails from './roomdetails';
+import RoomDetails from './roomdetails';
 
 
 function page() {
@@ -16,7 +16,7 @@ function page() {
        <div className='lg:flex flex-row justify-center align-middle'  >
 
         <Calendar  date={examDate}   />
-        <Roomdetails/>
+        <RoomDetails/>
        </div>
       
     </div>
