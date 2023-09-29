@@ -1,10 +1,11 @@
+'use client'
 import React from 'react';
-import Menu from './menu';
-import InfiniteScroll from './infiniteScroll'
+import { useMenuContext } from './menuContext';
+import { useRouter } from 'next/navigation';
 
 function Admin() {
     return <>
-        hi
+        Home
     </>;
 }
 

@@ -16,7 +16,7 @@ const App = ({ children }) => {
     return (
         <Layout className='h-screen'>
             <Sider
-            className='flex-grow'
+                className='flex-grow overflow-auto'
             /* style={{
                 overflow: 'auto',
                 height: '100vh',
@@ -49,8 +49,13 @@ const App = ({ children }) => {
                         padding: 24,
                         minHeight: 280,
                         background: colorBgContainer,
+                        overflow: 'auto',
+                        padding: '0 16px',
+                        border: '1px solid rgba(140, 140, 140, 0.35)',
                     }}
                     className='flex-grow'
+                    id="scrollableDiv"
+
                 >
                     {children}
                 </Content>
