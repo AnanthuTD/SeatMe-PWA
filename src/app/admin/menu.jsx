@@ -33,23 +33,23 @@ const items = [
     getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
         getItem('Option 9', '9'),
         getItem('Option 10', '10'),
-        getItem('Submenu', 'sub3', null, [getItem('Option 11', '11'), getItem('Option 12', '12')]),
+        getItem('Submenu', 'sub3', null, [
+            getItem('Option 11', '11'),
+            getItem('Option 12', '12'),
+        ]),
     ]),
 ];
 
-
-
 const App = () => {
-
-    const router = useRouter()
-    const pathname = usePathname()
-    const { activeMenu, setMenu } = useMenuContext()
+    const router = useRouter();
+    const pathname = usePathname();
+    const { activeMenu, setMenu } = useMenuContext();
     const [parentPath, setParentPath] = useState(getParentPaths(pathname));
 
     // setMenu(pathname)
 
     function getParentPaths(path) {
-        const parts = path.split('/').filter(part => part.length > 0);
+        const parts = path.split('/').filter((part) => part.length > 0);
 
         const parentPath = '/' + parts.slice(0, parts.length - 1).join('/');
 
@@ -64,10 +64,11 @@ const App = () => {
     useEffect(() => {
         if (activeMenu) {
             console.log('active menu ', activeMenu);
-            if (activeMenu === '/admin') router.push('/admin')
-            else if (activeMenu === '/admin/staffs/list') router.push('/admin/staffs/list')
+            if (activeMenu === '/admin') router.push('/admin');
+            else if (activeMenu === '/admin/staffs/list')
+                router.push('/admin/staffs/list');
         }
-    }, [activeMenu])
+    }, [activeMenu]);
 
     return (
         <Menu
@@ -75,7 +76,7 @@ const App = () => {
             defaultOpenKeys={[parentPath]}
             mode="inline"
             items={items}
-            className='flex-grow'
+            className="flex-grow"
             onClick={(e) => handleMenuItemClick(e.key)}
         />
     );

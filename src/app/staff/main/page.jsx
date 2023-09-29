@@ -1,27 +1,22 @@
-'use client'
+'use client';
 
-import React from 'react'
-import Navbar from './navbar'
-import Calendar from './calender'
+import React from 'react';
+import Navbar from './navbar';
+import Calendar from './calender';
 import RoomDetails from './roomDetails';
 
-
 function page() {
-  
-  const examDate = new Date();
+    const examDate = new Date();
 
-  return (
-    <div>
-      <Navbar/>
-       <div className='lg:flex flex-row justify-center align-middle'  >
-
-        <Calendar  date={examDate}   />
-        <RoomDetails/>
-       </div>
-      
-    </div>
-   
-  )
+    return (
+        <div>
+            <Navbar />
+            <div className="lg:flex flex-row justify-center align-middle">
+                <Calendar date={examDate} />
+                <RoomDetails />
+            </div>
+        </div>
+    );
 }
 
-export default page
+export default page;

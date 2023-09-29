@@ -10,7 +10,8 @@ const RootLayout = ({ children }) => {
             <MenuProvider>
                 <Layout>{children}</Layout>
             </MenuProvider>
-        </ConfigProvider>)
+        </ConfigProvider>
+    );
 };
 
 export default RootLayout;

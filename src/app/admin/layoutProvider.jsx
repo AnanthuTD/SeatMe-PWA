@@ -1,12 +1,9 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
-import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-} from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Button, theme } from 'antd';
-import Menu from './menu'
+import Menu from './menu';
 const { Header, Sider, Content } = Layout;
 const App = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -14,10 +11,10 @@ const App = ({ children }) => {
         token: { colorBgContainer },
     } = theme.useToken();
     return (
-        <Layout className='h-screen'>
+        <Layout className="h-screen">
             <Sider
-                className='flex-grow overflow-auto'
-            /* style={{
+                className="flex-grow overflow-auto"
+                /* style={{
                 overflow: 'auto',
                 height: '100vh',
                 position: 'fixed',
@@ -25,8 +22,10 @@ const App = ({ children }) => {
                 top: 0,
                 bottom: 0,
             }} */ trigger={null}
-                collapsible collapsed={collapsed}
-                theme='light'>
+                collapsible
+                collapsed={collapsed}
+                theme="light"
+            >
                 <div className="demo-logo-vertical">Logo</div>
                 <Menu />
             </Sider>
@@ -34,7 +33,13 @@ const App = ({ children }) => {
                 <Header style={{ padding: 0, background: colorBgContainer }}>
                     <Button
                         type="text"
-                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        icon={
+                            collapsed ? (
+                                <MenuUnfoldOutlined />
+                            ) : (
+                                <MenuFoldOutlined />
+                            )
+                        }
                         onClick={() => setCollapsed(!collapsed)}
                         style={{
                             fontSize: '16px',
@@ -53,9 +58,8 @@ const App = ({ children }) => {
                         padding: '0 16px',
                         border: '1px solid rgba(140, 140, 140, 0.35)',
                     }}
-                    className='flex-grow'
+                    className="flex-grow"
                     id="scrollableDiv"
-
                 >
                     {children}
                 </Content>

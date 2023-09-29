@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 /*import { Descriptions } from 'antd';
@@ -30,14 +30,8 @@ import React from 'react';
 ];
 */
 
-
-
-
-
 function RoomDetails() {
-
     return (
-
         /*
     
         <Descriptions
@@ -47,7 +41,7 @@ function RoomDetails() {
             items={items}
         />
         */
-        <table className='p-8 border-2'>
+        <table className="p-8 border-2">
             <thead>
                 <tr>
                     <th>Exam Name</th>
@@ -69,8 +63,7 @@ function RoomDetails() {
                 </tr>
             </tbody>
         </table>
-
-    )
+    );
 }
 
-export default RoomDetails
+export default RoomDetails;
