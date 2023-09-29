@@ -34,7 +34,7 @@ import React from 'react';
 
 
 
-function Roomdetails() {
+function RoomDetails() {
 
   return (
 
@@ -47,27 +47,29 @@ function Roomdetails() {
         items={items}
     />
     */ 
-   
-        <table className='p-8 border-2' >
-        <tr>
-            <th>Exam Name</th>
-            <td>Internal Exam UG</td>        
-         </tr>   
-         <tr>
-            <th>Building</th>
-            <td>South Block</td>
-         </tr>
-         <tr>
-            <th>Floor Number</th>
-            <td>1st Floor</td>
-         </tr>
-         <tr>
-            <th>Room Number</th>
-            <td>704</td>
-         </tr>
-        </table>
+    <table className='p-8 border-2'>
+            <thead>
+                <tr>
+                    <th>Exam Name</th>
+                    <th>Internal Exam UG</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Building</th>
+                    <td>South Block</td>
+                </tr>
+                <tr>
+                    <th>Floor Number</th>
+                    <td>1st Floor</td>
+                </tr>
+                <tr>
+                    <th>Room Number</th>
+                    <td>704</td>
+                </tr>
+            </tbody>
 
   )
 }
 
-export default Roomdetails
+export default RoomDetails
