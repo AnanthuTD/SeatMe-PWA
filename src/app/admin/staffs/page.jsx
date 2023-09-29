@@ -1,13 +1,7 @@
-
-
-
 import React from 'react';
-import Login from '../login/page';
 
 function page() {
-    return (<>staff</>
-    );
-
+    return <div>staffs</div>;
 }
 
 export default page;

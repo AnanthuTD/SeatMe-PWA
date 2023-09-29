@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Admin from '@/app/admin/page';
 import { createContext, useContext, useState } from 'react';
