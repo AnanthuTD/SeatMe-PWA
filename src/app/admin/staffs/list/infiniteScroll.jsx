@@ -3,7 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Avatar, Divider, List, Skeleton, Table } from 'antd';
+import { Avatar, Divider, List, Skeleton } from 'antd';
+import Table from './table'
 import axios from '@/axiosInstance';
 const App = () => {
     const [loading, setLoading] = useState(false);
@@ -92,19 +93,6 @@ const App = () => {
             endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
             scrollableTarget="scrollableDiv"
         >
-            {/* <List
-				dataSource={data}
-				renderItem={(item) => (
-					<List.Item key={item.email}>
-						<List.Item.Meta
-							// avatar={<Avatar src={item.picture.large} />}
-							title={<a href="https://ant.design">{item.name}</a>}
-							description={item.email}
-						/>
-						<div>Content</div>
-					</List.Item>
-				)}
-			/> */}
             <Table
                 columns={columns}
                 dataSource={data}
