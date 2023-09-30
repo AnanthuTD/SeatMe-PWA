@@ -1,69 +1,52 @@
 'use client';
 
-import React from 'react';
-/*import { Descriptions } from 'antd';
+import * as React from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
-
-/*const items = [
-    {
-        label: 'Building',
-        children: 'South Block',
-    },
-    {
-        label: 'Floor Number',
-        children: '1st Floor',
-    },
-    {
-        label: 'Room Number',
-        children: '704',
-    },
-    {
-        label: 'Row Number',
-        // span: { xl: 2, xxl: 2 },
-        children: '5',
-    },
-    {
-        label: 'Seat Number',
-        // span: { xl: 2, xxl: 2 },
-        children: '15',
-    },
-];
-*/
-
-function RoomDetails() {
-    return (
-        /*
-    
-        <Descriptions
-            // title="Responsive Descriptions"
-            bordered
-            column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
-            items={items}
-        />
-        */
-        <table className="p-8 border-2">
-            <thead>
-                <tr>
-                    <th>Exam Name</th>
-                    <th>Internal Exam UG</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>Building</th>
-                    <td>South Block</td>
-                </tr>
-                <tr>
-                    <th>Floor Number</th>
-                    <td>1st Floor</td>
-                </tr>
-                <tr>
-                    <th>Room Number</th>
-                    <td>704</td>
-                </tr>
-            </tbody>
-        </table>
-    );
+function createData(name, calories) {
+  return { name, calories };
 }
 
-export default RoomDetails;
+const rows = [
+  createData('Exam Name :','UG internal'),
+  createData('Building', 'South Block'),
+  createData('Floor Number', 'First Floor'),
+  createData('Room Number', 704),
+  createData('No of students', 24),
+];
+
+export default function BasicTable() {
+  return (
+    <TableContainer component={Paper} className='mt-10'  >
+      <Table sx={{ minWidth: 400 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell align='center' ><span className='text-lg  ml-10 font-bold text-blue-950 '  >Exam Details</span></TableCell>
+            <TableCell align=""></TableCell>
+            
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="">{row.calories}</TableCell>
+             
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}

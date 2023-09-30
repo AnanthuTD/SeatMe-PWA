@@ -11,9 +11,9 @@ function page() {
     return (
         <div>
             <Navbar />
-            <div className="lg:flex flex-row justify-center align-middle">
+            <div className="lg:flex flex-row gap-3 justify-center align-middle">
                 <Calendar date={examDate} />
-                <RoomDetails />
+                <RoomDetails  />
             </div>
         </div>
     );
