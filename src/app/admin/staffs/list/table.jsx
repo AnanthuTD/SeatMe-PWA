@@ -1,25 +1,87 @@
 import { SearchOutlined } from '@ant-design/icons';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Button, Input, Space, Table } from 'antd';
+import axios from '@/axiosInstance';
 
 const App = ({
-    // columns,
+    setDataSource,
     dataSource,
     pagination,
-    loading, }) => {
+    loading,
+    setLoading,
+    setQuery,
+    setDataIndex,
+    sorterField, setSorterField, sorterOrder, setSorterOrder, setStartIndex
+}) => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+
+
+    const loadData = async () => {
+        setLoading(true);
+        console.log(sorterOrder);
+        try {
+            // Make an API call to retrieve data based on current filters, search, and sorting
+            const result = await axios.get(`/api/admin/staff/list/`, {
+                params: {
+                    query: searchText,
+                    column: searchedColumn,
+                    sortField: sorterField,
+                    sortOrder: sorterOrder,
+                    limit: 10,
+                },
+            });
+
+            const newStudents = result.data;
+            setDataSource(newStudents);
+            setLoading(false);
+        } catch (err) {
+            console.error('Error on loading data: ', err);
+        }
+    };
+
+    const handleSearch = async (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
+        setQuery(selectedKeys[0]);
+        setDataIndex(dataIndex);
+        loadData();
     };
+
     const handleReset = (clearFilters) => {
         clearFilters();
         setSearchText('');
+        setQuery('');
+        setSorterField('');
+        setSorterOrder('');
+        loadData();
     };
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        // Handle table sorting
+
+        if (sorter.field) {
+            setSorterField(sorter.field);
+            let order = sorter.order === 'descend' ? 'desc' : 'asc'
+            setSorterOrder(order);
+            setStartIndex(0)
+        }
+    };
+
+
+
+    useEffect(() => {
+        loadData();
+    }, [sorterOrder]);
+
+
+    const textColumnSorter = (a, b) => {
+        return a.localeCompare(b);
+    };
+
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div
@@ -114,61 +176,68 @@ const App = ({
                 text
             ),
     });
+
     const columns = [
         {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            // width: '30%',
             ...getColumnSearchProps('id'),
-            sortDirections: ['descend', 'ascend'],
-
+            sorter: true, // Example sorting for numeric column
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            // width: '20%',
             ...getColumnSearchProps('name'),
-            sortDirections: ['descend', 'ascend'],
-
+            sorter: true,
+        },
+        {
+            title: 'Department',
+            dataIndex: 'departmentId',
+            key: 'departmentId',
+            ...getColumnSearchProps('departmentId'),
+            sorter: true,
         },
         {
             title: 'Designation',
             dataIndex: 'designation',
             key: 'designation',
-            // width: '20%',
             ...getColumnSearchProps('designation'),
-            sortDirections: ['descend', 'ascend'],
-
+            sorter: true,
+        },
+        /*   {
+              title: 'ProgramId',
+              dataIndex: 'programId',
+              key: 'programId',
+              sorter: (a, b) => a.programId - b.programId,
+          }, */
+        {
+            title: 'Aided/Unaided',
+            dataIndex: 'aided/unaided',
+            key: 'aided/unaided',
+            sorter: (a, b) => a['aided/unaided'] - b['aided/unaided'],
         },
         {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
-            // ...getColumnSearchProps('address'),
-            sorter: (a, b) => a.address.length - b.address.length,
+            ...getColumnSearchProps('email'),
         },
         {
             title: 'Contact',
-            dataIndex: 'contact',
+            dataIndex: 'phone',
             key: 'contact',
-            // width: '20%',
-        },
-        {
-            title: 'Aided/Unaided',
-            dataIndex: 'aided/unaided',
-            key: 'aided/unaided',
-            // width: '20%',
-            sortDirections: ['descend', 'ascend'],
-
+            ...getColumnSearchProps('phone'),
         },
     ];
+
     return <Table
         columns={columns}
         dataSource={dataSource}
         pagination={pagination}
         loading={loading}
-        rowKey={(record) => record.email} />;
+        onChange={handleTableChange}
+        rowKey={(record) => record.id} />;
 };
 export default App;

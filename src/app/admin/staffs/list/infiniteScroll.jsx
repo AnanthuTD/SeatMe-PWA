@@ -3,29 +3,50 @@
 
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Avatar, Divider, List, Skeleton } from 'antd';
+import { Divider, Skeleton } from 'antd';
 import Table from './table'
 import axios from '@/axiosInstance';
 const App = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [startIndex, setStartIndex] = useState(0);
-    const [staffCount, setStaffCount] = useState(1);
+    const [studentCount, setStudentCount] = useState(1);
+    const [query, setQuery] = useState('');
+    const [dataIndex, setDataIndex] = useState('id');
+    const [sorterField, setSorterField] = useState('');
+    const [sorterOrder, setSorterOrder] = useState('');
 
     const getStaffCount = async () => {
-        const result = await axios.get('/api/admin/staffs/count');
-        setStaffCount(result.data);
+        const result = await axios.get('/api/admin/staff/count');
+        setStudentCount(result.data);
     };
+
+    useEffect(() => {
+        console.log('useEffect : ', sorterOrder);
+    //  loadMoreData()
+    }, [sorterOrder])
+    
 
     const loadMoreData = () => {
         if (loading) {
             return;
         }
+        console.log('sorterOrder: ', sorterOrder);
         const resultsPerPage = 10;
         setLoading(true);
         axios
             .get(
-                `/api/admin/staffs/list/?results=${resultsPerPage}&start=${startIndex}`,
+                `/api/admin/staff/list/`,
+                {
+                    params: {
+                        query: query,
+                        column: dataIndex,
+                        sortField: sorterField,
+                        sortOrder: sorterOrder,
+                        limit: resultsPerPage,
+                        offset: startIndex,
+                    },
+                }
             )
             .then((response) => {
                 const newStaffs = response.data;
@@ -43,44 +64,14 @@ const App = () => {
         loadMoreData();
     }, []);
 
-    const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: 'Designation',
-            dataIndex: 'designation',
-            key: 'designation',
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: 'Contact',
-            dataIndex: 'contact',
-            key: 'contact',
-        },
-        {
-            title: 'Aided/Unaided',
-            dataIndex: 'aided/unaided',
-            key: 'aided/unaided',
-        },
-    ];
+
+
 
     return (
         <InfiniteScroll
             dataLength={data.length}
             next={loadMoreData}
-            hasMore={data.length < staffCount}
+            hasMore={data.length < studentCount}
             loader={
                 <Skeleton
                     avatar
@@ -94,11 +85,20 @@ const App = () => {
             scrollableTarget="scrollableDiv"
         >
             <Table
-                columns={columns}
                 dataSource={data}
                 pagination={false}
                 loading={loading}
-                rowKey={(record) => record.email}
+                setDataSource={setData}
+                setLoading={setLoading}
+                setStartIndex={setStartIndex}
+                setQuery={setQuery}
+                setDataIndex={setDataIndex}
+                sorterField={sorterField}
+                setSorterField={setSorterField}
+                sorterOrder={sorterOrder}
+                setSorterOrder={setSorterOrder}
+                loadData={loadMoreData}
+                startIndex={startIndex}
             />
         </InfiniteScroll>
     );
