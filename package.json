@@ -23,11 +23,11 @@
     "axios": "^1.5.1",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
-    "infinitescroll": "^0.1.9",
     "next": "13.4.19",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-highlight-words": "^0.20.0",
     "react-infinite-scroll-component": "^6.1.0",
     "styled-components": "^5.3.11",
     "tailwind-scrollbar": "^3.0.5",
@@ -39,4 +39,3 @@
     "prettier": "^3.0.3"
   }
 }
- 

@@ -17,7 +17,7 @@ const App = () => {
     const [sorterOrder, setSorterOrder] = useState('');
 
     const getStaffCount = async () => {
-        const result = await axios.get('/api/admin/staff/count');
+        const result = await axios.get('/api/admin/student/count');
         setStudentCount(result.data);
     };
 
@@ -36,7 +36,7 @@ const App = () => {
         setLoading(true);
         axios
             .get(
-                `/api/admin/staff/list/`,
+                `/api/admin/student/list/`,
                 {
                     params: {
                         query: query,

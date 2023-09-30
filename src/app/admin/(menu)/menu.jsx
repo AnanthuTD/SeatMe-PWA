@@ -25,10 +25,8 @@ const items = [
     getItem('Staff', '/admin/staffs', <TeamOutlined />, [
         getItem('Staffs List', '/admin/staffs/list', <OrderedListOutlined />),
     ]),
-    getItem('Navigation One', 'sub1', <MailOutlined />, [
-        getItem('Option 6', '6'),
-        getItem('Option 7', '7'),
-        getItem('Option 8', '8'),
+    getItem('Student', '/admin/student', <MailOutlined />, [
+        getItem('Student List', '/admin/student/list', <OrderedListOutlined />),
     ]),
     getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
         getItem('Option 9', '9'),
@@ -67,6 +65,8 @@ const App = () => {
             if (activeMenu === '/admin') router.push('/admin');
             else if (activeMenu === '/admin/staffs/list')
                 router.push('/admin/staffs/list');
+            else if (activeMenu === '/admin/student/list')
+                router.push('/admin/student/list');
         }
     }, [activeMenu]);
 
