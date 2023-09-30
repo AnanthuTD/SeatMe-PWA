@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Button, theme } from 'antd';
-import Menu from './menu';
+import Menu from './(menu)/menu';
 const { Header, Sider, Content } = Layout;
 const App = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
