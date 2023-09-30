@@ -6,15 +6,23 @@ import Calendar from './calender';
 import RoomDetails from './roomDetails';
 
 function page() {
-    const examDate = new Date();
+    const onDuty= true;
 
     return (
         <div>
             <Navbar />
-            <div className="lg:flex flex-row gap-3 justify-center align-middle">
-                <Calendar date={examDate} />
-                <RoomDetails  />
-            </div>
+           
+             { onDuty ?  (
+                 <div className="lg:flex flex-row gap-3 justify-center align-middle">
+                 <Calendar />
+                 <RoomDetails  />  
+                 </div>
+             
+             ) : ( <div>hi</div> )  }    
+                    
+        
+                
+            
         </div>
     );
 }
