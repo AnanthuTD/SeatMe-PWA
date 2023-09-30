@@ -4,9 +4,10 @@ import React from 'react';
 import Navbar from './navbar';
 import Calendar from './calender';
 import RoomDetails from './roomDetails';
+import Offduty from './offduty';
 
 function page() {
-    const onDuty= true;
+    const onDuty= false;
 
     return (
         <div>
@@ -18,7 +19,7 @@ function page() {
                  <RoomDetails  />  
                  </div>
              
-             ) : ( <div>hi</div> )  }    
+             ) : ( <Offduty/> )  }    
                     
         
                 
