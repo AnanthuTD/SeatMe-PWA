@@ -1,8 +1,8 @@
-import React from 'react';
-import InfiniteScroll from './infiniteScroll';
+import React from "react";
+import InfiniteScroll from "./infiniteScroll";
 
 function page() {
-    return <InfiniteScroll />;
+	return <InfiniteScroll />;
 }
 
 export default page;

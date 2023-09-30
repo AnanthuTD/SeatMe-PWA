@@ -1,122 +1,122 @@
-'use client';
-import axios from '@/axiosInstance';
+"use client";
+import axios from "@/axiosInstance";
 
-import React from 'react';
-import { Button, Checkbox, Form, Input, message } from 'antd';
-import { useAccount } from '@/context/accountContext';
-import { useRouter } from 'next/navigation';
+import React from "react";
+import { Button, Checkbox, Form, Input, message } from "antd";
+import { useAccount } from "@/context/accountContext";
+import { useRouter } from "next/navigation";
 
 const onFinish = async (values, setIsAdmin, router) => {
-    // console.log('Success:', values);
-    try {
-        const response = await axios.post('api/login/', values);
-        const data = response.data;
-        // console.log('user: ', data);
-        setIsAdmin(data.isAdmin);
-        if (data.isAdmin) {
-            router.push('/admin'); // Redirect to the admin page
-        } else {
-            router.push('/staff'); // Redirect to the staff page
-        }
-    } catch (error) {
-        if (error.response) {
-            if (error.response.status === 401) {
-                message.error(
-                    'Unauthorized user. Please check your credentials.',
-                );
-            }
-        } else {
-            console.error('An error occurred:', error);
-            message.error('An error occurred!');
-        }
-    }
+	// console.log('Success:', values);
+	try {
+		const response = await axios.post("api/login/", values);
+		const data = response.data;
+		// console.log('user: ', data);
+		setIsAdmin(data.isAdmin);
+		if (data.isAdmin) {
+			router.push("/admin"); // Redirect to the admin page
+		} else {
+			router.push("/staff"); // Redirect to the staff page
+		}
+	} catch (error) {
+		if (error.response) {
+			if (error.response.status === 401) {
+				message.error(
+					"Unauthorized user. Please check your credentials.",
+				);
+			}
+		} else {
+			console.error("An error occurred:", error);
+			message.error("An error occurred!");
+		}
+	}
 };
 const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+	console.log("Failed:", errorInfo);
 };
 
 const Login = () => {
-    const { setIsAdmin } = useAccount();
-    const router = useRouter();
+	const { setIsAdmin } = useAccount();
+	const router = useRouter();
 
-    return (
-        <>
-            <div className="grid h-screen place-items-center">
-                <div className="border-3 border-black p-10 shadow-xl rounded-md">
-                    <Form
-                        name="basic"
-                        labelCol={{
-                            span: 8,
-                        }}
-                        wrapperCol={{
-                            span: 16,
-                        }}
-                        style={{
-                            maxWidth: 600,
-                        }}
-                        initialValues={{
-                            remember: true,
-                        }}
-                        onFinish={(value) =>
-                            onFinish(value, setIsAdmin, router)
-                        }
-                        onFinishFailed={onFinishFailed}
-                        autoComplete="off"
-                    >
-                        <h1 className="text-4xl text-center mb-10 ">Login</h1>
-                        <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your Mail!',
-                                    type: 'email',
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
+	return (
+		<>
+			<div className="grid h-screen place-items-center">
+				<div className="border-3 border-black p-10 shadow-xl rounded-md">
+					<Form
+						name="basic"
+						labelCol={{
+							span: 8,
+						}}
+						wrapperCol={{
+							span: 16,
+						}}
+						style={{
+							maxWidth: 600,
+						}}
+						initialValues={{
+							remember: true,
+						}}
+						onFinish={(value) =>
+							onFinish(value, setIsAdmin, router)
+						}
+						onFinishFailed={onFinishFailed}
+						autoComplete="off"
+					>
+						<h1 className="text-4xl text-center mb-10 ">Login</h1>
+						<Form.Item
+							label="Email"
+							name="email"
+							rules={[
+								{
+									required: true,
+									message: "Please input your Mail!",
+									type: "email",
+								},
+							]}
+						>
+							<Input />
+						</Form.Item>
 
-                        <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your password!',
-                                },
-                            ]}
-                        >
-                            <Input.Password />
-                        </Form.Item>
+						<Form.Item
+							label="Password"
+							name="password"
+							rules={[
+								{
+									required: true,
+									message: "Please input your password!",
+								},
+							]}
+						>
+							<Input.Password />
+						</Form.Item>
 
-                        <Form.Item
-                            name="remember"
-                            valuePropName="checked"
-                            wrapperCol={{
-                                offset: 8,
-                                span: 16,
-                            }}
-                        >
-                            <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
+						<Form.Item
+							name="remember"
+							valuePropName="checked"
+							wrapperCol={{
+								offset: 8,
+								span: 16,
+							}}
+						>
+							<Checkbox>Remember me</Checkbox>
+						</Form.Item>
 
-                        <Form.Item
-                            wrapperCol={{
-                                offset: 8,
-                                span: 16,
-                            }}
-                        >
-                            <Button type="primary" htmlType="submit">
-                                Login
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </div>
-            </div>
-        </>
-    );
+						<Form.Item
+							wrapperCol={{
+								offset: 8,
+								span: 16,
+							}}
+						>
+							<Button type="primary" htmlType="submit">
+								Login
+							</Button>
+						</Form.Item>
+					</Form>
+				</div>
+			</div>
+		</>
+	);
 };
 
 export default Login;

@@ -1,28 +1,28 @@
-import React from 'react';
-import { Inter } from 'next/font/google';
+import React from "react";
+import { Inter } from "next/font/google";
 
-import StyledComponentsRegistry from '../lib/AntdRegistry';
+import StyledComponentsRegistry from "../lib/AntdRegistry";
 
-import './globals.css';
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: 'Seating Arrangement',
+	title: "Seating Arrangement",
 };
 
-import { AccountProvider } from '@/context/accountContext';
+import { AccountProvider } from "@/context/accountContext";
 
 const RootLayout = ({ children }) => {
-    return (
-        <html lang="en">
-            <body className={[inter.className, 'h-screen'].join(' ')}>
-                <StyledComponentsRegistry>
-                    <AccountProvider>{children}</AccountProvider>
-                </StyledComponentsRegistry>
-            </body>
-        </html>
-    );
+	return (
+		<html lang="en">
+			<body className={[inter.className, "h-screen"].join(" ")}>
+				<StyledComponentsRegistry>
+					<AccountProvider>{children}</AccountProvider>
+				</StyledComponentsRegistry>
+			</body>
+		</html>
+	);
 };
 
 export default RootLayout;
