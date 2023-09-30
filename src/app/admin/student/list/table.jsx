@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Button, Input, Space, Table } from 'antd';
 import axios from '@/axiosInstance';
@@ -12,39 +12,71 @@ const App = ({
     setLoading,
     setQuery,
     setDataIndex,
+    sorterField, setSorterField, sorterOrder, setSorterOrder, setStartIndex
 }) => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
 
+
+    const loadData = async () => {
+        setLoading(true);
+        console.log(sorterOrder);
+        try {
+            // Make an API call to retrieve data based on current filters, search, and sorting
+            const result = await axios.get(`/api/admin/student/list/`, {
+                params: {
+                    query: searchText,
+                    column: searchedColumn,
+                    sortField: sorterField,
+                    sortOrder: sorterOrder,
+                    limit: 10,
+                },
+            });
+
+            const newStudents = result.data;
+            setDataSource(newStudents);
+            setLoading(false);
+        } catch (err) {
+            console.error('Error on loading data: ', err);
+        }
+    };
+
     const handleSearch = async (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
-
-        setDataSource([])
-
-        const query = selectedKeys[0]
-
-        setQuery(query)
-        setDataIndex(dataIndex)
-        try {
-
-            const result = await axios.get(`/api/admin/student/search/?query=${query}&column=${dataIndex}`);
-            const newStudents = result.data
-            setDataSource(newStudents);
-            setLoading(false);
-
-        } catch (err) {
-            console.error('Error on searching : ', err);
-        }
-
+        setQuery(selectedKeys[0]);
+        setDataIndex(dataIndex);
+        loadData();
     };
 
     const handleReset = (clearFilters) => {
         clearFilters();
         setSearchText('');
+        setQuery('');
+        setSorterField('');
+        setSorterOrder('');
+        loadData();
     };
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        // Handle table sorting
+
+        if (sorter.field) {
+            setSorterField(sorter.field);
+            let order = sorter.order === 'descend' ? 'desc' : 'asc'
+            setSorterOrder(order);
+            setStartIndex(0)
+        }
+    };
+
+
+
+    useEffect(() => {
+        loadData();
+    }, [sorterOrder]);
+
 
     const textColumnSorter = (a, b) => {
         return a.localeCompare(b);
@@ -151,7 +183,7 @@ const App = ({
             dataIndex: 'id',
             key: 'id',
             ...getColumnSearchProps('id'),
-            sorter: (a, b) => a.id - b.id, // Example sorting for numeric column
+            sorter: true, // Example sorting for numeric column
         },
         {
             title: 'Name',
@@ -202,6 +234,7 @@ const App = ({
         dataSource={dataSource}
         pagination={pagination}
         loading={loading}
+        onChange={handleTableChange}
         rowKey={(record) => record.id} />;
 };
 export default App;

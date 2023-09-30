@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Avatar, Divider, List, Skeleton } from 'antd';
+import { Divider, Skeleton } from 'antd';
 import Table from './table'
 import axios from '@/axiosInstance';
 const App = () => {
@@ -13,21 +13,40 @@ const App = () => {
     const [studentCount, setStudentCount] = useState(1);
     const [query, setQuery] = useState('');
     const [dataIndex, setDataIndex] = useState('id');
+    const [sorterField, setSorterField] = useState('');
+    const [sorterOrder, setSorterOrder] = useState('');
 
     const getStaffCount = async () => {
         const result = await axios.get('/api/admin/student/count');
         setStudentCount(result.data);
     };
 
+    useEffect(() => {
+        console.log('useEffect : ', sorterOrder);
+    //  loadMoreData()
+    }, [sorterOrder])
+    
+
     const loadMoreData = () => {
         if (loading) {
             return;
         }
+        console.log('sorterOrder: ', sorterOrder);
         const resultsPerPage = 10;
         setLoading(true);
         axios
             .get(
-                `/api/admin/student/list/?query=${query}&column=${dataIndex}&results=${resultsPerPage}&start=${startIndex}`,
+                `/api/admin/student/list/`,
+                {
+                    params: {
+                        query: query,
+                        column: dataIndex,
+                        sortField: sorterField,
+                        sortOrder: sorterOrder,
+                        limit: resultsPerPage,
+                        offset: startIndex,
+                    },
+                }
             )
             .then((response) => {
                 const newStaffs = response.data;
@@ -45,7 +64,8 @@ const App = () => {
         loadMoreData();
     }, []);
 
-  
+
+
 
     return (
         <InfiniteScroll
@@ -73,7 +93,12 @@ const App = () => {
                 setStartIndex={setStartIndex}
                 setQuery={setQuery}
                 setDataIndex={setDataIndex}
-              
+                sorterField={sorterField}
+                setSorterField={setSorterField}
+                sorterOrder={sorterOrder}
+                setSorterOrder={setSorterOrder}
+                loadData={loadMoreData}
+                startIndex={startIndex}
             />
         </InfiniteScroll>
     );
