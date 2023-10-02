@@ -5,7 +5,7 @@ import Select from "./select";
 import axios from "@/axiosInstance";
 import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
-import { Row, Col, Divider, FloatButton } from "antd";
+import { Row, Col, Divider, Button, FloatButton } from "antd";
 
 function Page() {
 	const [departments, setDepartments] = useState([]);
@@ -17,42 +17,33 @@ function Page() {
 	const [semesters, setSemesters] = useState([]);
 	const [courses, setCourses] = useState([]);
 	const [courseForms, setCourseForms] = useState([]);
-	
+
 	useEffect(() => {
 		loadDepartments();
 	}, []);
 
 	useEffect(() => {
-		let newCourseForms = courses.map((course) => {
-			return {
-				courseId: course.id,
-				date: "",
-				timeCode: "",
-			};
-		});
-		setCourseForms(newCourseForms);
-	}, [courses]);
+		if (selectedCourse?.length === 0) return;
 
-	useEffect(() => {
-		// console.log("selected courses: ", selectedCourse);
-		// if (selectedCourse?.length === 0) return;
-		let updatedCourseForms = [];
-		selectedCourse?.forEach((selectedCourse) => {
-			// console.log("selectedCourse: ", selectedCourse);
-			let updatedCourseForm = courseForms?.filter(
+		const updatedCourseForms = selectedCourse.map((selectedCourse) => {
+			const existingCourseForm = courseForms.find(
 				(course) => selectedCourse.id === course.courseId,
 			);
-			// console.log("updatedCourseForm: ", updatedCourseForm);
 
-			updatedCourseForms = [...updatedCourseForm, ...updatedCourseForms];
+			if (existingCourseForm) {
+				return existingCourseForm;
+			} else {
+				// Create a new form if one doesn't exist
+				return {
+					courseId: selectedCourse.id,
+					date: "",
+					timeCode: "",
+				};
+			}
 		});
-		// console.log("updatedCourseForms: ", updatedCourseForms);
+
 		setCourseForms(updatedCourseForms);
 	}, [selectedCourse]);
-
-	useEffect(() => {
-		// console.log("courseForms: ", courseForms);
-	}, [courseForms]);
 
 	useEffect(() => {
 		if (selectedDepartment) {
@@ -87,8 +78,7 @@ function Page() {
 	};
 
 	const loadSemesters = (programId, option) => {
-		// Simulate loading semesters here based on programId
-		const totalSemesters = option.duration * 2; // You can adjust this logic as needed
+		const totalSemesters = option.duration * 2;
 		const semesterOptions = Array.from(
 			{ length: totalSemesters },
 			(_, index) => ({
@@ -114,23 +104,23 @@ function Page() {
 		setSelectedDepartment(departmentId);
 		setSelectedProgram(null);
 		setSelectedSemester(null);
-		setSelectedCourse(null);
+		setSelectedCourse([]);
 	};
 
 	const handleProgramChange = (programId, option) => {
 		setSelectedProgram(programId);
 		loadSemesters(programId, option);
 		setSelectedSemester(null);
-		setSelectedCourse(null);
+		setSelectedCourse([]);
 	};
 
 	const handleSemesterChange = (semester) => {
 		setSelectedSemester(semester);
-		setSelectedCourse(null);
+		setSelectedCourse([]);
 	};
 
 	const handleCourseChange = (courseId) => {
-		setSelectedCourse(courseId);
+		setSelectedCourse([...selectedCourse, courseId]);
 	};
 
 	const handleProgramClick = () => {
@@ -139,6 +129,19 @@ function Page() {
 
 	const handleCourseClick = () => {
 		if (courses.length === 0) loadCourses();
+	};
+
+	const handleReset = () => {
+		setDepartments([]);
+		setPrograms([]);
+		setCourses([]);
+		setCourseForms([]);
+		setSelectedCourse([]);
+		setSelectedDepartment([]);
+		setSelectedProgram([]);
+		setSelectedSemester([]);
+		setSemesters([]);
+		loadDepartments();
 	};
 
 	const onFinish = async (formData) => {
@@ -169,18 +172,6 @@ function Page() {
 			updatedCourseForms[indexToUpdate] = formData;
 			setCourseForms(updatedCourseForms);
 		}
-	};
-
-	const handleReset = () => {
-		setDepartments([]);
-		setPrograms([]);
-		setCourses([]);
-		setCourseForms([]);
-		setSelectedCourse([]);
-		setSelectedDepartment([]);
-		setSelectedProgram([]);
-		setSelectedSemester([]);
-		setSemesters([]);
 	};
 
 	return (
@@ -237,34 +228,33 @@ function Page() {
 				</Col>
 			</Row>
 			{courses.length < 10
-				? courseForms?.map((courseForm, index) => {
-						return (
-							<div key={courseForm.id}>
-								<Divider />
-								<Row
-									gutter={16}
-									justify="center"
-									key={courseForm.id}
-								>
-									<Col span={24}>
-										<CourseForm
-											onFinish={onFinish}
-											formData={courseForm}
-											formUpdate={formUpdate}
-										/>
-									</Col>
-								</Row>
-								<Divider />
-							</div>
-						);
-				  })
+				? courseForms.map((courseForm, index) => (
+						<div key={courseForm.id}>
+							<Divider />
+							<Row
+								gutter={16}
+								justify="center"
+								key={courseForm.id}
+							>
+								<Col span={24}>
+									<CourseForm
+										onFinish={onFinish}
+										formData={courseForm}
+										formUpdate={formUpdate}
+									/>
+								</Col>
+							</Row>
+						</div>
+				  ))
 				: null}
 			<FloatButton
 				onClick={handleReset}
-				description="reset"
 				type="primary"
-				shape="circle"
-			/>
+				shape="square"
+				description={"Reset"}
+			>
+				Reset
+			</FloatButton>
 		</div>
 	);
 }

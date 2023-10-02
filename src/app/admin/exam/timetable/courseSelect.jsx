@@ -40,7 +40,6 @@ const App = ({
 		const filteredSelectedCourses = selectedCourses.filter(
 			(obj) => obj.id !== valueToRemove,
 		);
-		// console.log("filtered", filteredSelectedCourses);
 
 		setSelectedCourses(filteredSelectedCourses);
 		setValue(filteredValues);
@@ -49,16 +48,10 @@ const App = ({
 	const addDefaultValues = (valueToAdd) => {
 		const option = options.find((obj) => obj.id === valueToAdd);
 		if (option) {
-			// console.log("option", option);
-
 			setValue([option.id, ...value]);
 			setSelectedCourses([option, ...selectedCourses]);
 		}
 	};
-
-	useEffect(() => {
-		// console.log("value: ", value);
-	}, [value]);
 
 	return (
 		<Select
