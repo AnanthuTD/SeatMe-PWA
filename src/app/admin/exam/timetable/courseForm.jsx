@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, DatePicker, Select, Button } from "antd";
+import "./style.css";
 
 const CourseForm = ({
 	onFinish = () => {},
@@ -7,6 +8,7 @@ const CourseForm = ({
 	formUpdate = () => {},
 }) => {
 	const [form] = Form.useForm();
+	const [submitStatus, setSubmitStatus] = useState("idle"); // idle, success, error
 
 	const updateFields = (formData) => {
 		form.setFieldsValue(formData);
@@ -20,12 +22,19 @@ const CourseForm = ({
 		formUpdate(values);
 	};
 
-	const handleFormFinish = (values) => {
-		onFinish(values);
+	const handleFormFinish = async (values) => {
+		setSubmitStatus("pending");
+		const status = await onFinish(values);
+		setSubmitStatus(status ? "success" : "error");
 	};
 
 	return (
-		<div className="border rounded-lg shadow-md w-11/12 mx-auto p-6 bg-white">
+		<div
+			className={[
+				"border rounded-lg shadow-md w-11/12 mx-auto p-6",
+				submitStatus,
+			].join(" ")}
+		>
 			<Form
 				form={form}
 				name="courseForm"
@@ -82,10 +91,17 @@ const CourseForm = ({
 				<Form.Item>
 					<Button
 						type="primary"
+						danger={submitStatus === "error" ? true : false}
 						htmlType="submit"
-						className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+						className={["w-full text-white submit-button"].join(
+							" ",
+						)}
 					>
-						Submit
+						{submitStatus === "idle"
+							? "Submit"
+							: submitStatus === "success"
+							? "Update"
+							: "Re-Submit"}
 					</Button>
 				</Form.Item>
 			</Form>
