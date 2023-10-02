@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Form, DatePicker, Select, Button } from "antd";
+import { Form, DatePicker, Select, Button, Tooltip, Row, Col } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
+
 import "./style.css";
 
 const CourseForm = ({
@@ -23,9 +25,13 @@ const CourseForm = ({
 	};
 
 	const handleFormFinish = async (values) => {
-		setSubmitStatus("pending");
 		const status = await onFinish(values);
 		setSubmitStatus(status ? "success" : "error");
+	};
+
+	const handleFormReset = () => {
+		const newFormData = { courseId: "", timeCode: "AN", date: "" };
+		formUpdate(newFormData);
 	};
 
 	return (
@@ -45,6 +51,7 @@ const CourseForm = ({
 					date: dayjs(formData.timeCode),
 					courseId: formData.courseId,
 				}} */
+				onReset={handleFormReset}
 			>
 				<div className="flex items-center justify-between mb-4">
 					<span className="text-gray-600">Course ID:</span>
@@ -89,20 +96,43 @@ const CourseForm = ({
 				</Form.Item>
 
 				<Form.Item>
-					<Button
-						type="primary"
-						danger={submitStatus === "error" ? true : false}
-						htmlType="submit"
-						className={["w-full text-white submit-button"].join(
-							" ",
-						)}
-					>
-						{submitStatus === "idle"
-							? "Submit"
-							: submitStatus === "success"
-							? "Update"
-							: "Re-Submit"}
-					</Button>
+					<Row gutter={16} align="middle">
+						<Col xs={24} sm={15} md={18} lg={20} xl={21}>
+							<Button
+								type="primary"
+								danger={submitStatus === "error" ? true : false}
+								htmlType="submit"
+								className="w-full text-white submit-button"
+							>
+								{submitStatus === "idle"
+									? "Submit"
+									: submitStatus === "success"
+									? "Update"
+									: "Re-Submit"}
+							</Button>
+						</Col>
+						<Col xs={24} sm={9} md={4} lg={4} xl={3}>
+							<Tooltip title="Reset">
+								<Button
+									type="primary"
+									htmlType="reset"
+									ghost
+									icon={
+										<ReloadOutlined
+											style={{ color: "#d48806" }}
+										/>
+									}
+									style={{
+										backgroundColor: "#fffbe6",
+										border: "solid #ffe58f",
+										color: "#d48806",
+									}}
+								>
+									Reset
+								</Button>
+							</Tooltip>
+						</Col>
+					</Row>
 				</Form.Item>
 			</Form>
 		</div>
