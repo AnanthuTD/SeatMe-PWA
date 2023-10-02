@@ -5,33 +5,60 @@ import Select from "./select";
 import axios from "@/axiosInstance";
 import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, FloatButton } from "antd";
 
 function Page() {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 	const [selectedProgram, setSelectedProgram] = useState(null);
 	const [selectedSemester, setSelectedSemester] = useState(null);
-	const [selectedCourse, setSelectedCourse] = useState(null);
+	const [selectedCourse, setSelectedCourse] = useState([]);
 	const [programs, setPrograms] = useState([]);
 	const [semesters, setSemesters] = useState([]);
 	const [courses, setCourses] = useState([]);
-
+	const [courseForms, setCourseForms] = useState([]);
+	
 	useEffect(() => {
 		loadDepartments();
 	}, []);
+
+	useEffect(() => {
+		let newCourseForms = courses.map((course) => {
+			return {
+				courseId: course.id,
+				date: "",
+				timeCode: "",
+			};
+		});
+		setCourseForms(newCourseForms);
+	}, [courses]);
+
+	useEffect(() => {
+		// console.log("selected courses: ", selectedCourse);
+		// if (selectedCourse?.length === 0) return;
+		let updatedCourseForms = [];
+		selectedCourse?.forEach((selectedCourse) => {
+			// console.log("selectedCourse: ", selectedCourse);
+			let updatedCourseForm = courseForms?.filter(
+				(course) => selectedCourse.id === course.courseId,
+			);
+			// console.log("updatedCourseForm: ", updatedCourseForm);
+
+			updatedCourseForms = [...updatedCourseForm, ...updatedCourseForms];
+		});
+		// console.log("updatedCourseForms: ", updatedCourseForms);
+		setCourseForms(updatedCourseForms);
+	}, [selectedCourse]);
+
+	useEffect(() => {
+		// console.log("courseForms: ", courseForms);
+	}, [courseForms]);
 
 	useEffect(() => {
 		if (selectedDepartment) {
 			loadPrograms(selectedDepartment);
 		}
 	}, [selectedDepartment]);
-
-	useEffect(() => {
-		if (selectedProgram) {
-			loadSemesters(selectedProgram);
-		}
-	}, [selectedProgram]);
 
 	useEffect(() => {
 		if (selectedSemester && selectedProgram) {
@@ -59,9 +86,9 @@ function Page() {
 		}
 	};
 
-	const loadSemesters = (programId) => {
+	const loadSemesters = (programId, option) => {
 		// Simulate loading semesters here based on programId
-		const totalSemesters = programId ? 8 : 0; // You can adjust this logic as needed
+		const totalSemesters = option.duration * 2; // You can adjust this logic as needed
 		const semesterOptions = Array.from(
 			{ length: totalSemesters },
 			(_, index) => ({
@@ -90,8 +117,9 @@ function Page() {
 		setSelectedCourse(null);
 	};
 
-	const handleProgramChange = (programId) => {
+	const handleProgramChange = (programId, option) => {
 		setSelectedProgram(programId);
+		loadSemesters(programId, option);
 		setSelectedSemester(null);
 		setSelectedCourse(null);
 	};
@@ -113,6 +141,48 @@ function Page() {
 		if (courses.length === 0) loadCourses();
 	};
 
+	const onFinish = async (formData) => {
+		const indexToUpdate = courseForms.findIndex(
+			(courseForm) => courseForm.courseId === formData.courseId,
+		);
+
+		if (indexToUpdate !== -1) {
+			const updatedCourseForms = [...courseForms];
+			updatedCourseForms[indexToUpdate] = formData;
+			setCourseForms(updatedCourseForms);
+		}
+
+		try {
+			const result = await axios.post("/api/admin/timetable", formData);
+		} catch (error) {
+			console.error("error on posting timetable: ", error);
+		}
+	};
+
+	const formUpdate = async (formData) => {
+		const indexToUpdate = courseForms.findIndex(
+			(courseForm) => courseForm.courseId === formData.courseId,
+		);
+
+		if (indexToUpdate !== -1) {
+			const updatedCourseForms = [...courseForms];
+			updatedCourseForms[indexToUpdate] = formData;
+			setCourseForms(updatedCourseForms);
+		}
+	};
+
+	const handleReset = () => {
+		setDepartments([]);
+		setPrograms([]);
+		setCourses([]);
+		setCourseForms([]);
+		setSelectedCourse([]);
+		setSelectedDepartment([]);
+		setSelectedProgram([]);
+		setSelectedSemester([]);
+		setSemesters([]);
+	};
+
 	return (
 		<div className="p-4 bg-white">
 			<Row gutter={16} align="middle">
@@ -124,8 +194,6 @@ function Page() {
 						options={departments}
 						onChange={handleDepartmentChange}
 						placeholder="Select Department"
-						value={selectedDepartment}
-						className="w-full"
 					/>
 				</Col>
 				<Col span={6}>
@@ -137,9 +205,7 @@ function Page() {
 						onChange={handleProgramChange}
 						onClick={handleProgramClick}
 						placeholder="Select Program"
-						value={selectedProgram}
 						sortByValue
-						className="w-full"
 					/>
 				</Col>
 				<Col span={6}>
@@ -150,8 +216,6 @@ function Page() {
 						options={semesters}
 						onChange={handleSemesterChange}
 						placeholder="Select Semester"
-						value={selectedSemester}
-						className="w-full"
 					/>
 				</Col>
 			</Row>
@@ -165,18 +229,42 @@ function Page() {
 						options={courses}
 						onChange={handleCourseChange}
 						placeholder="Select Course"
-						value={selectedCourse}
+						selectedCourses={selectedCourse}
 						onClick={handleCourseClick}
+						setSelectedCourses={setSelectedCourse}
 						className="w-full"
 					/>
 				</Col>
 			</Row>
-			<Divider />
-			<Row gutter={16} justify="center">
-				<Col span={24}>
-					<CourseForm />
-				</Col>
-			</Row>
+			{courses.length < 10
+				? courseForms?.map((courseForm, index) => {
+						return (
+							<div key={courseForm.id}>
+								<Divider />
+								<Row
+									gutter={16}
+									justify="center"
+									key={courseForm.id}
+								>
+									<Col span={24}>
+										<CourseForm
+											onFinish={onFinish}
+											formData={courseForm}
+											formUpdate={formUpdate}
+										/>
+									</Col>
+								</Row>
+								<Divider />
+							</div>
+						);
+				  })
+				: null}
+			<FloatButton
+				onClick={handleReset}
+				description="reset"
+				type="primary"
+				shape="circle"
+			/>
 		</div>
 	);
 }

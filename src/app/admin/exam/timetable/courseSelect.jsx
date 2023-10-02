@@ -7,16 +7,20 @@ const App = ({
 	onChange = () => {},
 	onClick = () => {},
 	sortByValue = false,
+	selectedCourses,
+	setSelectedCourses,
 }) => {
 	// Check if the length of options is less than 10
 	const isLessThan10 = options.length < 10;
 
-	// Calculate the default values based on all option values
-	const [defaultValues, setDefaultValues] = useState([]);
+	const [value, setValue] = useState([]);
 
+	// default selected options if less than 10 courses value
 	useEffect(() => {
-		const values = isLessThan10 ? options.map((option) => option.id) : [];
-		setDefaultValues(values);
+		const option = isLessThan10 ? options.map((option) => option) : [];
+		const courseId = isLessThan10 ? options.map((option) => option.id) : [];
+		setSelectedCourses(option);
+		setValue(courseId);
 	}, [options]);
 
 	const customSort = (optionA, optionB) => {
@@ -32,22 +36,29 @@ const App = ({
 	};
 
 	const removeDefaultValues = (valueToRemove) => {
-		const filteredValues = defaultValues.filter(
-			(obj) => obj !== valueToRemove,
+		const filteredValues = value.filter((obj) => obj !== valueToRemove);
+		const filteredSelectedCourses = selectedCourses.filter(
+			(obj) => obj.id !== valueToRemove,
 		);
-		setDefaultValues(filteredValues);
+		// console.log("filtered", filteredSelectedCourses);
+
+		setSelectedCourses(filteredSelectedCourses);
+		setValue(filteredValues);
 	};
 
 	const addDefaultValues = (valueToAdd) => {
 		const option = options.find((obj) => obj.id === valueToAdd);
 		if (option) {
-			setDefaultValues([option.id, ...defaultValues]);
+			// console.log("option", option);
+
+			setValue([option.id, ...value]);
+			setSelectedCourses([option, ...selectedCourses]);
 		}
 	};
 
 	useEffect(() => {
-		console.log(defaultValues);
-	}, [defaultValues]);
+		// console.log("value: ", value);
+	}, [value]);
 
 	return (
 		<Select
@@ -64,7 +75,7 @@ const App = ({
 			filterSort={customSort}
 			onChange={onChange}
 			optionLabelProp="label"
-			value={defaultValues}
+			value={value}
 			onDeselect={removeDefaultValues}
 			onClick={onClick}
 			onSelect={addDefaultValues}

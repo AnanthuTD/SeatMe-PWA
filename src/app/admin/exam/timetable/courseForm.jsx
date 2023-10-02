@@ -1,31 +1,53 @@
-import React from "react";
-import { Form, Input, DatePicker, Select, Button } from "antd";
+import React, { useEffect } from "react";
+import { Form, DatePicker, Select, Button } from "antd";
 
-const { Option } = Select;
+const CourseForm = ({
+	onFinish = () => {},
+	formData = { courseId: "", timeCode: "AN", date: "" },
+	formUpdate = () => {},
+}) => {
+	const [form] = Form.useForm();
 
-const CourseForm = ({ onFinish }) => {
-	const onFinishHandler = (values) => {
-		// Handle form submission here, you can send the values to an API or perform any other action.
+	const updateFields = (formData) => {
+		form.setFieldsValue(formData);
+	};
+
+	useEffect(() => {
+		updateFields(formData);
+	}, [formData]);
+
+	const handleFormValueChange = (changedValue, values) => {
+		formUpdate(values);
+	};
+
+	const handleFormFinish = (values) => {
 		onFinish(values);
 	};
 
 	return (
 		<div className="border rounded-lg shadow-md w-11/12 mx-auto p-6 bg-white">
-			<h2 className="text-2xl font-semibold mb-4">Course Form</h2>
 			<Form
+				form={form}
 				name="courseForm"
-				onFinish={onFinishHandler}
-				initialValues={{ timecode: "AN" }} // Set initial value for timecode
+				onValuesChange={handleFormValueChange}
+				onFinish={handleFormFinish}
+				/* initialValues={{
+					timeCode: formData.timeCode,
+					date: dayjs(formData.timeCode),
+					courseId: formData.courseId,
+				}} */
 			>
 				<div className="flex items-center justify-between mb-4">
 					<span className="text-gray-600">Course ID:</span>
-					<span className="text-blue-500">CID12345</span>
+					<span className="text-blue-500">{formData.courseId}</span>
 				</div>
 
 				<div className="flex items-center justify-between mb-4">
 					<span className="text-gray-600">Course Name:</span>
-					<span className="text-blue-500">Sample Course</span>
+					<span className="text-blue-500">name</span>
 				</div>
+
+				<Form.Item name={"courseId"} hidden={true} />
 
 				<Form.Item
 					label="Date"
@@ -37,23 +59,24 @@ const CourseForm = ({ onFinish }) => {
 						},
 					]}
 				>
-					<DatePicker className="w-full" />
+					<DatePicker className="w-full" allowClear />
 				</Form.Item>
 
-				<Form.Item
-					label="Time Code"
-					name="timecode"
-					rules={[
-						{
-							required: true,
-							message: "Please select a time code",
-						},
-					]}
-				>
-					<Select style={{ width: "100%" }}>
-						<Option value="AN">AN</Option>
-						<Option value="FN">FN</Option>
-					</Select>
+				<Form.Item name={"timeCode"} label={"Time Code"}>
+					<Select
+						className="w-full"
+						allowClear
+						options={[
+							{
+								value: "AN",
+								label: "AN",
+							},
+							{
+								value: "FN",
+								label: "FN",
+							},
+						]}
+					/>
 				</Form.Item>
 
 				<Form.Item>

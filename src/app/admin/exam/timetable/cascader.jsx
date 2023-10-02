@@ -57,7 +57,7 @@ const App = ({ options = [], onChange = () => {}, onClick = () => {} }) => {
 			showSearch={{
 				filter,
 			}}
-			onSearch={(value) => console.log(value)}
+			// onSearch={(value) => console.log(value)}
 		/>
 	);
 };

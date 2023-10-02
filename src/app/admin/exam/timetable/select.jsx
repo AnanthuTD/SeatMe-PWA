@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Select } from "antd";
 
 const SelectDepartment = ({
@@ -7,6 +7,12 @@ const SelectDepartment = ({
 	onClick,
 	sortByValue = false,
 }) => {
+	useEffect(() => {
+		setValue([]);
+	}, [options]);
+
+	const [value, setValue] = useState([]);
+
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
 			// Sort by id
@@ -22,6 +28,7 @@ const SelectDepartment = ({
 	const handleSelectChange = (value, option) => {
 		// Instead of just returning value, return the entire option object
 		const selectedOption = options.find((opt) => opt.id === value);
+		setValue([value]);
 		onChange(value, selectedOption);
 	};
 
@@ -41,6 +48,7 @@ const SelectDepartment = ({
 			filterSort={customSort}
 			onChange={handleSelectChange}
 			onClick={onClick}
+			value={value}
 		>
 			{options.map((option) => (
 				<Select.Option
