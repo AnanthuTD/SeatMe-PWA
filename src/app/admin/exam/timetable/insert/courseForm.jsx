@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Form, DatePicker, Select, Button, Tooltip, Row, Col } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 import "./style.css";
 
 const CourseForm = ({
 	onFinish = () => {},
-	formData = { courseId: "", timeCode: "AN", date: "" },
+	formData = { courseId: "", courseName: "", timeCode: "AN", date: "" },
 	formUpdate = () => {},
 }) => {
 	const [form] = Form.useForm();
 	const [submitStatus, setSubmitStatus] = useState("idle"); // idle, success, error
 
 	const updateFields = (formData) => {
+		if (formData.date) formData.date = dayjs(formData.date);
 		form.setFieldsValue(formData);
 	};
 
 	useEffect(() => {
+		if (!formData.timeCode) formData.timeCode = "AN";
 		updateFields(formData);
 	}, [formData]);
 
@@ -25,12 +28,18 @@ const CourseForm = ({
 	};
 
 	const handleFormFinish = async (values) => {
+		if (values.date) values.date = values.date.format("YYYY-MM-DD");
 		const status = await onFinish(values);
 		setSubmitStatus(status ? "success" : "error");
 	};
 
 	const handleFormReset = () => {
-		const newFormData = { courseId: "", timeCode: "AN", date: "" };
+		const newFormData = {
+			courseId: formData.courseId,
+			courseName: formData.courseName,
+			timeCode: "AN",
+			date: "",
+		};
 		formUpdate(newFormData);
 	};
 
@@ -43,14 +52,8 @@ const CourseForm = ({
 		>
 			<Form
 				form={form}
-				name="courseForm"
 				onValuesChange={handleFormValueChange}
 				onFinish={handleFormFinish}
-				/* initialValues={{
-					timeCode: formData.timeCode,
-					date: dayjs(formData.timeCode),
-					courseId: formData.courseId,
-				}} */
 				onReset={handleFormReset}
 			>
 				<div className="flex items-center justify-between mb-4">
@@ -60,10 +63,11 @@ const CourseForm = ({
 
 				<div className="flex items-center justify-between mb-4">
 					<span className="text-gray-600">Course Name:</span>
-					<span className="text-blue-500">name</span>
+					<span className="text-blue-500">{formData.courseName}</span>
 				</div>
 
 				<Form.Item name={"courseId"} hidden={true} />
+				<Form.Item name={"courseName"} hidden={true} />
 
 				<Form.Item
 					label="Date"
@@ -75,7 +79,11 @@ const CourseForm = ({
 						},
 					]}
 				>
-					<DatePicker className="w-full" allowClear />
+					<DatePicker
+						format={"YYYY-MM-DD"}
+						className="w-full"
+						allowClear
+					/>
 				</Form.Item>
 
 				<Form.Item name={"timeCode"} label={"Time Code"}>
@@ -90,6 +98,12 @@ const CourseForm = ({
 							{
 								value: "FN",
 								label: "FN",
+							},
+						]}
+						rules={[
+							{
+								required: true,
+								message: "Please select a time code",
 							},
 						]}
 					/>

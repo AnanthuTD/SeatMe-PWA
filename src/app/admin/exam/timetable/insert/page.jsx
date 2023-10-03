@@ -5,7 +5,7 @@ import Select from "./select";
 import axios from "@/axiosInstance";
 import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
-import { Row, Col, Divider, FloatButton } from "antd";
+import { Row, Col, Divider, FloatButton, message } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 
 function Page() {
@@ -35,6 +35,7 @@ function Page() {
 				// Create a new form if one doesn't exist
 				return {
 					courseId: selectedCourse.id,
+					courseName: selectedCourse.name,
 					date: "",
 					timeCode: "",
 				};
@@ -156,10 +157,21 @@ function Page() {
 
 		try {
 			const result = await axios.post("/api/admin/timetable", formData);
-			console.log(result);
-			return true;
+			if (result.status >= 200 && result.status < 300) {
+				message.success(result.data)
+				return true;
+			} else {
+				message.error(result.data)
+				return false;
+			}
 		} catch (error) {
-			console.error("error on posting timetable: ", error);
+			if (error.response) {
+				message.error(error.response.data)
+			} else if (error.request) {
+				message.warning("No response received from the server.");
+			} else {
+				message.error("Error while making the request:", error.message);
+			}
 			return false;
 		}
 	};
