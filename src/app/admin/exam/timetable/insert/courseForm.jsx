@@ -70,6 +70,7 @@ const CourseForm = ({
 				<Form.Item name={"courseName"} hidden={true} />
 
 				<Form.Item
+					allowClear
 					label="Date"
 					name="date"
 					rules={[

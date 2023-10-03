@@ -56,6 +56,7 @@ const App = ({
 	return (
 		<Select
 			mode="multiple"
+			allowClear
 			style={{
 				width: "100%",
 			}}
@@ -75,6 +76,7 @@ const App = ({
 		>
 			{options.map((option) => (
 				<Option
+					allowClear
 					key={option.id}
 					value={option.id}
 					label={`${option.name}(${option.name})`}
