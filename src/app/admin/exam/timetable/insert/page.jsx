@@ -5,7 +5,8 @@ import Select from "./select";
 import axios from "@/axiosInstance";
 import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
-import { Row, Col, Divider, Button, FloatButton } from "antd";
+import { Row, Col, Divider, FloatButton, message } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 
 function Page() {
 	const [departments, setDepartments] = useState([]);
@@ -23,8 +24,6 @@ function Page() {
 	}, []);
 
 	useEffect(() => {
-		if (selectedCourse?.length === 0) return;
-
 		const updatedCourseForms = selectedCourse.map((selectedCourse) => {
 			const existingCourseForm = courseForms.find(
 				(course) => selectedCourse.id === course.courseId,
@@ -36,6 +35,7 @@ function Page() {
 				// Create a new form if one doesn't exist
 				return {
 					courseId: selectedCourse.id,
+					courseName: selectedCourse.name,
 					date: "",
 					timeCode: "",
 				};
@@ -157,8 +157,22 @@ function Page() {
 
 		try {
 			const result = await axios.post("/api/admin/timetable", formData);
+			if (result.status >= 200 && result.status < 300) {
+				message.success(result.data)
+				return true;
+			} else {
+				message.error(result.data)
+				return false;
+			}
 		} catch (error) {
-			console.error("error on posting timetable: ", error);
+			if (error.response) {
+				message.error(error.response.data)
+			} else if (error.request) {
+				message.warning("No response received from the server.");
+			} else {
+				message.error("Error while making the request:", error.message);
+			}
+			return false;
 		}
 	};
 
@@ -177,7 +191,8 @@ function Page() {
 	return (
 		<div className="p-4 bg-white">
 			<Row gutter={16} align="middle">
-				<Col span={6}>
+				{/* On extra-small screens (<= 575px), use full width for each column */}
+				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
 					<label className="block text-lg font-semibold mb-2">
 						Department:
 					</label>
@@ -187,7 +202,7 @@ function Page() {
 						placeholder="Select Department"
 					/>
 				</Col>
-				<Col span={6}>
+				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
 					<label className="block text-lg font-semibold mb-2">
 						Program:
 					</label>
@@ -199,7 +214,7 @@ function Page() {
 						sortByValue
 					/>
 				</Col>
-				<Col span={6}>
+				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
 					<label className="block text-lg font-semibold mb-2">
 						Semester:
 					</label>
@@ -227,34 +242,29 @@ function Page() {
 					/>
 				</Col>
 			</Row>
-			{courses.length < 10
-				? courseForms.map((courseForm, index) => (
-						<div key={courseForm.id}>
-							<Divider />
-							<Row
-								gutter={16}
-								justify="center"
-								key={courseForm.id}
-							>
-								<Col span={24}>
-									<CourseForm
-										onFinish={onFinish}
-										formData={courseForm}
-										formUpdate={formUpdate}
-									/>
-								</Col>
-							</Row>
-						</div>
-				  ))
-				: null}
+			{courseForms.map((courseForm, index) => (
+				<div key={courseForm.id}>
+					<Divider />
+					<Row gutter={16} justify="center" key={courseForm.id}>
+						<Col span={24}>
+							<CourseForm
+								onFinish={onFinish}
+								formData={courseForm}
+								formUpdate={formUpdate}
+							/>
+						</Col>
+					</Row>
+				</div>
+			))}
 			<FloatButton
 				onClick={handleReset}
-				type="primary"
-				shape="square"
-				description={"Reset"}
-			>
-				Reset
-			</FloatButton>
+				type="default"
+				style={{
+					backgroundColor: "#ffe6e6",
+					border: "solid #ff8080",
+				}}
+				icon={<ReloadOutlined style={{ color: "#ff8080" }} />}
+			/>
 		</div>
 	);
 }

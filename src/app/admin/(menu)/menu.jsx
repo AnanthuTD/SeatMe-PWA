@@ -28,12 +28,10 @@ const items = [
 	getItem("Student", "/admin/student", <MailOutlined />, [
 		getItem("Student List", "/admin/student/list", <OrderedListOutlined />),
 	]),
-	getItem("Navigation Two", "sub2", <AppstoreOutlined />, [
-		getItem("Option 9", "9"),
-		getItem("Option 10", "10"),
-		getItem("Submenu", "sub3", null, [
-			getItem("Option 11", "11"),
-			getItem("Option 12", "12"),
+	getItem("Exam", "/admin/exam", <AppstoreOutlined />, [
+		getItem("Time Table", "/admin/exam/timetable",<></>, [
+			getItem("Insert", "/admin/exam/timetable/insert"),
+			getItem("View", "/admin/exam/timetable/view"),
 		]),
 	]),
 ];
@@ -67,6 +65,8 @@ const App = () => {
 				router.push("/admin/staffs/list");
 			else if (activeMenu === "/admin/student/list")
 				router.push("/admin/student/list");
+			else if (activeMenu === "/admin/exam/timetable/insert")
+				router.push("/admin/exam/timetable/insert");
 		}
 	}, [activeMenu]);
 

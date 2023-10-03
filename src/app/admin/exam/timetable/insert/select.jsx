@@ -35,6 +35,7 @@ const SelectDepartment = ({
 	return (
 		<Select
 			showSearch
+			allowClear
 			style={{
 				width: 200,
 			}}
@@ -52,6 +53,7 @@ const SelectDepartment = ({
 		>
 			{options.map((option) => (
 				<Select.Option
+					allowClear
 					key={option.id}
 					value={option.id}
 					label={option.name}
