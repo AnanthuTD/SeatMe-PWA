@@ -1,4 +1,5 @@
 import React from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { Inter } from "next/font/google";
 
 import StyledComponentsRegistry from "../lib/AntdRegistry";
@@ -18,7 +19,9 @@ const RootLayout = ({ children }) => {
 		<html lang="en">
 			<body className={[inter.className, "h-screen"].join(" ")}>
 				<StyledComponentsRegistry>
-					<AccountProvider>{children}</AccountProvider>
+					<AccountProvider>
+						{children} <Analytics />
+					</AccountProvider>
 				</StyledComponentsRegistry>
 			</body>
 		</html>
