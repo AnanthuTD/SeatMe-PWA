@@ -87,7 +87,16 @@ const CourseForm = ({
 					/>
 				</Form.Item>
 
-				<Form.Item name={"timeCode"} label={"Time Code"}>
+				<Form.Item
+					name={"timeCode"}
+					label={"Time Code"}
+					rules={[
+						{
+							required: true,
+							message: "Please select a time code",
+						},
+					]}
+				>
 					<Select
 						className="w-full"
 						allowClear
@@ -99,12 +108,6 @@ const CourseForm = ({
 							{
 								value: "FN",
 								label: "FN",
-							},
-						]}
-						rules={[
-							{
-								required: true,
-								message: "Please select a time code",
 							},
 						]}
 					/>
