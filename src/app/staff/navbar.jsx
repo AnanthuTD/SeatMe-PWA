@@ -189,3 +189,26 @@ function Navbar() {
 	);
 }
 export default Navbar;
+
+/*import React from 'react'
+
+
+
+function Navbar () {
+  return (
+	<>
+	     <div  className='lg:block sm:hidden bg-red-700 ' >
+		 
+
+		 </div>
+		 <div className='lg:hidden sm:block '   >
+			helloooo
+		 </div>
+
+     
+
+	</>
+  )
+}
+
+export default  Navbar;*/

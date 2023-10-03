@@ -7,7 +7,7 @@ import RoomDetails from "./roomDetails";
 import Offduty from "./offduty";
 
 function page() {
-	const onDuty = false;
+	const onDuty = true;
 
 	return (
 		<div>
