@@ -11,6 +11,7 @@ import {
 import { Menu } from "antd";
 import { useMenuContext } from "./menuContext";
 import { useRouter, usePathname } from "next/navigation";
+
 function getItem(label, key, icon, children, type) {
 	return {
 		key,
@@ -29,7 +30,7 @@ const items = [
 		getItem("Student List", "/admin/student/list", <OrderedListOutlined />),
 	]),
 	getItem("Exam", "/admin/exam", <AppstoreOutlined />, [
-		getItem("Time Table", "/admin/exam/timetable",<></>, [
+		getItem("Time Table", "/admin/exam/timetable", <></>, [
 			getItem("Insert", "/admin/exam/timetable/insert"),
 			getItem("View", "/admin/exam/timetable/view"),
 		]),
@@ -42,8 +43,6 @@ const App = () => {
 	const { activeMenu, setMenu } = useMenuContext();
 	const [parentPath, setParentPath] = useState(getParentPaths(pathname));
 
-	// setMenu(pathname)
-
 	function getParentPaths(path) {
 		const parts = path.split("/").filter((part) => part.length > 0);
 
@@ -53,20 +52,21 @@ const App = () => {
 	}
 
 	const handleMenuItemClick = (key) => {
-		console.log("key: " + key);
 		setMenu(key);
 	};
 
+	const routeMapping = {
+		"/admin": "/admin",
+		"/admin/staffs/list": "/admin/staffs/list",
+		"/admin/student/list": "/admin/student/list",
+		"/admin/exam/timetable/insert": "/admin/exam/timetable/insert",
+		"/admin/exam/timetable/view": "/admin/exam/timetable/view",
+	};
+
 	useEffect(() => {
-		if (activeMenu) {
+		if (activeMenu && routeMapping[activeMenu]) {
 			console.log("active menu ", activeMenu);
-			if (activeMenu === "/admin") router.push("/admin");
-			else if (activeMenu === "/admin/staffs/list")
-				router.push("/admin/staffs/list");
-			else if (activeMenu === "/admin/student/list")
-				router.push("/admin/student/list");
-			else if (activeMenu === "/admin/exam/timetable/insert")
-				router.push("/admin/exam/timetable/insert");
+			router.push(routeMapping[activeMenu]);
 		}
 	}, [activeMenu]);
 
