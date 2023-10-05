@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, Skeleton } from "antd";
 import Table from "./table";
 import axios from "@/axiosInstance";
+
 const App = () => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
