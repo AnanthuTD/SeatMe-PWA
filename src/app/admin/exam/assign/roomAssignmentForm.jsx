@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Form, Input, Select, Button, Row, Col } from "antd";
+import { Form, Input, Select, Button, Row, Col, message } from "antd";
 import axios from "@/axiosInstance";
 
 const { Option } = Select;
@@ -21,6 +21,13 @@ const RoomAssignmentForm = () => {
 		loadRooms();
 	}, []);
 
+	useEffect(() => {
+		const selectedRoomIds = rooms
+			.filter((room) => room.isAvailable)
+			.map((room) => room.id);
+		setSelectedRoomIds(selectedRoomIds);
+	}, [rooms]);
+
 	const calculateTotalSeats = () => {
 		const selectedRooms = rooms.filter((room) =>
 			selectedRoomIds.includes(room.id),
@@ -39,22 +46,40 @@ const RoomAssignmentForm = () => {
 		calculateTotalSeats();
 	}, [selectedRoomIds]);
 
+	const onFinish = async () => {
+		try {
+			const response = await axios.patch("/api/admin/rooms", {
+				roomIds: selectedRoomIds,
+			});
 
+			if (response.status === 200) {
+				message.success("PATCH request was successful");
+			} else {
+				message.error(
+					"PATCH request failed with status:",
+					response.status,
+				);
+			}
+		} catch (error) {
+			console.error("Error while sending PATCH request:", error);
+			message.error("Error while sending PATCH request");
+		}
+	};
 
 	return (
 		<div style={{ padding: "20px" }}>
-			<Form form={form} name="exam-assignment" layout="vertical">
+			<Form
+				form={form}
+				name="exam-assignment"
+				layout="vertical"
+				onFinish={onFinish}
+			>
 				<Row gutter={16}>
-					<Col span={19}>
+					<Col lg={19} md={24}>
 						<Form.Item
-							name="rooms"
 							label="Select Rooms"
-							rules={[
-								{
-									required: true,
-									message: "Please select at least one room",
-								},
-							]}
+							required={true}
+							help="Please select at least one room"
 						>
 							<Select
 								mode="multiple"
@@ -65,33 +90,35 @@ const RoomAssignmentForm = () => {
 								onChange={setSelectedRoomIds}
 								style={{ width: "100%" }}
 								value={selectedRoomIds}
-								onSelect={(value)=>console.log(value)}
+								onSelect={(value) => console.log(value)}
 								allowClear={true}
 								listItemHeight={10}
 								listHeight={350}
 							>
 								{filteredOptions.map((room) => (
 									<Option key={room.id} value={room.id}>
-									<div
-										className="flex items-center justify-between"
-										style={{ padding: "8px" }}
-									>
-										<div className="flex-1">
-											<span className="text-md font-bold">
-												{room.id} - Floor {room.floor}, Block {room.block}
-											</span>
-											<br />
+										<div
+											className="flex items-center justify-between"
+											style={{ padding: "8px" }}
+										>
+											<div className="flex-1">
+												<span className="text-md font-bold">
+													{room.id} - Floor{" "}
+													{room.floor}, Block{" "}
+													{room.block}
+												</span>
+												<br />
+											</div>
+											<div className="text-blue-500">
+												{room.seats} Seats
+											</div>
 										</div>
-										<div className="text-blue-500">
-											{room.seats} Seats
-										</div>
-									</div>
-								</Option>
+									</Option>
 								))}
 							</Select>
 						</Form.Item>
 					</Col>
-					<Col span={5}>
+					<Col lg={5} md={24}>
 						<Form.Item label="Total Seats">
 							<Input
 								value={totalSeats}
