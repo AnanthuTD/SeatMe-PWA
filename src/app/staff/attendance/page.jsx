@@ -88,19 +88,18 @@ function page() {
 		},
 	];
 	const [isAbsent, setIsAbsent] = useState(false);
+	const [data, setData] = useState(std);
 
 	const absent = (index) => {
-		// student.isPresent = !student.isPresent;
-        std[index].isPresent = !std[index].isPresent
-		// console.log(student.isPresent);
-		console.log(std);
+		data[index].isPresent = !data[index].isPresent;
+		setData([...data]);
 	};
 
 	return (
 		<>
 			<Navbar />
 			<div className="flex lg:flex-row gap-4  sm:flex-col lg:mt-14 flex-wrap sm:mt-8">
-				{std.map((student, index) => (
+				{data.map((student, index) => (
 					<div
 						className={` m-4 p-2 rounded-lg ${
 							student.isPresent ? "bg-green-500" : "bg-red-500"
