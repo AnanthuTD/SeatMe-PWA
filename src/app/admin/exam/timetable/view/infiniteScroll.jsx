@@ -12,11 +12,10 @@ const App = () => {
 	const [startIndex, setStartIndex] = useState(0);
 	const [examCount, setExamCount] = useState(1);
 	const [searchText, setSearchText] = useState("");
-	const [searchedColumn, setSearchedColumn] = useState("id");
+	const [searchedColumn, setSearchedColumn] = useState("");
 	const [sorterField, setSorterField] = useState("");
 	const [sorterOrder, setSorterOrder] = useState("");
 	const [hasMoreData, setHasMoreData] = useState(true);
-	const [loadData, setLoadData] = useState(true);
 	const [addedDataLength, setAddedDataLength] = useState(0);
 
 	const getExamCount = async () => {
@@ -24,7 +23,7 @@ const App = () => {
 		setExamCount(result.data);
 	};
 
-	const loadMoreData = ({ search = false }) => {
+	const loadMoreData = ({ search = false, reset = false }) => {
 		if (loading) {
 			return;
 		}
@@ -33,18 +32,18 @@ const App = () => {
 		axios
 			.get(`/api/admin/exams/`, {
 				params: {
-					query: searchText,
-					column: searchedColumn,
-					sortField: sorterField,
-					sortOrder: sorterOrder,
+					query: reset ? "" : searchText,
+					column: reset ? "" : searchedColumn,
+					sortField: reset ? "" : sorterField,
+					sortOrder: reset ? "" : sorterOrder,
 					limit: resultsPerPage,
-					offset: startIndex,
+					offset: search || reset ? 0 : startIndex,
 				},
 			})
 			.then((response) => {
 				const newExams = response.data;
 				setAddedDataLength(newExams.length);
-				if (search) {
+				if (search || reset) {
 					setData(newExams);
 					setStartIndex(newExams.length);
 					setAddedDataLength(newExams.length);
@@ -62,25 +61,33 @@ const App = () => {
 				return false;
 			});
 	};
+
 	useEffect(() => {
 		getExamCount();
 		loadMoreData({});
 	}, []);
 
 	useEffect(() => {
-		console.log("load data");
-	}, [loadData]);
+		loadMoreData({ search: true });
+	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
-		console.log(addedDataLength);
 		if (addedDataLength < 10) {
 			setHasMoreData(false);
-			console.log(false);
 		} else {
 			setHasMoreData(data.length < examCount);
-			console.log(true);
 		}
 	}, [data, examCount]);
+
+	const handleReset = () => {
+		setStartIndex(0);
+		setSearchText("");
+		setSorterField("");
+		setSorterOrder("");
+		setSearchedColumn("");
+		// setData([]);
+		// loadMoreData({ reset: true });
+	};
 
 	return (
 		<InfiniteScroll
@@ -101,28 +108,15 @@ const App = () => {
 		>
 			<Table
 				dataSource={data}
-				pagination={false}
 				loading={loading}
-				setDataSource={setData}
-				setLoading={setLoading}
 				setStartIndex={setStartIndex}
-				setQuery={setSearchText}
-				setDataIndex={setSearchedColumn}
-				sorterField={sorterField}
 				setSorterField={setSorterField}
-				sorterOrder={sorterOrder}
 				setSorterOrder={setSorterOrder}
-				// loadData={loadMoreData}
-				startIndex={startIndex}
-				setAddedDataLength={setAddedDataLength}
-				setLoadData={setLoadData}
-				loadData={loadData}
-				searchData={loadMoreData}
 				setSearchText={setSearchText}
 				searchedColumn={searchedColumn}
 				setSearchedColumn={setSearchedColumn}
 				searchText={searchText}
-				
+				handleReset={handleReset}
 			/>
 		</InfiniteScroll>
 	);

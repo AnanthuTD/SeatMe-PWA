@@ -5,55 +5,18 @@ import { Button, Input, Space, Table } from "antd";
 import axios from "@/axiosInstance";
 
 const App = ({
-	setDataSource,
 	dataSource,
-	pagination,
 	loading,
-	setLoading,
-	setQuery,
-	sorterField,
 	setSorterField,
-	sorterOrder,
 	setSorterOrder,
 	setStartIndex,
-	setAddedDataLength,
-	setLoadData,
 	searchedColumn,
 	setSearchedColumn,
 	searchText,
 	setSearchText,
-	loadData,
-	searchData,
+	handleReset,
 }) => {
 	const searchInput = useRef(null);
-
-	const handleLoadData = async () => {
-		console.log("handleLoadData", loading);
-		if (loading) return;
-		setLoading(true);
-		try {
-			console.log(searchText, searchedColumn, sorterField, sorterOrder);
-			// Make an API call to retrieve data based on current filters, search, and sorting
-			const result = await axios.get(`/api/admin/exams/`, {
-				params: {
-					query: searchText,
-					column: searchedColumn,
-					sortField: sorterField,
-					sortOrder: sorterOrder,
-					limit: 10,
-				},
-			});
-
-			const newExams = result.data;
-			console.log("newExams: ", newExams);
-			setAddedDataLength(newExams.length);
-			setDataSource(newExams);
-			setLoading(false);
-		} catch (err) {
-			console.error("Error on loading data: ", err);
-			setLoading(false);
-		}
-	};
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
 		setSearchText(selectedKeys[0]);
@@ -61,23 +24,8 @@ const App = ({
 		confirm();
 	};
 
-	 useEffect(() => {
-		// handleLoadData();
-		searchData({ search: true });
-	}, [searchText, searchInput]); 
-
-	const handleReset = (clearFilters) => {
-		clearFilters();
-		setSearchText("");
-		setQuery("");
-		setSorterField("");
-		setSorterOrder("");
-		loadData();
-	};
-
 	const handleTableChange = (pagination, filters, sorter) => {
 		// Handle table sorting
-
 		if (sorter.field) {
 			setSorterField(sorter.field);
 			let order = sorter.order === "descend" ? "desc" : "asc";
@@ -85,12 +33,6 @@ const App = ({
 			setStartIndex(0);
 		}
 	};
-
-	useEffect(() => {
-		// setLoadData(true);
-		// handleLoadData();
-		searchData({ search: true });
-	}, [sorterOrder]);
 
 	const textColumnSorter = (a, b) => {
 		return a.localeCompare(b);
@@ -140,9 +82,10 @@ const App = ({
 						Search
 					</Button>
 					<Button
-						onClick={() =>
-							clearFilters && handleReset(clearFilters)
-						}
+						onClick={async () => {
+							await clearFilters({closeDropdown:true, confirm: true});
+							clearFilters && handleReset();
+						}}
 						size="small"
 						style={{
 							width: 90,
@@ -257,7 +200,7 @@ const App = ({
 		<Table
 			columns={columns}
 			dataSource={dataSource}
-			pagination={pagination}
+			pagination={false}
 			loading={loading}
 			onChange={handleTableChange}
 			rowKey={(record) => record.id}
