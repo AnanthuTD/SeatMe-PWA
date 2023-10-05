@@ -11,21 +11,28 @@ const App = ({
 	loading,
 	setLoading,
 	setQuery,
-	setDataIndex,
 	sorterField,
 	setSorterField,
 	sorterOrder,
 	setSorterOrder,
 	setStartIndex,
+	setAddedDataLength,
+	setLoadData,
+	searchedColumn,
+	setSearchedColumn,
+	searchText,
+	setSearchText,
+	loadData,
+	searchData,
 }) => {
-	const [searchText, setSearchText] = useState("");
-	const [searchedColumn, setSearchedColumn] = useState("");
 	const searchInput = useRef(null);
 
-	const loadData = async () => {
+	const handleLoadData = async () => {
+		console.log("handleLoadData", loading);
+		if (loading) return;
 		setLoading(true);
-		console.log(sorterOrder);
 		try {
+			console.log(searchText, searchedColumn, sorterField, sorterOrder);
 			// Make an API call to retrieve data based on current filters, search, and sorting
 			const result = await axios.get(`/api/admin/exams/`, {
 				params: {
@@ -37,22 +44,27 @@ const App = ({
 				},
 			});
 
-			const newStudents = result.data;
-			setDataSource(newStudents);
+			const newExams = result.data;
+			console.log("newExams: ", newExams);
+			setAddedDataLength(newExams.length);
+			setDataSource(newExams);
 			setLoading(false);
 		} catch (err) {
 			console.error("Error on loading data: ", err);
+			setLoading(false);
 		}
 	};
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
-		confirm();
 		setSearchText(selectedKeys[0]);
 		setSearchedColumn(dataIndex);
-		setQuery(selectedKeys[0]);
-		setDataIndex(dataIndex);
-		loadData();
+		confirm();
 	};
+
+	 useEffect(() => {
+		// handleLoadData();
+		searchData({ search: true });
+	}, [searchText, searchInput]); 
 
 	const handleReset = (clearFilters) => {
 		clearFilters();
@@ -75,7 +87,9 @@ const App = ({
 	};
 
 	useEffect(() => {
-		loadData();
+		// setLoadData(true);
+		// handleLoadData();
+		searchData({ search: true });
 	}, [sorterOrder]);
 
 	const textColumnSorter = (a, b) => {
@@ -100,12 +114,12 @@ const App = ({
 					ref={searchInput}
 					placeholder={`Search ${dataIndex}`}
 					value={selectedKeys[0]}
-					onChange={(e) =>
-						setSelectedKeys(e.target.value ? [e.target.value] : [])
-					}
-					onPressEnter={() =>
-						handleSearch(selectedKeys, confirm, dataIndex)
-					}
+					onChange={(e) => {
+						setSelectedKeys(e.target.value ? [e.target.value] : []);
+					}}
+					onPressEnter={() => {
+						handleSearch(selectedKeys, confirm, dataIndex);
+					}}
 					style={{
 						marginBottom: 8,
 						display: "block",
@@ -114,9 +128,9 @@ const App = ({
 				<Space>
 					<Button
 						type="primary"
-						onClick={() =>
-							handleSearch(selectedKeys, confirm, dataIndex)
-						}
+						onClick={() => {
+							handleSearch(selectedKeys, confirm, dataIndex);
+						}}
 						icon={<SearchOutlined />}
 						size="small"
 						style={{
@@ -226,6 +240,16 @@ const App = ({
 			dataIndex: "dateTime.timeCode",
 			key: "timeCode",
 			sorter: (a, b) => a.programName - b.programName,
+			filters: [
+				{
+					text: "AN",
+					value: "AN",
+				},
+				{
+					text: "FN",
+					value: "FN",
+				},
+			],
 		},
 	];
 

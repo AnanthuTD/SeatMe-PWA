@@ -11,33 +11,30 @@ const App = () => {
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
 	const [examCount, setExamCount] = useState(1);
-	const [query, setQuery] = useState("");
-	const [dataIndex, setDataIndex] = useState("id");
+	const [searchText, setSearchText] = useState("");
+	const [searchedColumn, setSearchedColumn] = useState("id");
 	const [sorterField, setSorterField] = useState("");
 	const [sorterOrder, setSorterOrder] = useState("");
+	const [hasMoreData, setHasMoreData] = useState(true);
+	const [loadData, setLoadData] = useState(true);
+	const [addedDataLength, setAddedDataLength] = useState(0);
 
 	const getExamCount = async () => {
 		const result = await axios.get("/api/admin/exams/count");
 		setExamCount(result.data);
 	};
 
-	useEffect(() => {
-		console.log("useEffect : ", sorterOrder);
-		//  loadMoreData()
-	}, [sorterOrder]);
-
-	const loadMoreData = () => {
+	const loadMoreData = ({ search = false }) => {
 		if (loading) {
 			return;
 		}
-		console.log("sorterOrder: ", sorterOrder);
 		const resultsPerPage = 10;
 		setLoading(true);
 		axios
 			.get(`/api/admin/exams/`, {
 				params: {
-					query: query,
-					column: dataIndex,
+					query: searchText,
+					column: searchedColumn,
 					sortField: sorterField,
 					sortOrder: sorterOrder,
 					limit: resultsPerPage,
@@ -45,30 +42,51 @@ const App = () => {
 				},
 			})
 			.then((response) => {
-				const newStaffs = response.data;
-				setData([...data, ...newStaffs]);
-				setStartIndex(startIndex + resultsPerPage);
+				const newExams = response.data;
+				setAddedDataLength(newExams.length);
+				if (search) {
+					setData(newExams);
+					setStartIndex(newExams.length);
+					setAddedDataLength(newExams.length);
+					setLoading(false);
+				} else {
+					setData([...data, ...newExams]);
+					setStartIndex(startIndex + newExams.length);
+				}
 				setLoading(false);
+				return true;
 			})
 			.catch((error) => {
 				console.error("Error fetching data:", error);
 				setLoading(false);
+				return false;
 			});
 	};
 	useEffect(() => {
 		getExamCount();
-		loadMoreData();
+		loadMoreData({});
 	}, []);
+
 	useEffect(() => {
-		console.log(data.length);
-		console.log(examCount);
-	}, [data]);
+		console.log("load data");
+	}, [loadData]);
+
+	useEffect(() => {
+		console.log(addedDataLength);
+		if (addedDataLength < 10) {
+			setHasMoreData(false);
+			console.log(false);
+		} else {
+			setHasMoreData(data.length < examCount);
+			console.log(true);
+		}
+	}, [data, examCount]);
 
 	return (
 		<InfiniteScroll
 			dataLength={data.length}
-			next={loadMoreData}
-			hasMore={data.length < examCount}
+			next={() => loadMoreData({})}
+			hasMore={hasMoreData}
 			loader={
 				<Skeleton
 					avatar
@@ -88,14 +106,23 @@ const App = () => {
 				setDataSource={setData}
 				setLoading={setLoading}
 				setStartIndex={setStartIndex}
-				setQuery={setQuery}
-				setDataIndex={setDataIndex}
+				setQuery={setSearchText}
+				setDataIndex={setSearchedColumn}
 				sorterField={sorterField}
 				setSorterField={setSorterField}
 				sorterOrder={sorterOrder}
 				setSorterOrder={setSorterOrder}
-				loadData={loadMoreData}
+				// loadData={loadMoreData}
 				startIndex={startIndex}
+				setAddedDataLength={setAddedDataLength}
+				setLoadData={setLoadData}
+				loadData={loadData}
+				searchData={loadMoreData}
+				setSearchText={setSearchText}
+				searchedColumn={searchedColumn}
+				setSearchedColumn={setSearchedColumn}
+				searchText={searchText}
+				
 			/>
 		</InfiniteScroll>
 	);
