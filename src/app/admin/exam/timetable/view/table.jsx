@@ -160,18 +160,11 @@ const App = ({
 			sorter: true, // Example sorting for numeric column
 		},
 		{
-			title: "Name",
+			title: "Course",
 			dataIndex: "name",
 			key: "name",
 			...getColumnSearchProps("name"),
 			sorter: (a, b) => textColumnSorter(a.name, b.name),
-		},
-		{
-			title: "Roll Number",
-			dataIndex: "rollNumber",
-			key: "rollNumber",
-			...getColumnSearchProps("rollNumber"),
-			sorter: (a, b) => a.rollNumber - b.rollNumber,
 		},
 		{
 			title: "Semester",
@@ -180,20 +173,26 @@ const App = ({
 			sorter: (a, b) => a.semester - b.semester,
 		},
 		{
-			title: "Program",
-			dataIndex: "program.name",
-			key: "programName",
+			title: "Date",
+			dataIndex: "dateTime.date",
+			key: "date",
 			sorter: (a, b) => a.programName - b.programName,
 		},
 		{
-			title: "Email",
-			dataIndex: "email",
-			key: "email",
-		},
-		{
-			title: "Contact",
-			dataIndex: "phone",
-			key: "contact",
+			title: "Time Code",
+			dataIndex: "dateTime.timeCode",
+			key: "timeCode",
+			sorter: (a, b) => a.programName - b.programName,
+			filters: [
+				{
+					text: "AN",
+					value: "AN",
+				},
+				{
+					text: "FN",
+					value: "FN",
+				},
+			],
 		},
 	];
 

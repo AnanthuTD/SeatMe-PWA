@@ -1,82 +1,35 @@
 import { SearchOutlined } from "@ant-design/icons";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import Highlighter from "react-highlight-words";
 import { Button, Input, Space, Table } from "antd";
-import axios from "@/axiosInstance";
 
 const App = ({
-	setDataSource,
 	dataSource,
-	pagination,
-	loading,
-	setLoading,
-	setQuery,
-	setDataIndex,
-	sorterField,
-	setSorterField,
-	sorterOrder,
-	setSorterOrder,
-	setStartIndex,
+	loading = false,
+	setSorterField = "",
+	setSorterOrder = "",
+	searchedColumn = "",
+	setSearchedColumn = "",
+	searchText = "",
+	setSearchText = "",
+	handleReset = () => {},
 }) => {
-	const [searchText, setSearchText] = useState("");
-	const [searchedColumn, setSearchedColumn] = useState("");
 	const searchInput = useRef(null);
 
-	const loadData = async () => {
-		setLoading(true);
-		console.log(sorterOrder);
-		try {
-			// Make an API call to retrieve data based on current filters, search, and sorting
-			const result = await axios.get(`/api/admin/staff/list/`, {
-				params: {
-					query: searchText,
-					column: searchedColumn,
-					sortField: sorterField,
-					sortOrder: sorterOrder,
-					limit: 10,
-				},
-			});
-
-			const newStudents = result.data;
-			setDataSource(newStudents);
-			setLoading(false);
-		} catch (err) {
-			console.error("Error on loading data: ", err);
-		}
-	};
-
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
-		confirm();
 		setSearchText(selectedKeys[0]);
 		setSearchedColumn(dataIndex);
-		setQuery(selectedKeys[0]);
-		setDataIndex(dataIndex);
-		loadData();
-	};
-
-	const handleReset = (clearFilters) => {
-		clearFilters();
-		setSearchText("");
-		setQuery("");
-		setSorterField("");
-		setSorterOrder("");
-		loadData();
+		confirm();
 	};
 
 	const handleTableChange = (pagination, filters, sorter) => {
 		// Handle table sorting
-
 		if (sorter.field) {
 			setSorterField(sorter.field);
 			let order = sorter.order === "descend" ? "desc" : "asc";
 			setSorterOrder(order);
-			setStartIndex(0);
 		}
 	};
-
-	useEffect(() => {
-		loadData();
-	}, [sorterOrder]);
 
 	const textColumnSorter = (a, b) => {
 		return a.localeCompare(b);
@@ -100,12 +53,12 @@ const App = ({
 					ref={searchInput}
 					placeholder={`Search ${dataIndex}`}
 					value={selectedKeys[0]}
-					onChange={(e) =>
-						setSelectedKeys(e.target.value ? [e.target.value] : [])
-					}
-					onPressEnter={() =>
-						handleSearch(selectedKeys, confirm, dataIndex)
-					}
+					onChange={(e) => {
+						setSelectedKeys(e.target.value ? [e.target.value] : []);
+					}}
+					onPressEnter={() => {
+						handleSearch(selectedKeys, confirm, dataIndex);
+					}}
 					style={{
 						marginBottom: 8,
 						display: "block",
@@ -114,9 +67,9 @@ const App = ({
 				<Space>
 					<Button
 						type="primary"
-						onClick={() =>
-							handleSearch(selectedKeys, confirm, dataIndex)
-						}
+						onClick={() => {
+							handleSearch(selectedKeys, confirm, dataIndex);
+						}}
 						icon={<SearchOutlined />}
 						size="small"
 						style={{
@@ -126,9 +79,13 @@ const App = ({
 						Search
 					</Button>
 					<Button
-						onClick={() =>
-							clearFilters && handleReset(clearFilters)
-						}
+						onClick={async () => {
+							await clearFilters({
+								closeDropdown: true,
+								confirm: true,
+							});
+							clearFilters && handleReset();
+						}}
 						size="small"
 						style={{
 							width: 90,
@@ -253,7 +210,7 @@ const App = ({
 		<Table
 			columns={columns}
 			dataSource={dataSource}
-			pagination={pagination}
+			pagination={false}
 			loading={loading}
 			onChange={handleTableChange}
 			rowKey={(record) => record.id}

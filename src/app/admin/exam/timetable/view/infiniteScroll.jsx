@@ -20,7 +20,7 @@ const App = () => {
 	const [addedDataLength, setAddedDataLength] = useState(0);
 
 	const getTotalDataCount = async () => {
-		const result = await axios.get("/api/admin/student/count");
+		const result = await axios.get("/api/admin/exams/count");
 		setTotalDataCount(result.data);
 	};
 
@@ -31,7 +31,7 @@ const App = () => {
 		const resultsPerPage = 10;
 		setLoading(true);
 		axios
-			.get(`/api/admin/student/list`, {
+			.get(`/api/admin/exams/`, {
 				params: {
 					query: reset ? "" : searchText,
 					column: reset ? "" : searchedColumn,
