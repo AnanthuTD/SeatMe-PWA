@@ -10,61 +10,96 @@ const App = () => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
-	const [studentCount, setStudentCount] = useState(1);
-	const [query, setQuery] = useState("");
-	const [dataIndex, setDataIndex] = useState("id");
+	const [totalDataCount, setTotalDataCount] = useState(1);
+	const [searchText, setSearchText] = useState("");
+	const [searchedColumn, setSearchedColumn] = useState("");
 	const [sorterField, setSorterField] = useState("");
 	const [sorterOrder, setSorterOrder] = useState("");
+	const [hasMoreData, setHasMoreData] = useState(true);
+	const [addedDataLength, setAddedDataLength] = useState(0);
 
-	const getStaffCount = async () => {
+	const getTotalDataCount = async () => {
 		const result = await axios.get("/api/admin/student/count");
-		setStudentCount(result.data);
+		setTotalDataCount(result.data);
 	};
 
-	useEffect(() => {
-		console.log("useEffect : ", sorterOrder);
-		//  loadMoreData()
-	}, [sorterOrder]);
-
-	const loadMoreData = () => {
+	const loadMoreData = ({ search = false, reset = false }) => {
 		if (loading) {
 			return;
 		}
-		console.log("sorterOrder: ", sorterOrder);
 		const resultsPerPage = 10;
 		setLoading(true);
 		axios
-			.get(`/api/admin/student/list/`, {
+			.get(`/api/admin/student/list`, {
 				params: {
-					query: query,
-					column: dataIndex,
-					sortField: sorterField,
-					sortOrder: sorterOrder,
+					query: reset ? "" : searchText,
+					column: reset ? "" : searchedColumn,
+					sortField: reset ? "" : sorterField,
+					sortOrder: reset ? "" : sorterOrder,
 					limit: resultsPerPage,
-					offset: startIndex,
+					offset: search || reset ? 0 : startIndex,
 				},
 			})
 			.then((response) => {
-				const newStaffs = response.data;
-				setData([...data, ...newStaffs]);
-				setStartIndex(startIndex + resultsPerPage);
+				const newData = response.data;
+				setAddedDataLength(newData.length);
+				if (search || reset) {
+					setData(newData);
+					setStartIndex(newData.length);
+					setAddedDataLength(newData.length);
+					setLoading(false);
+				} else {
+					setData([...data, ...newData]);
+					setStartIndex(startIndex + newData.length);
+				}
 				setLoading(false);
+				return true;
 			})
 			.catch((error) => {
 				console.error("Error fetching data:", error);
 				setLoading(false);
+				return false;
 			});
 	};
+
 	useEffect(() => {
-		getStaffCount();
-		loadMoreData();
+		getTotalDataCount();
+		loadMoreData({});
 	}, []);
 
+	useEffect(() => {
+		loadMoreData({ search: true });
+	}, [sorterOrder, searchText, searchedColumn, sorterField]);
+
+	useEffect(() => {
+		setStartIndex(0)
+		loadMoreData({ search: true });
+	}, [sorterOrder, sorterField]);
+
+	useEffect(() => {
+		if (addedDataLength < 10) {
+			setHasMoreData(false);
+		} else {
+			setHasMoreData(data.length < totalDataCount);
+		}
+	}, [data, totalDataCount]);
+
+	const handleReset = () => {
+		setStartIndex(0);
+		setSearchText("");
+		setSorterField("");
+		setSorterOrder("");
+		setSearchedColumn("");
+		// setData([]);
+		// loadMoreData({ reset: true });
+	};
+
+	
 	return (
 		<InfiniteScroll
 			dataLength={data.length}
-			next={loadMoreData}
-			hasMore={data.length < studentCount}
+			next={() => loadMoreData({})}
+			hasMore={hasMoreData}
 			loader={
 				<Skeleton
 					avatar
@@ -79,19 +114,14 @@ const App = () => {
 		>
 			<Table
 				dataSource={data}
-				pagination={false}
 				loading={loading}
-				setDataSource={setData}
-				setLoading={setLoading}
-				setStartIndex={setStartIndex}
-				setQuery={setQuery}
-				setDataIndex={setDataIndex}
-				sorterField={sorterField}
 				setSorterField={setSorterField}
-				sorterOrder={sorterOrder}
 				setSorterOrder={setSorterOrder}
-				loadData={loadMoreData}
-				startIndex={startIndex}
+				setSearchText={setSearchText}
+				searchedColumn={searchedColumn}
+				setSearchedColumn={setSearchedColumn}
+				searchText={searchText}
+				handleReset={handleReset}
 			/>
 		</InfiniteScroll>
 	);

@@ -1,20 +1,18 @@
 import { SearchOutlined } from "@ant-design/icons";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import Highlighter from "react-highlight-words";
 import { Button, Input, Space, Table } from "antd";
-import axios from "@/axiosInstance";
 
 const App = ({
 	dataSource,
-	loading,
-	setSorterField,
-	setSorterOrder,
-	setStartIndex,
-	searchedColumn,
-	setSearchedColumn,
-	searchText,
-	setSearchText,
-	handleReset,
+	loading = false,
+	setSorterField = "",
+	setSorterOrder = "",
+	searchedColumn = "",
+	setSearchedColumn = "",
+	searchText = "",
+	setSearchText = "",
+	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
 
@@ -30,7 +28,6 @@ const App = ({
 			setSorterField(sorter.field);
 			let order = sorter.order === "descend" ? "desc" : "asc";
 			setSorterOrder(order);
-			setStartIndex(0);
 		}
 	};
 
@@ -83,7 +80,10 @@ const App = ({
 					</Button>
 					<Button
 						onClick={async () => {
-							await clearFilters({closeDropdown:true, confirm: true});
+							await clearFilters({
+								closeDropdown: true,
+								confirm: true,
+							});
 							clearFilters && handleReset();
 						}}
 						size="small"

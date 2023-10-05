@@ -10,7 +10,7 @@ const App = () => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
-	const [examCount, setExamCount] = useState(1);
+	const [totalDataCount, setTotalDataCount] = useState(1);
 	const [searchText, setSearchText] = useState("");
 	const [searchedColumn, setSearchedColumn] = useState("");
 	const [sorterField, setSorterField] = useState("");
@@ -18,9 +18,9 @@ const App = () => {
 	const [hasMoreData, setHasMoreData] = useState(true);
 	const [addedDataLength, setAddedDataLength] = useState(0);
 
-	const getExamCount = async () => {
+	const getTotalDataCount = async () => {
 		const result = await axios.get("/api/admin/exams/count");
-		setExamCount(result.data);
+		setTotalDataCount(result.data);
 	};
 
 	const loadMoreData = ({ search = false, reset = false }) => {
@@ -41,16 +41,16 @@ const App = () => {
 				},
 			})
 			.then((response) => {
-				const newExams = response.data;
-				setAddedDataLength(newExams.length);
+				const newData = response.data;
+				setAddedDataLength(newData.length);
 				if (search || reset) {
-					setData(newExams);
-					setStartIndex(newExams.length);
-					setAddedDataLength(newExams.length);
+					setData(newData);
+					setStartIndex(newData.length);
+					setAddedDataLength(newData.length);
 					setLoading(false);
 				} else {
-					setData([...data, ...newExams]);
-					setStartIndex(startIndex + newExams.length);
+					setData([...data, ...newData]);
+					setStartIndex(startIndex + newData.length);
 				}
 				setLoading(false);
 				return true;
@@ -63,7 +63,7 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		getExamCount();
+		getTotalDataCount();
 		loadMoreData({});
 	}, []);
 
@@ -72,12 +72,17 @@ const App = () => {
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
+		setStartIndex(0)
+		loadMoreData({ search: true });
+	}, [sorterOrder, sorterField]);
+
+	useEffect(() => {
 		if (addedDataLength < 10) {
 			setHasMoreData(false);
 		} else {
-			setHasMoreData(data.length < examCount);
+			setHasMoreData(data.length < totalDataCount);
 		}
-	}, [data, examCount]);
+	}, [data, totalDataCount]);
 
 	const handleReset = () => {
 		setStartIndex(0);
@@ -89,6 +94,7 @@ const App = () => {
 		// loadMoreData({ reset: true });
 	};
 
+	
 	return (
 		<InfiniteScroll
 			dataLength={data.length}
@@ -109,7 +115,6 @@ const App = () => {
 			<Table
 				dataSource={data}
 				loading={loading}
-				setStartIndex={setStartIndex}
 				setSorterField={setSorterField}
 				setSorterOrder={setSorterOrder}
 				setSearchText={setSearchText}
