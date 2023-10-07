@@ -115,13 +115,22 @@ function page() {
 									Row : {student.row} col:{student.column}{" "}
 								</span>
 							</div>
-							<Button
+							{ student.isPresent ?
+                            
+                            <Button
 								danger
-								className=" hover:bg-red-600 hover:text-white "
+								className="bg-red-400 text-white "
 								onClick={() => absent(index)}
 							>
 								Absent
-							</Button>
+							</Button>  :   
+                            <Button
+                            danger
+                            className=""
+                            onClick={() => absent(index)}
+                        >
+                            present
+                        </Button>   }
 						</div>
 					</div>
 				))}
