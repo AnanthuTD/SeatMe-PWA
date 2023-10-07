@@ -174,13 +174,13 @@ const App = ({
 		},
 		{
 			title: "Date",
-			dataIndex: "dateTime.date",
+			dataIndex: "dateTimes.date",
 			key: "date",
 			sorter: (a, b) => a.programName - b.programName,
 		},
 		{
 			title: "Time Code",
-			dataIndex: "dateTime.timeCode",
+			dataIndex: "dateTimes.timeCode",
 			key: "timeCode",
 			sorter: (a, b) => a.programName - b.programName,
 			filters: [

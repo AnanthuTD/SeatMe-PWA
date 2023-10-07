@@ -32,7 +32,7 @@ const CourseForm = ({
 						courseId: formData.courseId,
 					},
 				});
-
+				if (result.status === 204) return;
 				const { date, timeCode } = result.data;
 				updateFields({
 					date,

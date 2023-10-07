@@ -34,6 +34,7 @@ const items = [
 			getItem("Insert", "/admin/exam/timetable/insert"),
 			getItem("View", "/admin/exam/timetable/view"),
 		]),
+		getItem("Assign", "/admin/exam/assign", <OrderedListOutlined />),
 	]),
 ];
 
@@ -61,6 +62,7 @@ const App = () => {
 		"/admin/student/list": "/admin/student/list",
 		"/admin/exam/timetable/insert": "/admin/exam/timetable/insert",
 		"/admin/exam/timetable/view": "/admin/exam/timetable/view",
+		"/admin/exam/assign": "/admin/exam/assign",
 	};
 
 	useEffect(() => {
