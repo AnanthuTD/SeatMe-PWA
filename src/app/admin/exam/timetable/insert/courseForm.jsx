@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Form, DatePicker, Select, Button, Tooltip, Row, Col } from "antd";
+import {
+	Form,
+	DatePicker,
+	Select,
+	Button,
+	Tooltip,
+	Row,
+	Col,
+	message,
+} from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import axios from "@/axiosInstance";
 
 import "./style.css";
 
@@ -12,6 +22,32 @@ const CourseForm = ({
 }) => {
 	const [form] = Form.useForm();
 	const [submitStatus, setSubmitStatus] = useState("idle"); // idle, success, error
+	// const [currentData, setCurrentData] = useState({timeCode: "AN", date: ""})
+
+	useEffect(() => {
+		const fetchExamInfo = async () => {
+			try {
+				const result = await axios.get("/api/admin/exam/", {
+					params: {
+						courseId: formData.courseId,
+					},
+				});
+
+				const { date, timeCode } = result.data;
+				updateFields({
+					date,
+					timeCode,
+					courseId: formData.courseId,
+					courseName: formData.courseName,
+				});
+			} catch (error) {
+				message.warning(
+					"something went wrong while fetching exam details",
+				);
+			}
+		};
+		fetchExamInfo();
+	}, []);
 
 	const updateFields = (formData) => {
 		if (formData.date) formData.date = dayjs(formData.date);
