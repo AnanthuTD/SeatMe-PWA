@@ -16,11 +16,11 @@ function stdlist({ data ,setData  }    ) {
 				{data.map((student, index) => (
 					<div
 						className={` m-4 p-2 rounded-lg ${
-							student.isPresent ? "bg-green-500" : "bg-red-500"
+							student.isPresent ? "bg-green-800" : "bg-red-800"
 						}`}
 					>
 						<div className="flex flex-row items-center  justify-between">
-							<div className="text-blue-800">
+							<div className="text-white font-serif ">
 								<p>ID : {student.id} </p>
 								<p>Name : {student.name}</p>
 								<p>Program : {student.program}</p>

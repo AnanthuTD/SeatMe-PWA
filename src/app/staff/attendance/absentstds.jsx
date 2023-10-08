@@ -9,14 +9,15 @@ function absentstds({data}) {
    
       <>
       <div>
-      {absentees.map((student) => (
+      {  absentees.length ? 
+      absentees.map((student) => (
 					<div
 						className={` m-4 p-2 rounded-lg ${
-							student.isPresent ? "bg-green-500" : "bg-red-500"
+							student.isPresent ? "bg-green-800" : "bg-red-800"
 						}`}
 					>
 						
-							<div className="text-blue-800">
+							<div className="text-white font-serif ">
 								<p>ID : {student.id} </p>
 								<p>Name : {student.name}</p>
 								<p>Program : {student.program}</p>
@@ -28,7 +29,9 @@ function absentstds({data}) {
 							
 						
 					</div>
-				))}
+				)) :
+                    <div className='text-center text-green-800 text-3xl  mt-10 font-mono '  >  All are Present !! </div>
+                    }
       </div>
             
       </>
