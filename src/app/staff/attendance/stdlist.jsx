@@ -5,7 +5,7 @@ function stdlist({ data ,setData  }    ) {
     const absent = (index) => {
 		data[index].isPresent = !data[index].isPresent;
 		setData([...data]);
-        console.log(data);
+        
 	};
    
  

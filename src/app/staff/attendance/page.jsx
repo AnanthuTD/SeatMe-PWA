@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import Navbar from "../navbar";
+import { Button } from "antd";
+import Absentstds from "./absentstds";
+import Link from "next/link";
+
 
 import Stdlist from "./stdlist";
 
@@ -90,25 +94,39 @@ function page() {
 	];
 	const [isAbsent, setIsAbsent] = useState(false);
 	const [data, setData] = useState(std);
-    const [conform, setConform] = useState(false);
+    const  [conform, setConform] = useState(false);
 	
-    const confirmpage = () => {
-		setConform[true];
-		console.log('hioeiufhedf');
+    const confirmpage = () => {	
+		setConform(!conform);	
 	}
 
-
+	
 
 	return (
 		<>
 			<Navbar />
 			{ conform ? 
-			<div>hiii</div>
+			<>
+			   <h1 className="text-center text-2xl text-gray-700  mt-5 "   >Check and click <span className="text-blue-500"  >finish</span></h1>
+              <Absentstds  data={data}   />
+			  <div className="flex flex-row justify-between m-4"  >
+                <button  onClick={() => confirmpage()}    >  back</button>
+                <button> Finish   </button>
+			  </div>
+
+
+
+			</>
 			:
 			<>
 			
 			<Stdlist   data={data} setData={setData}      /> 
-			<button   onclick={ confirmpage }  className="p-5 bg-yellow-500"     >Submit</button> 
+			<button
+								className=" ml-36 mt-5 mb-4  px-4 py-3 bg-blue-600  rounded-3xl border-4 "
+								onClick={() => confirmpage()}
+							>
+								<p  className="text-lg  text-white  "     >    Submit</p>
+							</button>
 			</>
 
 		
