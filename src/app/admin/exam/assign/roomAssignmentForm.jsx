@@ -1,25 +1,50 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Form, Input, Select, Button, Row, Col, message } from "antd";
+import {
+	Form,
+	Input,
+	Select,
+	Button,
+	Row,
+	Col,
+	message,
+	Statistic,
+	Card,
+} from "antd";
 import axios from "@/axiosInstance";
 
 const { Option } = Select;
 
-const RoomAssignmentForm = () => {
+const RoomAssignmentForm = ({ setIsSubmit }) => {
 	const [form] = Form.useForm();
-	const [selectedRoomIds, setSelectedRoomIds] = useState([]); // Keep track of selected room IDs
+	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 	const [totalSeats, setTotalSeats] = useState(0);
+	const [examinesCount, setExaminesCount] = useState(0);
 	const [rooms, setRooms] = useState([]);
+	const [date, setDate] = useState(new Date());
 
 	const loadRooms = async () => {
 		const result = await axios.get("/api/admin/rooms");
 		setRooms(result.data);
 	};
 
+	const getExaminesCount = async () => {
+		const result = await axios.get("/api/admin/examines-count", {
+			params: {
+				date,
+			},
+		});
+		setExaminesCount(result.data);
+	};
+
 	useEffect(() => {
 		loadRooms();
 	}, []);
+
+	useEffect(() => {
+		getExaminesCount();
+	}, [date]);
 
 	useEffect(() => {
 		const selectedRoomIds = rooms
@@ -54,6 +79,7 @@ const RoomAssignmentForm = () => {
 
 			if (response.status === 200) {
 				message.success("PATCH request was successful");
+				setIsSubmit(true);
 			} else {
 				message.error(
 					"PATCH request failed with status:",
@@ -105,7 +131,7 @@ const RoomAssignmentForm = () => {
 												<span className="text-md font-bold">
 													{room.id} - Floor{" "}
 													{room.floor}, Block{" "}
-													{room.block}
+													{room.blockId}
 												</span>
 												<br />
 											</div>
@@ -119,19 +145,39 @@ const RoomAssignmentForm = () => {
 						</Form.Item>
 					</Col>
 					<Col lg={5} md={24}>
-						<Form.Item label="Total Seats">
-							<Input
-								value={totalSeats}
-								readOnly={true}
-								size="large"
-								style={{ fontWeight: "bold" }}
-							/>
+						<Form.Item>
+							<Card bordered={false}>
+								{examinesCount - totalSeats === 0 ? (
+									<Statistic
+										title="Correct number of seats"
+										value="0"
+									/>
+								) : examinesCount - totalSeats < 0 ? (
+									<Statistic
+										title="Extra seats"
+										value={Math.abs(
+											examinesCount - totalSeats,
+										)}
+										valueStyle={{ color: "green" }}
+									/>
+								) : (
+									<Statistic
+										title="More seats needed"
+										value={examinesCount - totalSeats}
+										valueStyle={{ color: "red" }}
+									/>
+								)}
+							</Card>
 						</Form.Item>
 					</Col>
 				</Row>
 
 				<Form.Item>
-					<Button type="primary" htmlType="submit">
+					<Button
+						type="primary"
+						htmlType="submit"
+						disabled={totalSeats - examinesCount < 0}
+					>
 						Assign Rooms
 					</Button>
 				</Form.Item>
