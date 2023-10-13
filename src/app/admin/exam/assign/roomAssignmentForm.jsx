@@ -111,6 +111,18 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 								mode="multiple"
 								showSearch
 								optionFilterProp="children"
+								filterOption={(input, option) =>
+									(option?.label ?? "").includes(input)
+								}
+								/* filterSort={(optionA, optionB) =>
+									(optionA?.children ?? "")
+										.toLowerCase()
+										.localeCompare(
+											(
+												optionB?.children ?? ""
+											).toLowerCase(),
+										)
+								} */
 								placeholder="Select rooms"
 								size="large"
 								onChange={setSelectedRoomIds}
@@ -122,7 +134,7 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 								listHeight={350}
 							>
 								{filteredOptions.map((room) => (
-									<Option key={room.id} value={room.id}>
+									<Option key={room.id} value={room.id} label={`r${room.id} f${room.floor} b${room.blockId}`}>
 										<div
 											className="flex items-center justify-between"
 											style={{ padding: "8px" }}
