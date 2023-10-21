@@ -28,6 +28,7 @@ const items = [
 	]),
 	getItem("Student", "/admin/student", <MailOutlined />, [
 		getItem("Student List", "/admin/student/list", <OrderedListOutlined />),
+		getItem("Insert", "/admin/student/insert", <OrderedListOutlined />),
 	]),
 	getItem("Exam", "/admin/exam", <AppstoreOutlined />, [
 		getItem("Time Table", "/admin/exam/timetable", <></>, [
@@ -60,6 +61,7 @@ const App = () => {
 		"/admin": "/admin",
 		"/admin/staffs/list": "/admin/staffs/list",
 		"/admin/student/list": "/admin/student/list",
+		"/admin/student/insert": "/admin/student/insert",
 		"/admin/exam/timetable/insert": "/admin/exam/timetable/insert",
 		"/admin/exam/timetable/view": "/admin/exam/timetable/view",
 		"/admin/exam/assign": "/admin/exam/assign",

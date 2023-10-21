@@ -1,190 +1,237 @@
 "use client";
-import React, { useState } from "react";
-import { Input, Button, InputNumber, Row, Col, Form } from "antd";
+
+import React, { useState, useEffect } from "react";
+import {
+	Input,
+	Button,
+	InputNumber,
+	Row,
+	Col,
+	Form,
+	Divider,
+	Card,
+	message,
+} from "antd";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
+import { CloseOutlined } from "@ant-design/icons";
+import axios from "@/axiosInstance";
 
 const DynamicStudentForm = () => {
-	const [numForms, setNumForms] = useState(1);
-	const [forms, setForms] = useState([{ id: 1, data: {} }]);
-	const [semester, setSemester] = useState("1");
-	const [program, setProgram] = useState("");
-	const [department, setDepartment] = useState("");
-	// const [form] = Form.useForm();
+	const [form] = Form.useForm();
+	const [values, setValues] = useState({
+		department: "",
+		program: "",
+		semester: "",
+	});
 
-	const addForm = () => {
-		const newId = numForms + 1;
-		setNumForms(newId);
-		setForms([...forms, { id: newId, data: {} }]);
-	};
-
-	const clearForm = (id) => {
-		const updatedForms = forms.map((form) =>
-			form.id === id ? { ...form, data: {} } : form,
-		);
-		setForms(updatedForms);
-	};
-
-	const handleSubmission = () => {
-		// Collect and submit data from all forms and merge with common fields
-		const formData = forms.map((form) => form.data);
-		const finalFormData = formData.map((data) => ({
-			...data,
-			semester,
-			program,
-			department,
-		}));
-		console.log(finalFormData);
-		// You can submit this data to your server or perform any desired action.
-	};
-
-	const handleFormChange = (id, changedValues) => {
-		const updatedForms = forms.map((form) => {
-			if (form.id === id) {
-				return {
-					...form,
-					data: {
-						...form.data,
-						...changedValues,
-					},
-				};
-			}
-			return form;
+	const handleSubmission = async (values) => {
+		const students = values.students.map((student) => {
+			(student.department = values.department),
+				(student.program = values.program),
+				(student.semester = values.semester);
+			return student;
 		});
-		setForms(updatedForms);
-	};
+		console.log(students);
 
-	const handleChange = (e) => {
-		const { value } = e.target;
-		let newCleanedValue = "";
-
-		for (let i = 0; i < value.length; i++) {
-			const char = value[i];
-			if (!isNaN(parseInt(char, 10)) || char === "-" || char === "") {
-				newCleanedValue += char;
-			}
+		try {
+			const result = await axios.post("/api/admin/student", { students });
+			if (result.status === 200) {
+				message.success(result.message);
+			} else message.error("Submit failed");
+		} catch (error) {
+			console.log(error);
+			if (error.response.status === 400) {
+				message.error(`Record with register number '${error.response.data.value}' already exists`);
+			} else message.error("Something went wrong");
 		}
-
-		e.target.value = newCleanedValue;
 	};
+
+	const onFinishFailed = (errorInfo) => {
+		const requiredFields = ["department", "program", "semester"];
+
+		let error = false;
+
+		requiredFields.forEach((field) => {
+			const errorField = errorInfo.errorFields.find(
+				(error) => error.name[0] === field,
+			);
+			if (errorField && !error) {
+				message.warning("Department, program, semester are required");
+				error = true;
+			}
+		});
+	};
+
+	useEffect(() => {
+		// console.log(values);
+		form.setFieldsValue(values);
+	}, [values]);
 
 	return (
-		<div>
-			<DepProSemCouSelect />
+		<div className="p-3">
+			<DepProSemCouSelect
+				value={setValues}
+				courseMode=""
+				courseField={false}
+			/>
+			<Divider />
 			<Form
-				// form={form}
 				name="main"
 				onFinish={handleSubmission}
-				// initialValues={{ semester, program, department }}
+				form={form}
+				initialValues={{
+					items: [{}],
+				}}
+				onFinishFailed={onFinishFailed}
 			>
-				{Array.from({ length: numForms }, (_, index) => (
-					<Form.Item
-						key={index + 1}
-						onValuesChange={(values) =>
-							handleFormChange(index + 1, values)
-						}
-					>
-						<Row gutter={16}>
-							<Col xs={24} md={24} lg={7} xxl={7}>
-								<Form.Item
-									name="id"
-									label="Registration No"
-									rules={[
-										{
-											type: "number",
-											required: true,
-											message:
-												"Please enter a valid register number",
-											max: 999999999999,
-											min: 100000000000,
-										},
-									]}
+				<Form.Item
+					name={"department"}
+					hidden
+					rules={[{ required: true }]}
+				>
+					<Input />
+				</Form.Item>
+				<Form.Item name={"program"} hidden rules={[{ required: true }]}>
+					<Input />
+				</Form.Item>
+				<Form.Item
+					name={"semester"}
+					rules={[{ required: true }]}
+					hidden
+					// initialValue={{}}
+				>
+					<Input />
+				</Form.Item>
+				<Form.List name="students">
+					{(fields, { add, remove }) => (
+						<div
+							style={{
+								display: "flex",
+								rowGap: 16,
+								flexDirection: "column",
+							}}
+						>
+							{fields.map((field) => (
+								<Card
+									size="small"
+									title={`Item ${field.name + 1}`}
+									key={field.key}
+									extra={
+										<CloseOutlined
+											onClick={() => {
+												remove(field.name);
+											}}
+										/>
+									}
 								>
-									<InputNumber
-										placeholder="Input a number"
-										controls={false}
-										style={{ width: "100%" }}
-									/>
-								</Form.Item>
-							</Col>
-							<Col xs={24} md={24} lg={7} xxl={7}>
-								<Form.Item
-									name="rollNumber"
-									label="Roll No"
-									rules={[
-										{
-											required: true,
-											type: "number",
-											message:
-												"Please enter a valid Roll number",
-											max: 999999,
-											min: 100000,
-										},
-									]}
-								>
-									<InputNumber
-										placeholder="Input a number"
-										controls={false}
-										style={{ width: "100%" }}
-									/>
-								</Form.Item>
-							</Col>
+									<Row gutter={16}>
+										<Col xs={24} md={24} lg={7} xxl={7}>
+											<Form.Item
+												name={[field.name, "id"]}
+												label="Registration No"
+												rules={[
+													{
+														type: "number",
+														required: true,
+														message:
+															"Please enter a valid register number",
+														/* max: 999999999999,
+														min: 100000000000, */
+													},
+												]}
+											>
+												<InputNumber
+													placeholder="Input a number"
+													controls={false}
+													style={{
+														width: "100%",
+													}}
+												/>
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={7} xxl={7}>
+											<Form.Item
+												name={[
+													field.name,
+													"rollNumber",
+												]}
+												label="Roll No"
+												rules={[
+													{
+														required: true,
+														type: "number",
+														message:
+															"Please enter a valid Roll number",
+														max: 999999,
+														min: 100000,
+													},
+												]}
+											>
+												<InputNumber
+													placeholder="Input a number"
+													controls={false}
+													style={{
+														width: "100%",
+													}}
+												/>
+											</Form.Item>
+										</Col>
 
-							<Col xs={24} md={24} lg={10} xxl={10}>
-								<Form.Item
-									name="name"
-									label="Name"
-									rules={[{ required: true }]}
-								>
-									<Input />
-								</Form.Item>
-							</Col>
-						</Row>
-						<Row gutter={16}>
-							<Col>
-								<Form.Item name="email" label="Email">
-									<Input type="email" />
-								</Form.Item>
-							</Col>
-							<Col>
-								<Form.Item
-									name="phone"
-									label="Phone"
-									rules={[
-										{
-											max: 9999999999,
-											min: 1000000000,
-											type: "number",
-										},
-									]}
-								>
-									<InputNumber
-										placeholder="Input a number"
-										controls={false}
-										style={{ width: "100%" }}
-									/>
-								</Form.Item>
-							</Col>
-							<Col>
-								<Button
-									type="primary"
-									onClick={() => {
-										clearForm(index + 1);
-										form.resetFields();
-									}}
-									htmlType="clear"
-								>
-									Clear Form
-								</Button>
-							</Col>
-						</Row>
-					</Form.Item>
-				))}
+										<Col xs={24} md={24} lg={10} xxl={10}>
+											<Form.Item
+												name={[field.name, "name"]}
+												label="Name"
+												rules={[
+													{
+														required: true,
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+									</Row>
+									<Row gutter={16}>
+										<Col>
+											<Form.Item
+												name={[field.name, "email"]}
+												label="Email"
+											>
+												<Input type="email" />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
+												name={[field.name, "phone"]}
+												label="Phone"
+												rules={[
+													{
+														max: 9999999999,
+														min: 1000000000,
+														type: "number",
+													},
+												]}
+											>
+												<InputNumber
+													placeholder="Input a number"
+													controls={false}
+													style={{
+														width: "100%",
+													}}
+												/>
+											</Form.Item>
+										</Col>
+									</Row>
+								</Card>
+							))}
+							<Button type="dashed" onClick={() => add()} block>
+								+ Add Item
+							</Button>
+						</div>
+					)}
+				</Form.List>
+				<Divider />
 				<Row gutter={16}>
-					<Col sm={24} md={5}>
-						<Button ghost type="primary" onClick={addForm}>
-							Add Form
-						</Button>
-					</Col>
 					<Col sm={24} md={5}>
 						<Button ghost type="primary" htmlType="submit">
 							Submit All
