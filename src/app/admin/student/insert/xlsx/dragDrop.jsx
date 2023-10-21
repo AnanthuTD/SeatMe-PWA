@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const DragDrop = ({ requiredFields }) => {
+const dragDrop = ({ requiredFields, records=(records)=>{} }) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedData, setMappedData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
@@ -97,7 +97,7 @@ const DragDrop = ({ requiredFields }) => {
 					const requiredField = requiredFields.find(
 						(reqField) => reqField.key === field,
 					);
-					obj[requiredField.value] = row[index];
+					obj[requiredField.key] = row[index];
 				}
 			});
 			return obj; // Return the mapped object
@@ -107,7 +107,7 @@ const DragDrop = ({ requiredFields }) => {
 		console.log(mappedData); // or insert into a database
 
 		// Assuming you have setMappedData as a state update function
-		setMappedData(mappedData);
+		records(mappedData);
 	}
 
 	return (
@@ -179,4 +179,4 @@ const DragDrop = ({ requiredFields }) => {
 	);
 };
 
-export default DragDrop;
+export default dragDrop;
