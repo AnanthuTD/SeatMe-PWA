@@ -5,7 +5,7 @@ import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
-import { FileExcelOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 const requiredFields = [
@@ -42,7 +42,7 @@ function ProgramsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/programs", {
+			const result = await axios.post("/api/admin/program", {
 				programs,
 			});
 			if (result.status === 200) {
@@ -61,10 +61,10 @@ function ProgramsPage() {
 
 	return (
 		<div>
-			<Link href={"/admin/programs/insert"}>
+			<Link href={"/admin/forms/program"}>
 				<FloatButton
-					tooltip={<div>Import</div>}
-					icon={<FileExcelOutlined />}
+					tooltip={<div>Form</div>}
+					icon={<FormOutlined />}
 					type="primary"
 				/>
 			</Link>

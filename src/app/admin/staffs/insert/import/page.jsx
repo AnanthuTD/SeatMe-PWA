@@ -5,7 +5,7 @@ import DragDrop from "../../../components/dragDropXLSX";
 import { message } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
-import { FileExcelOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 
@@ -59,8 +59,8 @@ function Page() {
 		<div>
 			<Link href={"/admin/staffs/insert"}>
 				<FloatButton
-					tooltip={<div>Import</div>}
-					icon={<FileExcelOutlined />}
+					tooltip={<div>Form</div>}
+					icon={<FormOutlined />}
 					type="primary"
 				/>
 			</Link>

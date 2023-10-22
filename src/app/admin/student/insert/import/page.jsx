@@ -6,7 +6,7 @@ import { message, FloatButton } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
 import Link from "next/link";
-import { FileExcelOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 
 const requiredFields = [
 	{ key: "programId", value: "program id" },
@@ -61,8 +61,8 @@ function Page() {
 		<div>
 			<Link href={"/admin/student/insert"}>
 				<FloatButton
-					tooltip={<div>Import</div>}
-					icon={<FileExcelOutlined />}
+					tooltip={<div>Form</div>}
+					icon={<FormOutlined />}
 					type="primary"
 				/>
 			</Link>

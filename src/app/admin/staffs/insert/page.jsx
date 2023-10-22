@@ -85,7 +85,7 @@ const DynamicStudentForm = () => {
 
 	return (
 		<div className="p-3">
-			<Link href={"/admin/student/insert/xlsx"}>
+			<Link href={"/admin/student/insert/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}

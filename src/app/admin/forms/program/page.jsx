@@ -12,10 +12,12 @@ import {
 	message,
 	Alert,
 	Select,
+    FloatButton
 } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/axiosInstance";
 import SelectDepartment from "../../components/select";
+import Link from "next/link";
 
 const DynamicProgramForm = () => {
 	const [form] = Form.useForm();
@@ -74,6 +76,13 @@ const DynamicProgramForm = () => {
 
 	return (
 		<div className="p-3">
+            <Link href={"/admin/forms/program/import"}>
+				<FloatButton
+					tooltip={<div>Import</div>}
+					icon={<FileExcelOutlined />}
+					type="primary"
+				/>
+			</Link>
 			{error && (
 				<Alert
 					message="Error"

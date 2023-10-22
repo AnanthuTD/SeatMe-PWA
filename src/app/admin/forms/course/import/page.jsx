@@ -5,7 +5,7 @@ import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
-import { FileExcelOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 const requiredFields = [
@@ -55,10 +55,10 @@ function CoursesPage() {
 
 	return (
 		<div>
-			<Link href={"/admin/courses"}>
+			<Link href={"/admin/forms/course"}>
 				<FloatButton
-					tooltip={<div>Import</div>}
-					icon={<FileExcelOutlined />}
+					tooltip={<div>Form</div>}
+					icon={<FormOutlined />}
 					type="primary"
 				/>
 			</Link>
