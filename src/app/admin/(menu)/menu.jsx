@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import {
-	AppstoreOutlined,
-	TeamOutlined,
-	OrderedListOutlined,
-	MailOutlined,
 	HomeOutlined,
+	UsergroupAddOutlined,
+	UnorderedListOutlined,
+	IdcardOutlined,
+	CalendarOutlined,
+	ScheduleOutlined,
+	FileAddOutlined,
+	FormOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useMenuContext } from "./menuContext";
@@ -21,22 +24,40 @@ function getItem(label, key, icon, children, type) {
 		type,
 	};
 }
+
 const items = [
 	getItem("Home", "/admin", <HomeOutlined />),
-	getItem("Staff", "/admin/staffs", <TeamOutlined />, [
-		getItem("Staffs List", "/admin/staffs/list", <OrderedListOutlined />),
-		getItem("Insert", "/admin/staffs/insert", <OrderedListOutlined />),
+	getItem("Staff", "/admin/staffs", <UsergroupAddOutlined />, [
+		getItem("Staffs List", "/admin/staffs/list", <UnorderedListOutlined />),
+		getItem("Insert", "/admin/staffs/insert", <FileAddOutlined />),
 	]),
-	getItem("Student", "/admin/student", <MailOutlined />, [
-		getItem("Student List", "/admin/student/list", <OrderedListOutlined />),
-		getItem("Insert", "/admin/student/insert", <OrderedListOutlined />),
+	getItem("Student", "/admin/student", <IdcardOutlined />, [
+		getItem(
+			"Student List",
+			"/admin/student/list",
+			<UnorderedListOutlined />,
+		),
+		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
 	]),
-	getItem("Exam", "/admin/exam", <AppstoreOutlined />, [
-		getItem("Time Table", "/admin/exam/timetable", <></>, [
-			getItem("Insert", "/admin/exam/timetable/insert"),
-			getItem("View", "/admin/exam/timetable/view"),
+	getItem("Exam", "/admin/exam", <CalendarOutlined />, [
+		getItem("Time Table", "/admin/exam/timetable", <ScheduleOutlined />, [
+			getItem(
+				"Insert",
+				"/admin/exam/timetable/insert",
+				<FileAddOutlined />,
+			),
+			getItem("View", "/admin/exam/timetable/view", <CalendarOutlined />),
 		]),
-		getItem("Assign", "/admin/exam/assign", <OrderedListOutlined />),
+		getItem("Assign", "/admin/exam/assign", <UnorderedListOutlined />),
+	]),
+	getItem("Forms", "/admin/forms", <FormOutlined />, [
+		getItem(
+			"Department",
+			"/admin/forms/department",
+			<UnorderedListOutlined />,
+		),
+		getItem("Program", "/admin/forms/program", <UnorderedListOutlined />),
+		getItem("Course", "/admin/forms/course", <UnorderedListOutlined />),
 	]),
 ];
 
@@ -67,6 +88,9 @@ const App = () => {
 		"/admin/exam/timetable/insert": "/admin/exam/timetable/insert",
 		"/admin/exam/timetable/view": "/admin/exam/timetable/view",
 		"/admin/exam/assign": "/admin/exam/assign",
+		"/admin/forms/department": "/admin/forms/department",
+		"/admin/forms/program": "/admin/forms/program",
+		"/admin/forms/course": "/admin/forms/course",
 	};
 
 	useEffect(() => {
