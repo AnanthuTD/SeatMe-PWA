@@ -2,7 +2,7 @@
 "use strict";
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../navbar";
 import { Button } from "antd";
 import Absentstds from "./absentstds";
@@ -97,11 +97,12 @@ function page() {
 		},
 	];  */
 	const [isAbsent, setIsAbsent] = useState(false);
-	const [data, setData] = useState();
+	const [data, setData] = useState([]);
     const  [conform, setConform] = useState(false);
 
     const roomid = "4";
-	axios.get(`/api/staff/attendance/${roomid}`)
+	useEffect(() => {
+		axios.get(`/api/staff/attendance/${roomid}`)
 		.then((response) => {
 		  let std = response.data;
 		  console.log(std);
@@ -116,6 +117,15 @@ function page() {
 			console.error("Request failed:", error.message);
 		  }
 		});
+
+
+
+	},
+	
+	
+	[])
+	
+	
 	  
 
 

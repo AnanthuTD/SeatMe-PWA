@@ -18,13 +18,12 @@ function absentstds({data}) {
 					>
 						
 							<div className="text-white font-serif ">
-								<p>ID : {student.id} </p>
-								<p>Name : {student.name}</p>
-								<p>Program : {student.program}</p>
-								<span>
-									{" "}
-									Row : {student.row} col:{student.column}{" "}
-								</span>
+							<p>RegNo: {student.student.id}</p>
+                            <p>RollNo: {student.student.roll_number}</p>
+                            <p>Name: {student.student.name}</p>
+                            <p>SeatNumber: {student.seatNumber}</p>
+                            <p>Program: {student.exam.course.programCourses[0].program.name}</p>
+		                    <p> Course: {student.exam.course.name} </p>
 							</div>
 							
 						
