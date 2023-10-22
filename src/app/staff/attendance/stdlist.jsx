@@ -21,26 +21,27 @@ function stdlist({ data ,setData  }    ) {
 					>
 						<div className="flex flex-row items-center  justify-between">
 							<div className="text-white font-serif ">
-								<p>ID : {student.id} </p>
-								<p>Name : {student.name}</p>
-								<p>Program : {student.program}</p>
-								<span>
-									{" "}
-									Row : {student.row} col:{student.column}{" "}
-								</span>
+							<p>RegNo: {student.student.id}</p>
+          <p>RollNo: {student.student.roll_number}</p>
+          <p>Name: {student.student.name}</p>
+          <p>SeatNumber: {student.seatNumber}</p>
+          <p>
+            Program: {student.exam.course.programCourses[0].program.name}
+          </p>
+		  <p> Course: {student.exam.course.name} </p>
 							</div>
 							{ student.isPresent ?
                             
                             <Button
 								danger
-								className="bg-red-400 text-white "
+								className="bg-white text-white "
 								onClick={() => absent(index)}
 							>
 								Absent
 							</Button>  :   
                             <Button
                             danger
-                            className=""
+                            className="bg-green-600 text-white"
                             onClick={() => absent(index)}
                         >
                             present
