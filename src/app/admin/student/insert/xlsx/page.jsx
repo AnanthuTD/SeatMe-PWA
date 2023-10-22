@@ -6,8 +6,7 @@ import { message } from "antd";
 import axios from "@/axiosInstance";
 
 const requiredFields = [
-	{ key: "department", value: "department" },
-	{ key: "program", value: "program" },
+	{ key: "programId", value: "program id" },
 	{ key: "semester", value: "semester" },
 	{ key: "id", value: "register number" },
 	{ key: "rollNumber", value: "roll number" },
@@ -20,7 +19,6 @@ const handleSubmission = async (students) => {
 	const missingStudents = students.filter((student) => {
 		// Check if any of the required fields are missing for a student
 		return !(
-			student.hasOwnProperty("department") &&
 			student.hasOwnProperty("program") &&
 			student.hasOwnProperty("semester") &&
 			student.hasOwnProperty("id") &&
@@ -31,7 +29,7 @@ const handleSubmission = async (students) => {
 
 	if (missingStudents.length > 0) {
 		message.error(
-			`The following fields are required (department, program, semester, id, rollNumber, name)`,
+			`The following fields are required (program, semester, id, rollNumber, name)`,
 		);
 		return;
 	}

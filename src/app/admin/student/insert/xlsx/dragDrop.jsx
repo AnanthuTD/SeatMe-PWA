@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const dragDrop = ({ requiredFields, records=(records)=>{} }) => {
+const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedData, setMappedData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
@@ -16,8 +16,6 @@ const dragDrop = ({ requiredFields, records=(records)=>{} }) => {
 		newMappedFields[field] = column;
 		const uniqueMappedFields = updateDuplicates(newMappedFields);
 		setMappedFields(uniqueMappedFields);
-
-		// Apply the mapping to the data and update fileData
 	};
 
 	function updateDuplicates(obj) {
@@ -61,11 +59,20 @@ const dragDrop = ({ requiredFields, records=(records)=>{} }) => {
 					blankrows: false,
 				});
 
-				// console.log(dataArr);
+				let newMappedFields = {};
 
-				/* const filteredData = dataArr.filter((row) =>
-					row.some((cell) => cell !== null && cell !== ""),
-				); */
+				dataArr[0].map((column, index) => {
+					let selectedField = requiredFields.find(
+						(f) => f.key === column || f.value === column,
+					);
+					if (selectedField) {
+						newMappedFields[selectedField.key] = column;
+						newMappedFields = updateDuplicates(newMappedFields);
+					}
+				});
+
+				setMappedFields(newMappedFields);
+
 				setFileData(dataArr);
 				console.log(dataArr);
 			};
@@ -128,42 +135,40 @@ const dragDrop = ({ requiredFields, records=(records)=>{} }) => {
 			{fileData.length > 0 && (
 				<div className="mt-4">
 					<h2 className="text-lg font-semibold">Field Mapping</h2>
-					{fileData[0].map((column, index) => (
-						<div key={index} className="mt-2 flex items-center">
-							<span>{column}</span>
-							<Select
-								defaultValue={() => {
-									const selectedField = requiredFields.find(
-										(f) =>
-											f.key === column ||
-											f.value === column,
-									);
-									if (selectedField) {
-										handleFieldMapping(
-											selectedField.key,
-											column,
-										);
-										return selectedField.value;
-									} else {
-										return "Select Field";
-									}
-								}}
-								className="w-48 ml-2"
-								onChange={(value, opt) => {
-									handleFieldMapping(opt.key, column);
-								}}
-							>
-								<Option value="Select Field">
-									Select Field
-								</Option>
-								{getAvailableFields().map((field) => (
-									<Option key={field.key} value={field.value}>
-										{field.value}
+					{fileData[0].map((column, index) => {
+						let selectedField = requiredFields.find(
+							(f) => f.key === column || f.value === column,
+						);
+						// handleFieldMapping(selectedField.key, column);
+						selectedField = selectedField
+							? selectedField.value
+							: "Select Field";
+						return (
+							<div key={index} className="mt-2 flex items-center">
+								<span>{column}</span>
+								<Select
+									defaultValue={selectedField}
+									// value={selectedField}
+									className="w-48 ml-2"
+									onChange={(value, opt) => {
+										handleFieldMapping(opt.key, column);
+									}}
+								>
+									<Option value="Select Field">
+										Select Field
 									</Option>
-								))}
-							</Select>
-						</div>
-					))}
+									{getAvailableFields().map((field) => (
+										<Option
+											key={field.key}
+											value={field.value}
+										>
+											{field.value}
+										</Option>
+									))}
+								</Select>
+							</div>
+						);
+					})}
 					<Button
 						type="primary"
 						className="mt-4"
