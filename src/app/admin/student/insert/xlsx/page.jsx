@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import DragDrop from "./dragDrop";
-import { message } from "antd";
+import DragDrop from "../../../components/dragDropXLSX";
+import { message, FloatButton } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
+import Link from "next/link";
+import { FileExcelOutlined } from "@ant-design/icons";
 
 const requiredFields = [
 	{ key: "programId", value: "program id" },
@@ -20,7 +22,7 @@ function Page() {
 	const [data, setData] = useState([]);
 
 	const handleSubmission = async (students) => {
-		setData([])
+		setData([]);
 		const missingStudents = students.filter((student) => {
 			// Check if any of the required fields are missing for a student
 			return !(
@@ -42,7 +44,7 @@ function Page() {
 		try {
 			const result = await axios.post("/api/admin/student", { students });
 			if (result.status === 200) {
-				message.success('successfully submitted');
+				message.success("successfully submitted");
 				setData(result.data);
 			} else message.error("Submit failed");
 		} catch (error) {
@@ -57,11 +59,18 @@ function Page() {
 
 	return (
 		<div>
+			<Link href={"/admin/student/insert"}>
+				<FloatButton
+					tooltip={<div>Import</div>}
+					icon={<FileExcelOutlined />}
+					type="primary"
+				/>
+			</Link>
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData}/> : null}
+			{data.length ? <Model data={data} setData={setData} /> : null}
 		</div>
 	);
 }

@@ -11,10 +11,13 @@ import {
 	Divider,
 	Card,
 	message,
+	FloatButton,
 } from "antd";
+import { FileExcelOutlined } from "@ant-design/icons";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/axiosInstance";
+import Link from "next/link";
 
 const DynamicStudentForm = () => {
 	const [form] = Form.useForm();
@@ -41,7 +44,9 @@ const DynamicStudentForm = () => {
 		} catch (error) {
 			console.log(error);
 			if (error.response.status === 400) {
-				message.error(`Record with register number '${error.response.data.value}' already exists`);
+				message.error(
+					`Record with register number '${error.response.data.value}' already exists`,
+				);
 			} else message.error("Something went wrong");
 		}
 	};
@@ -69,6 +74,13 @@ const DynamicStudentForm = () => {
 
 	return (
 		<div className="p-3">
+			<Link href={"/admin/student/insert/xlsx"}>
+				<FloatButton
+					tooltip={<div>Import</div>}
+					icon={<FileExcelOutlined />}
+					type="primary"
+				/>
+			</Link>
 			<DepProSemCouSelect
 				value={setValues}
 				courseMode=""
@@ -80,7 +92,7 @@ const DynamicStudentForm = () => {
 				onFinish={handleSubmission}
 				form={form}
 				initialValues={{
-					items: [{}],
+					students: [{}],
 				}}
 				onFinishFailed={onFinishFailed}
 			>

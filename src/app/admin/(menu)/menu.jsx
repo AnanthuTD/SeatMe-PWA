@@ -25,6 +25,7 @@ const items = [
 	getItem("Home", "/admin", <HomeOutlined />),
 	getItem("Staff", "/admin/staffs", <TeamOutlined />, [
 		getItem("Staffs List", "/admin/staffs/list", <OrderedListOutlined />),
+		getItem("Insert", "/admin/staffs/insert", <OrderedListOutlined />),
 	]),
 	getItem("Student", "/admin/student", <MailOutlined />, [
 		getItem("Student List", "/admin/student/list", <OrderedListOutlined />),
@@ -60,6 +61,7 @@ const App = () => {
 	const routeMapping = {
 		"/admin": "/admin",
 		"/admin/staffs/list": "/admin/staffs/list",
+		"/admin/staffs/insert": "/admin/staffs/insert",
 		"/admin/student/list": "/admin/student/list",
 		"/admin/student/insert": "/admin/student/insert",
 		"/admin/exam/timetable/insert": "/admin/exam/timetable/insert",

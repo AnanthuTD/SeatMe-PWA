@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload, Select, Button } from "antd";
+import { Upload, Select, Button } from "antd";
 import * as XLSX from "xlsx";
 
 const { Dragger } = Upload;
@@ -107,13 +107,11 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 					obj[requiredField.key] = row[index];
 				}
 			});
-			return obj; // Return the mapped object
+			return obj;
 		});
 
-		// You can insert the mappedData into a database or use it as needed
-		console.log(mappedData); // or insert into a database
+		// console.log(mappedData);
 
-		// Assuming you have setMappedData as a state update function
 		records(mappedData);
 	}
 
@@ -139,7 +137,6 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 						let selectedField = requiredFields.find(
 							(f) => f.key === column || f.value === column,
 						);
-						// handleFieldMapping(selectedField.key, column);
 						selectedField = selectedField
 							? selectedField.value
 							: "Select Field";
@@ -148,7 +145,6 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 								<span>{column}</span>
 								<Select
 									defaultValue={selectedField}
-									// value={selectedField}
 									className="w-48 ml-2"
 									onChange={(value, opt) => {
 										handleFieldMapping(opt.key, column);
