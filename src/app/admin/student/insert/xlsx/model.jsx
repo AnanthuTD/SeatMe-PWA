@@ -1,24 +1,60 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Modal, Row, Col, Card } from "antd";
+import { Button, Modal, Row, Col, Card, message } from "antd";
+import axios from "@/axiosInstance";
 
-const App = ({ data }) => {
+const App = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false);
+	const [singleLoadings, setSingleLoadings] = useState(
+		new Array(data.length).fill(false),
+	);
 	const [open, setOpen] = useState(true);
-    
+
 	const showModal = () => {
 		setOpen(true);
 	};
-	const handleOk = () => {
+	const handleOk = async () => {
 		setLoading(true);
-		setTimeout(() => {
-			setLoading(false);
-			setOpen(false);
-		}, 3000);
+
+		try {
+			const result = await axios.patch("/api/admin/student", data);
+			if (result.data.length) {
+				message.warning("unable to update some records");
+				setData(result.data);
+			} else {
+				message.success("updated successfully");
+				setData([]);
+			}
+		} catch (error) {
+			message.error("update failed");
+		}
+		setLoading(false);
 	};
 	const handleCancel = () => {
 		setOpen(false);
+	};
+
+	const updateSingle = async (record, index) => {
+		const updatedLoadings = [...singleLoadings];
+		updatedLoadings[index] = true;
+
+		setSingleLoadings(updatedLoadings);
+
+		try {
+			const result = await axios.patch("/api/admin/student", [record]);
+			if (result.data) {
+				message.success("Single record updated successfully");
+				const newData = [...data];
+				newData.splice(index, 1);
+				setData(newData);
+			} else message.error("Single record update failed");
+		} catch (error) {
+			message.error("unknown error occurred");
+		}
+
+		updatedLoadings[index] = false;
+		setSingleLoadings(updatedLoadings);
 	};
 	return (
 		<>
@@ -28,7 +64,7 @@ const App = ({ data }) => {
 				onOk={handleOk}
 				onCancel={handleCancel}
 				footer={[
-					<Button key="back" onClick={handleCancel}>
+					<Button key="skip" onClick={handleCancel}>
 						Skip
 					</Button>,
 					<Button
@@ -40,14 +76,14 @@ const App = ({ data }) => {
 						Update
 					</Button>,
 				]}
-                closable={true}
+				closable={true}
 			>
 				{data.map((record, index) => (
 					<Card key={index} className="my-4">
 						<Row gutter={[16, 16]}>
 							<Col span={12}>
 								<p className="font-bold mb-1">Found Student:</p>
-                                
+
 								<p>ID: {record.foundStudent.id}</p>
 								<p>
 									Roll Number:{" "}
@@ -69,7 +105,7 @@ const App = ({ data }) => {
 							</Col>
 							<Col span={12}>
 								<p className="font-bold mb-1">Student:</p>
-                                
+
 								<p>ID: {record.student.id}</p>
 								<p>Roll Number: {record.student.rollNumber}</p>
 								<p>Semester: {record.student.semester}</p>
@@ -81,6 +117,14 @@ const App = ({ data }) => {
 								<p>Updated At: {record.student.updatedAt}</p>
 							</Col>
 						</Row>
+						<Button
+							type="primary"
+							ghost
+							loading={singleLoadings[index]}
+							onClick={() => updateSingle(record, index)} 
+						>
+							Update
+						</Button>
 					</Card>
 				))}
 			</Modal>

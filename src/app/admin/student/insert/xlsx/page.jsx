@@ -61,7 +61,7 @@ function Page() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} /> : null}
+			{data.length ? <Model data={data} setData={setData}/> : null}
 		</div>
 	);
 }
