@@ -32,7 +32,8 @@
 		"react-infinite-scroll-component": "^6.1.0",
 		"styled-components": "^5.3.11",
 		"tailwind-scrollbar": "^3.0.5",
-		"tailwindcss": "3.3.3"
+		"tailwindcss": "3.3.3",
+		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
 		"husky": "^8.0.0",
