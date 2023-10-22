@@ -1,16 +1,20 @@
 "use client";
+"use strict";
+
 
 import React, { useState } from "react";
 import Navbar from "../navbar";
 import { Button } from "antd";
 import Absentstds from "./absentstds";
 import Link from "next/link";
+import axios from "@/axiosInstance";
+
 
 
 import Stdlist from "./stdlist";
 
 function page() {
-	let std = [
+/*	let std = [
 		{
 			id: 1,
 			name: "Muhammed",
@@ -91,10 +95,33 @@ function page() {
 			column: 6,
 			isPresent: true,
 		},
-	];
+	];  */
 	const [isAbsent, setIsAbsent] = useState(false);
-	const [data, setData] = useState(std);
+	const [data, setData] = useState();
     const  [conform, setConform] = useState(false);
+
+    const roomid = "4";
+	axios.get(`/api/staff/attendance/${roomid}`)
+		.then((response) => {
+		  let std = response.data;
+		  console.log(std);
+		  setData(std);
+
+		})
+		.catch((error) => {
+		  if (error.response) {
+			console.error("Server responded with status code:", error.response.status);
+			console.error("Server response data:", error.response.data);
+		  } else {
+			console.error("Request failed:", error.message);
+		  }
+		});
+	  
+
+
+
+
+	
 	
     const confirmpage = () => {	
 		setConform(!conform);	
