@@ -17,7 +17,7 @@ function stdlist({ data ,setData  }    ) {
 					<div
 						className={` m-4 p-2 rounded-lg ${
 							student.isPresent ? "bg-green-800" : "bg-red-800"
-						}`}
+						}`} key={index}
 					>
 						<div className="flex flex-row items-center  justify-between">
 							<div className="text-white font-serif ">
