@@ -4,26 +4,25 @@ import React, { useState, useEffect } from "react";
 import {
 	Input,
 	Button,
-	InputNumber,
 	Row,
 	Col,
 	Form,
 	Divider,
 	Card,
 	message,
-	FloatButton
+	Alert,
+	Select,
+    FloatButton
 } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/axiosInstance";
-import Select from "../../components/select";
-import { FileExcelOutlined } from "@ant-design/icons";
+import SelectDepartment from "../../components/select";
 import Link from "next/link";
 
-
-const DynamicStudentForm = () => {
+const DynamicProgramForm = () => {
 	const [form] = Form.useForm();
-	const [selectedDepartment, setSelectedDepartment] = useState(null);
-	const [departments, setDepartments] = useState([]);
+	const [error, setError] = useState(null); // State to store error messages
+	const [departments, setDepartments] = useState([]); // State to store department data
 
 	const loadDepartments = async () => {
 		try {
@@ -39,89 +38,71 @@ const DynamicStudentForm = () => {
 	}, []);
 
 	const handleSubmission = async (values) => {
-		const staffs = values.staffs.map((student) => {
-			student.department = values.department;
-			return student;
-		});
-		console.log(staffs);
+		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/staff", {
-				staffs: staffs,
+			const result = await axios.post("/api/admin/programs", {
+				programs: values.programs,
 			});
 			if (result.status === 200) {
 				message.success(result.message);
+				setError(null); // Clear any previous errors
 			} else message.error("Submit failed");
 		} catch (error) {
 			console.log(error);
 			if (error.response.status === 400) {
 				message.error(
-					`Record with register number '${error.response.data.value}' already exists`,
+					`Program with ID '${error.response.data.value}' already exists`,
 				);
-			} else message.error("Something went wrong");
+			} else {
+				setError("Something went wrong. Please try again."); // Set the error message
+			}
 		}
 	};
 
 	const onFinishFailed = (errorInfo) => {
-		const requiredFields = ["department", "program", "semester"];
+		message.warning(
+			"ID, Name, Department, Duration, and Level are required",
+		);
+	};
 
-		let error = false;
-
-		requiredFields.forEach((field) => {
-			const errorField = errorInfo.errorFields.find(
-				(error) => error.name[0] === field,
-			);
-			if (errorField && !error) {
-				message.warning("Department, program, semester are required");
-				error = true;
-			}
-		});
+	const handleAlertClose = () => {
+		setError(null); // Clear the error message
 	};
 
 	useEffect(() => {
-		// console.log(values);
-		form.setFieldsValue({ department: selectedDepartment });
-	}, [selectedDepartment]);
+		form.setFieldsValue({ programs: [{}] });
+	}, [form]);
 
 	return (
 		<div className="p-3">
-			<Link href={"/admin/student/insert/import"}>
+            <Link href={"/admin/forms/program/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
 					type="primary"
 				/>
 			</Link>
-			<Row gutter={16} align="middle">
-				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
-					<label className="block text-lg font-semibold mb-2">
-						Department:
-					</label>
-					<Select
-						options={departments}
-						onChange={setSelectedDepartment}
-						placeholder="Select Department"
-					/>
-				</Col>
-			</Row>
-			<Divider />
+			{error && (
+				<Alert
+					message="Error"
+					description={error}
+					type="error"
+					closable
+					onClose={handleAlertClose}
+					style={{ marginBottom: 16 }}
+				/>
+			)}
 			<Form
 				name="main"
 				onFinish={handleSubmission}
 				form={form}
 				initialValues={{
-					staffs: [{}],
+					programs: [{}],
 				}}
 				onFinishFailed={onFinishFailed}
 			>
-				<Form.Item
-					name={"department"}
-					hidden
-					rules={[{ required: true }]}
-				>
-					<Input />
-				</Form.Item>
-				<Form.List name="staffs">
+				<Form.List name="programs">
 					{(fields, { add, remove }) => (
 						<div
 							style={{
@@ -133,7 +114,7 @@ const DynamicStudentForm = () => {
 							{fields.map((field) => (
 								<Card
 									size="small"
-									title={`Item ${field.name + 1}`}
+									title={`Program ${field.name + 1}`}
 									key={field.key}
 									extra={
 										<CloseOutlined
@@ -147,34 +128,27 @@ const DynamicStudentForm = () => {
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[field.name, "id"]}
-												label="Registration No"
+												label="Program ID"
 												rules={[
 													{
-														type: "number",
 														required: true,
 														message:
-															"Please enter a valid register number",
-														/* max: 999999999999,
-														min: 100000000000, */
+															"Please enter the program ID",
 													},
 												]}
 											>
-												<InputNumber
-													placeholder="Input a number"
-													controls={false}
-													style={{
-														width: "100%",
-													}}
-												/>
+												<Input />
 											</Form.Item>
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
 												name={[field.name, "name"]}
-												label="Name"
+												label="Program Name"
 												rules={[
 													{
 														required: true,
+														message:
+															"Please enter the program name",
 													},
 												]}
 											>
@@ -183,44 +157,67 @@ const DynamicStudentForm = () => {
 										</Col>
 									</Row>
 									<Row gutter={16}>
-										<Col>
-											<Form.Item
-												name={[field.name, "email"]}
-												label="Email"
-											>
-												<Input type="email" />
-											</Form.Item>
-										</Col>
-										<Col>
+										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[
 													field.name,
-													"designation",
+													"department",
 												]}
-												label="Designation"
-												rules={[{ type: "string" }]}
+												label="Department"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please select the department",
+													},
+												]}
+											>
+												<SelectDepartment
+													options={departments}
+													placeholder="Select Department"
+												/>
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={7} xxl={7}>
+											<Form.Item
+												name={[field.name, "duration"]}
+												label="Duration (Years)"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please enter the duration in years",
+													},
+												]}
 											>
 												<Input />
 											</Form.Item>
 										</Col>
-										<Col>
+										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
-												name={[field.name, "phone"]}
-												label="Phone"
+												name={[field.name, "level"]}
+												label="Level"
 												rules={[
 													{
-														max: 9999999999,
-														min: 1000000000,
-														type: "number",
+														required: true,
+														message:
+															"Please enter the level (UG or PG)",
 													},
 												]}
 											>
-												<InputNumber
-													placeholder="Input a number"
-													controls={false}
-													style={{
-														width: "100%",
-													}}
+												<Select
+													defaultValue={"UG"}
+													options={[
+														{
+															key: "ug",
+															value: "UG",
+														},
+														{
+															key: "pg",
+															value: "PG",
+														},
+													]}
+													placeholder="Select Department"
 												/>
 											</Form.Item>
 										</Col>
@@ -228,7 +225,7 @@ const DynamicStudentForm = () => {
 								</Card>
 							))}
 							<Button type="dashed" onClick={() => add()} block>
-								+ Add Item
+								+ Add Program
 							</Button>
 						</div>
 					)}
@@ -246,4 +243,4 @@ const DynamicStudentForm = () => {
 	);
 };
 
-export default DynamicStudentForm;
+export default DynamicProgramForm;

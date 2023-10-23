@@ -5,46 +5,44 @@ import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
+import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { FileExcelOutlined } from "@ant-design/icons";
+
 
 const requiredFields = [
-	{ key: "programId", value: "program id" },
-	{ key: "semester", value: "semester" },
-	{ key: "id", value: "register number" },
-	{ key: "rollNumber", value: "roll number" },
-	{ key: "name", value: "name" },
-	{ key: "phone", value: "phone" },
-	{ key: "email", value: "email" },
+	{ key: "departmentId", value: "Department id" },
+	{ key: "designation", value: "Designation" },
+	{ key: "id", value: "Register Number" },
+	{ key: "name", value: "Name" },
+	{ key: "phone", value: "Phone" },
+	{ key: "email", value: "Email" },
 ];
 
 function Page() {
 	const [data, setData] = useState([]);
 
-	const handleSubmission = async (students) => {
-		setData([]);
-		const missingStudents = students.filter((student) => {
+	const handleSubmission = async (staffs) => {
+		setData([])
+		const missingStudents = staffs.filter((staff) => {
 			// Check if any of the required fields are missing for a student
 			return !(
-				student.hasOwnProperty("programId") &&
-				student.hasOwnProperty("semester") &&
-				student.hasOwnProperty("id") &&
-				student.hasOwnProperty("rollNumber") &&
-				student.hasOwnProperty("name")
+				staff.hasOwnProperty("departmentId") &&
+				staff.hasOwnProperty("id") &&
+				staff.hasOwnProperty("name")
 			);
 		});
 
 		if (missingStudents.length > 0) {
 			message.error(
-				`The following fields are required (program, semester, id, rollNumber, name)`,
+				`The following fields are required (Department Id, Register Number, Name)`,
 			);
 			return;
 		}
 
 		try {
-			const result = await axios.post("/api/admin/student", { students });
+			const result = await axios.post("/api/admin/staff", { staffs });
 			if (result.status === 200) {
-				message.success("successfully submitted");
+				message.success('successfully submitted');
 				setData(result.data);
 			} else message.error("Submit failed");
 		} catch (error) {
@@ -59,10 +57,10 @@ function Page() {
 
 	return (
 		<div>
-			<Link href={"/admin/student/insert"}>
+			<Link href={"/admin/staffs/insert"}>
 				<FloatButton
-					tooltip={<div>Import</div>}
-					icon={<FileExcelOutlined />}
+					tooltip={<div>Form</div>}
+					icon={<FormOutlined />}
 					type="primary"
 				/>
 			</Link>
@@ -70,7 +68,7 @@ function Page() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{data.length ? <Model data={data} setData={setData}/> : null}
 		</div>
 	);
 }
