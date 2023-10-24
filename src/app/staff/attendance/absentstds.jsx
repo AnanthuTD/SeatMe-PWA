@@ -1,8 +1,36 @@
 import React from 'react'
+import { message } from 'antd';
+import axios from "@/axiosInstance";
 
-function absentstds({data}) {
 
-  const absentees = data.filter(std => !std.isPresent)
+function absentstds({data ,conform ,setConform   }) {
+
+  const absentees = data.filter(std => !std.isPresent);
+  const confirmpage = () => {	
+		setConform(!conform);	
+	}
+
+  const finished = async (absentstd) => {
+    try {
+			const result = await axios.post("/api/staff/attendance", absentstd);
+			if (result.status ==200) {
+			//	message.success(result.data);
+			  return true;
+			} else {
+			//	message.error(result.data)
+				return false;
+			}
+		} catch (error) {
+			
+				//message.error("Error while making the request:", error.message);
+       
+			}
+			return false;
+
+		}
+  
+
+
   
 
   return (
@@ -10,11 +38,12 @@ function absentstds({data}) {
       <>
       <div>
       {  absentees.length ? 
-      absentees.map((student) => (
+      
+      absentees.map((student , index) => (
 					<div
 						className={` m-4 p-2 rounded-lg ${
 							student.isPresent ? "bg-green-800" : "bg-red-800"
-						}`}
+						}`}  key={index}
 					>
 						
 							<div className="text-white font-serif ">
@@ -28,10 +57,16 @@ function absentstds({data}) {
 							
 						
 					</div>
+          
 				)) :
                     <div className='text-center text-green-800 text-3xl  mt-10 font-mono '  >  All are Present !! </div>
                     }
       </div>
+
+      <div className="flex flex-row justify-between m-4"  >
+                <button  onClick={() => confirmpage()}    >  back</button>
+                <button onClick={() => finished(absentees)    }   > Finish   </button>
+			  </div>
             
       </>
     

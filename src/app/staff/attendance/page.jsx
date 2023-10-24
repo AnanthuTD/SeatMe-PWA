@@ -136,7 +136,7 @@ function page() {
     const confirmpage = () => {	
 		setConform(!conform);	
 	}
-
+   
 	
 
 	return (
@@ -145,11 +145,8 @@ function page() {
 			{ conform ? 
 			<>
 			   <h1 className="text-center text-2xl text-gray-700  mt-5 "   >Check and click <span className="text-blue-500"  >finish</span></h1>
-              <Absentstds  data={data}   />
-			  <div className="flex flex-row justify-between m-4"  >
-                <button  onClick={() => confirmpage()}    >  back</button>
-                <button> Finish   </button>
-			  </div>
+              <Absentstds  data={data} conform={conform} setConform={setConform}  />
+			 
 
 
 
@@ -157,7 +154,8 @@ function page() {
 			:
 			<>
 			
-			<Stdlist   data={data} setData={setData}      /> 
+			<Stdlist   data={data} setData={setData}   
+			   /> 
 			<button
 								className=" ml-36 mt-5 mb-4  px-4 py-3 bg-blue-600  rounded-3xl border-4 "
 								onClick={() => confirmpage()}
