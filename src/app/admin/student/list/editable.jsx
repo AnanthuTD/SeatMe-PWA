@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input, Select } from "antd";
-import "./c.css";
+import "./table.css";
 import axios from "@/axiosInstance";
 
 async function fetchOpenCourses(programId, isAided) {

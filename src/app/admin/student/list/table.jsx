@@ -12,7 +12,7 @@ import {
 	message,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import "./c.css";
+import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/axiosInstance";
 
