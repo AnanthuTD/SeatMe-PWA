@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
+import axios from "@/axiosInstance";
 
 const layout = {
 	labelCol: { span: 8 },
@@ -44,9 +45,14 @@ const SubmitButton = ({ form }) => {
 
 const App = () => {
 	const [form] = Form.useForm();
+	const [data, setData] = useState([]);
 
-	const onFinish = (values) => {
-		console.log(values);
+	const onFinish = async (values) => {
+		const result = await axios.get("api/", {
+			params: { studentId: values.studentId },
+		});
+		
+		setData(result.data);
 	};
 
 	const onReset = () => {
@@ -69,22 +75,19 @@ const App = () => {
 						style={{ maxWidth: 600 }}
 					>
 						<Form.Item
-							name="register number"
+							name="studentId"
 							label="Register Number"
 							rules={[
 								{
 									required: true,
 									type: "number",
-									min: 100000,
-									max: 300000,
+									// min: 10000000000,
+									// max: 300000,
 									message: "Invalid Register number",
 								},
 							]}
 						>
-							<InputNumber
-								style={{ width: "100%" }}
-								name="reg_no"
-							/>
+							<InputNumber style={{ width: "100%" }} />
 						</Form.Item>
 						<Form.Item {...tailLayout}>
 							<SubmitButton form={form} />
@@ -101,7 +104,7 @@ const App = () => {
 			</section>
 			<section className="w-full h-[60%]">
 				<div className="mx-auto w-full h-full">
-					<Segment />
+					<Segment data={data} />
 				</div>
 			</section>
 		</div>
