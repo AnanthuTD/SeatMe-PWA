@@ -3,21 +3,24 @@
 
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Divider, Skeleton } from "antd";
+import { Divider, Skeleton, message } from "antd";
 import Table from "./table";
 import axios from "@/axiosInstance";
+import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
 	const [totalDataCount, setTotalDataCount] = useState(1);
-	const [searchText, setSearchText] = useState("");
-	const [searchedColumn, setSearchedColumn] = useState("");
+	const [searchText, setSearchText] = useState([""]);
+	const [searchedColumn, setSearchedColumn] = useState([""]);
 	const [sorterField, setSorterField] = useState("");
 	const [sorterOrder, setSorterOrder] = useState("");
 	const [hasMoreData, setHasMoreData] = useState(true);
 	const [addedDataLength, setAddedDataLength] = useState(0);
+	const [program, setProgram] = useState(undefined);
+	const [semester, setSemester] = useState(undefined);
 
 	const getTotalDataCount = async () => {
 		const result = await axios.get("/api/admin/student/count");
@@ -33,8 +36,8 @@ const App = () => {
 		axios
 			.get(`/api/admin/student/list`, {
 				params: {
-					query: reset ? "" : searchText,
-					column: reset ? "" : searchedColumn,
+					query: reset ? [""] : searchText,
+					column: reset ? [""] : searchedColumn,
 					sortField: reset ? "" : sorterField,
 					sortOrder: reset ? "" : sorterOrder,
 					limit: resultsPerPage,
@@ -73,7 +76,7 @@ const App = () => {
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
-		setStartIndex(0)
+		setStartIndex(0);
 		loadMoreData({ search: true });
 	}, [sorterOrder, sorterField]);
 
@@ -87,44 +90,82 @@ const App = () => {
 
 	const handleReset = () => {
 		setStartIndex(0);
-		setSearchText("");
+		setSearchText([""]);
 		setSorterField("");
 		setSorterOrder("");
-		setSearchedColumn("");
+		setSearchedColumn([""]);
 		// setData([]);
 		// loadMoreData({ reset: true });
 	};
 
-	
-	return (
-		<InfiniteScroll
-			dataLength={data.length}
-			next={() => loadMoreData({})}
-			hasMore={hasMoreData}
-			loader={
-				<Skeleton
-					avatar
-					paragraph={{
-						rows: 1,
-					}}
-					active
-				/>
+	useEffect(() => {
+		/* if(program || semester)
+		axios.get('/api/admin/students/pro-sem', {
+			params:{
+				programId: program,
+				semester
 			}
-			endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-			scrollableTarget="scrollableDiv"
-		>
-			<Table
-				dataSource={data}
-				loading={loading}
-				setSorterField={setSorterField}
-				setSorterOrder={setSorterOrder}
-				setSearchText={setSearchText}
-				searchedColumn={searchedColumn}
-				setSearchedColumn={setSearchedColumn}
-				searchText={searchText}
-				handleReset={handleReset}
+		}).then((response) => {
+			console.log(response.data);
+			setData(response.data);
+		}).catch((error) => {
+			message.error('error fetching students')
+		}) */
+		if (program && semester) {
+			setSearchedColumn(["programId", "semester"]);
+			setSearchText([program, semester]);
+		} else if (program) {
+			setSearchedColumn(["programId"]);
+			setSearchText([program]);
+		} else if (semester) {
+			setSearchedColumn(["semester"]);
+			setSearchText([semester]);
+		}
+	}, [program, semester]);
+
+	return (
+		<div>
+			<DepProSemCouSelect
+				courseField={false}
+				value={(value) => {
+					if (value.program) {
+						setProgram(value.program);
+					}
+					if (value.semester) {
+						setSemester(value.semester);
+					}
+				}}
 			/>
-		</InfiniteScroll>
+			<InfiniteScroll
+				dataLength={data.length}
+				next={() => loadMoreData({})}
+				hasMore={hasMoreData}
+				loader={
+					<Skeleton
+						avatar
+						paragraph={{
+							rows: 1,
+						}}
+						active
+					/>
+				}
+				endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+				scrollableTarget="scrollableDiv"
+			>
+				<Table
+					dataSource={data}
+					setDataSource={setData}
+					loading={loading}
+					setSorterField={setSorterField}
+					setSorterOrder={setSorterOrder}
+					setSearchText={setSearchText}
+					searchedColumn={searchedColumn}
+					setSearchedColumn={setSearchedColumn}
+					searchText={searchText}
+					handleReset={handleReset}
+				/>
+			</InfiniteScroll>
+		</div>
 	);
 };
 export default App;

@@ -1,24 +1,41 @@
-import { SearchOutlined } from "@ant-design/icons";
-import React, { useRef } from "react";
-import Highlighter from "react-highlight-words";
-import { Button, Input, Space, Table } from "antd";
+"use client";
 
-const App = ({
+import React, { useRef, useState } from "react";
+import {
+	Button,
+	Input,
+	Table,
+	Space,
+	Popconfirm,
+	Modal,
+	FloatButton,
+	message,
+} from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import "./c.css";
+import { EditableCell, EditableRow } from "./editable";
+import axios from "@/axiosInstance";
+
+const EditableTable = ({
 	dataSource,
+	setDataSource,
+	// handleSave,
 	loading = false,
 	setSorterField = "",
 	setSorterOrder = "",
-	searchedColumn = "",
+	searchedColumn = [""],
 	setSearchedColumn = "",
-	searchText = "",
-	setSearchText = "",
+	searchText = [""],
+	setSearchText = ()=>{},
 	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
+	const [editedData, setEditedData] = useState([]);
+	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
-		setSearchText(selectedKeys[0]);
-		setSearchedColumn(dataIndex);
+		setSearchText([selectedKeys[0]]);
+		setSearchedColumn([dataIndex]);
 		confirm();
 	};
 
@@ -100,8 +117,8 @@ const App = ({
 							confirm({
 								closeDropdown: false,
 							});
-							setSearchText(selectedKeys[0]);
-							setSearchedColumn(dataIndex);
+							setSearchText([selectedKeys[0]]);
+							setSearchedColumn([dataIndex]);
 						}}
 					>
 						Filter
@@ -151,18 +168,42 @@ const App = ({
 			),
 	});
 
-	const columns = [
+	const handleDelete = async (id) => {
+		let studentId = undefined;
+		const newData = dataSource.filter((item) => {
+			if (item.id !== id) return true;
+			console.log(item);
+			studentId = item.id;
+		});
+
+		try {
+            const response = await axios.delete("/api/admin/student", {
+                params: { studentId: studentId },
+            });
+            setDataSource(newData);
+            message.success(response.data.message); // Assuming your response has a "message" field
+        } catch (error) {
+            console.error(error);
+            message.error(error.response.data.error);
+        }
+        
+	};
+
+	const defaultColumns = [
 		{
 			title: "ID",
 			dataIndex: "id",
 			key: "id",
+			width: "10%",
+			// editable: true,
 			...getColumnSearchProps("id"),
-			sorter: true, // Example sorting for numeric column
 		},
 		{
 			title: "Name",
 			dataIndex: "name",
 			key: "name",
+			width: "20%",
+			editable: true,
 			...getColumnSearchProps("name"),
 			sorter: (a, b) => textColumnSorter(a.name, b.name),
 		},
@@ -170,6 +211,8 @@ const App = ({
 			title: "Roll Number",
 			dataIndex: "rollNumber",
 			key: "rollNumber",
+			width: "10%",
+			editable: true,
 			...getColumnSearchProps("rollNumber"),
 			sorter: (a, b) => a.rollNumber - b.rollNumber,
 		},
@@ -177,35 +220,179 @@ const App = ({
 			title: "Semester",
 			dataIndex: "semester",
 			key: "semester",
+			width: "10%",
+			editable: true,
 			sorter: (a, b) => a.semester - b.semester,
 		},
 		{
 			title: "Program",
 			dataIndex: "program.name",
 			key: "programName",
+			width: "20%",
+			editable: true,
 			sorter: (a, b) => a.programName - b.programName,
+		},
+		{
+			title: "aided",
+			dataIndex: "program.isAided",
+			key: "isAided",
+		},
+		{
+			title: "Open Course",
+			dataIndex: "openCourseId",
+			key: "openCourseId",
+			width: "20%",
+			editable: true,
+			type: "select",
 		},
 		{
 			title: "Email",
 			dataIndex: "email",
 			key: "email",
+			width: "15%",
+			editable: true,
 		},
 		{
 			title: "Contact",
 			dataIndex: "phone",
 			key: "contact",
+			width: "15%",
+			editable: true,
+		},
+		{
+			title: "operation",
+			dataIndex: "operation",
+			render: (_, record) =>
+				dataSource.length >= 1 ? (
+					<Popconfirm
+						title="Sure to delete?"
+						onConfirm={() => handleDelete(record.id)}
+					>
+						<a>Delete</a>
+					</Popconfirm>
+				) : null,
 		},
 	];
 
+	const components = {
+		body: {
+			row: EditableRow,
+			cell: EditableCell,
+		},
+	};
+
+	const columns = defaultColumns.map((col) => {
+		if (!col.editable) {
+			return col;
+		}
+		return {
+			...col,
+			onCell: (record) => ({
+				record,
+				editable: col.editable,
+				dataIndex: col.dataIndex,
+				title: col.title,
+				handleSave,
+			}),
+		};
+	});
+
+	const handleSave = (row) => {
+		console.log(row);
+		const newData = [...dataSource];
+		const index = newData.findIndex((item) => row.id === item.id);
+
+		if (index > -1) {
+			const item = newData[index];
+			newData.splice(index, 1, {
+				...item,
+				...row,
+			});
+
+			// Check if row is not already in editedData
+			if (!editedData.some((editedRow) => editedRow.id === row.id)) {
+				setEditedData([...editedData, row]);
+			} else {
+				// If the row is already in editedData, update it instead of adding a duplicate
+				const updatedEditedData = editedData.map((editedRow) =>
+					editedRow.id === row.id
+						? { ...editedRow, ...row }
+						: editedRow,
+				);
+				setEditedData(updatedEditedData);
+			}
+		}
+
+		setDataSource(newData);
+	};
+
+	const showModal = () => {
+		setIsModalVisible(true);
+	};
+
+	const handleCancel = () => {
+		setIsModalVisible(false);
+	};
+
+	const handleUpdate = async () => {
+		try {
+			const response = await axios.patch(
+				"/api/admin/student",
+				editedData,
+			);
+			setEditedData(response.data);
+			if (response.data.length > 0) {
+				message.warning("unable to update some records");
+			} else {
+				handleCancel();
+				message.success("Updated successfully");
+			}
+		} catch (error) {
+			message.error(error.response.data.error);
+		}
+	};
+
+	const EditedRowsModal = () => {
+		return (
+			<Modal
+				title="Edited Rows"
+				open={isModalVisible}
+				onOk={handleUpdate}
+				onCancel={handleCancel}
+				style={{ maxHeight: "80vh" }}
+				width={1000}
+			>
+				<Table
+					dataSource={editedData}
+					columns={defaultColumns}
+					pagination={false}
+					rowKey={(record) => record.key}
+					style={{
+						overflowY: "auto",
+						maxHeight: "calc(80vh - 100px)",
+					}}
+				/>
+			</Modal>
+		);
+	};
+
 	return (
-		<Table
-			columns={columns}
-			dataSource={dataSource}
-			pagination={false}
-			loading={loading}
-			onChange={handleTableChange}
-			rowKey={(record) => record.id}
-		/>
+		<div>
+			<Table
+				components={components}
+				rowClassName={() => "editable-row"}
+				dataSource={dataSource}
+				columns={columns}
+				pagination={false}
+				loading={loading}
+				onChange={handleTableChange}
+				rowKey={(record) => record.id}
+			/>
+			<FloatButton onClick={showModal}>Show Edited Rows</FloatButton>
+
+			{isModalVisible && <EditedRowsModal />}
+		</div>
 	);
 };
-export default App;
+
+export default EditableTable;
