@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "antd";
 import axios from "@/axiosInstance";
 
-const DownloadButton = ({ downloadUrl }) => {
+const DownloadButton = ({ fileName }) => {
 	const handleDownload = () => {
 		// Use the fetch function to initiate the download request
-		const url = `/api/admin/public/${downloadUrl}`;
+		const url = `/api/admin/public/${fileName}`;
 		axios
 			.get(url, {
 				responseType: "blob",
@@ -18,7 +18,7 @@ const DownloadButton = ({ downloadUrl }) => {
 				// Create an anchor element to trigger the download
 				const a = document.createElement("a");
 				a.href = url;
-				a.download = "2023-10-11.pdf"; // Specify the file name
+				a.download = `${fileName}`; // Specify the file name
 				document.body.appendChild(a);
 				a.click();
 				window.URL.revokeObjectURL(url);
