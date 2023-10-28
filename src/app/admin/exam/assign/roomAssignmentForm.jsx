@@ -16,6 +16,8 @@ import {
 } from "antd";
 import axios from "@/axiosInstance";
 import dayjs from "dayjs";
+import Link from "next/link";
+import DownloadButton from "./download";
 
 const { Option } = Select;
 
@@ -26,6 +28,7 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 	const [examinesCount, setExaminesCount] = useState(0);
 	const [rooms, setRooms] = useState([]);
 	const [warningMessage, setWarningMessage] = useState("");
+	const [fileName, setFileName] = useState("");
 	const [date, setDate] = useState(new Date());
 
 	const loadRooms = async () => {
@@ -45,12 +48,12 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 		});
 		if (result.data === 0)
 			message.warning("No exams scheduled at this date");
-		message.info(result.data);
 		setExaminesCount(result.data);
 	};
 
 	useEffect(() => {
 		getExaminesCount();
+		setFileName("");
 	}, [date]);
 
 	useEffect(() => {
@@ -108,9 +111,14 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 					date: selectedDate,
 				},
 			});
-			if (result.status === 201)
-				message.success("Assignments successfully");
-			else if (result.status === 200) {
+			if (result.status === 201) {
+				{
+					message.success("Assignments successfully");
+					setWarningMessage("");
+					// setIsSubmit(result.data);
+					setFileName(result.data.fileName);
+				}
+			} else if (result.status === 200) {
 				setWarningMessage(result.data.message);
 			}
 		} catch (error) {
@@ -275,16 +283,17 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 					</Col>
 				</Row>
 			</Form>
-			{warningMessage?
-			<Row>
-				<Alert
-					message={"Add more rooms"}
-					description={warningMessage}
-					type="warning"
-					showIcon
+			{warningMessage ? (
+				<Row>
+					<Alert
+						message={"Add more rooms"}
+						description={warningMessage}
+						type="warning"
+						showIcon
 					/>
-			</Row>
-				:null}
+				</Row>
+			) : null}
+			{fileName ? <DownloadButton downloadUrl={fileName} /> : null}
 		</div>
 	);
 };

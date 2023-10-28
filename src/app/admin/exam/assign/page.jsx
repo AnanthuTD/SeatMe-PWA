@@ -1,10 +1,18 @@
-import React from "react";
-import RoomAssignmentForm from './roomAssignmentForm'
+"use client";
+
+import React, { useState } from "react";
+import RoomAssignmentForm from "./roomAssignmentForm";
+import View from "./view";
 
 function Page() {
+	const [isSubmit, setIsSubmit] = useState(false);
 	return (
 		<div>
-			<RoomAssignmentForm />
+			{isSubmit ? (
+				<View classes={isSubmit}/>
+			) : (
+				<RoomAssignmentForm setIsSubmit={setIsSubmit} />
+			)}
 		</div>
 	);
 }
