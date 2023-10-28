@@ -10,6 +10,7 @@ import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
+	const [initialLoad, setInitialLoading] = useState(true);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
 	const [totalDataCount, setTotalDataCount] = useState(1);
@@ -31,7 +32,8 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		const resultsPerPage = 10;
+		console.log("loading data");
+		const resultsPerPage = 50;
 		setLoading(true);
 		axios
 			.get(`/api/admin/student/list`, {
@@ -57,6 +59,7 @@ const App = () => {
 					setStartIndex(startIndex + newData.length);
 				}
 				setLoading(false);
+				setInitialLoading(false);
 				return true;
 			})
 			.catch((error) => {
@@ -72,16 +75,16 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		loadMoreData({ search: true });
+		if (initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
 		setStartIndex(0);
-		loadMoreData({ search: true });
+		if (initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
-		if (addedDataLength < 10) {
+		if (addedDataLength < 50) {
 			setHasMoreData(false);
 		} else {
 			setHasMoreData(data.length < totalDataCount);
