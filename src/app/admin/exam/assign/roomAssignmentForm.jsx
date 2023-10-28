@@ -13,10 +13,10 @@ import {
 	Card,
 	Space,
 	Alert,
+	Radio,
 } from "antd";
 import axios from "@/axiosInstance";
 import dayjs from "dayjs";
-import Link from "next/link";
 import DownloadButton from "./download";
 
 const { Option } = Select;
@@ -31,6 +31,11 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
 	const [date, setDate] = useState(new Date());
+	const [selectedOption, setSelectedOption] = useState("Internal"); // Set the default selected option
+
+	const handleOptionChange = (e) => {
+		setSelectedOption(e.target.value);
+	};
 
 	const loadRooms = async () => {
 		const result = await axios.get("/api/admin/rooms");
@@ -101,21 +106,24 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 			console.error("Error while sending PATCH request:", error);
 			message.error("Error while sending PATCH request");
 		}
+		finally{
+			setLoading(false);
+		}
 	};
 
 	const assign = async (values) => {
 		try {
 			setLoading(true);
-			const { orderBy, selectedDate } = values;
+			const { orderBy, selectedDate, examType } = values;
 			const result = await axios.get("/api/admin/exam/assign", {
 				params: {
 					orderBy,
 					date: selectedDate,
+					examType,
 				},
 			});
 			if (result.status === 201) {
 				{
-					setLoading(false);
 					message.success("Assignments successfully");
 					setWarningMessage("");
 					// setIsSubmit(result.data);
@@ -134,6 +142,8 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 			} else {
 				message.error("An error occurred while making the request.");
 			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -272,6 +282,20 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 						</Form.Item>
 					</Col>
 					<Col sm={24}>
+						<Form.Item
+							name="examType"
+							label="Exam Type"
+							required={true}
+							initialValue={"Internal"}
+						>
+							<Radio.Group>
+								<Radio value="Internal">Internal</Radio>
+								<Radio value="Modal">Modal</Radio>
+								<Radio value="Final">Final</Radio>
+							</Radio.Group>
+						</Form.Item>
+					</Col>
+					<Col sm={24}>
 						<Form.Item>
 							<Space>
 								<Button
@@ -297,7 +321,7 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 					/>
 				</Row>
 			) : null}
-			{fileName ? <DownloadButton downloadUrl={fileName} /> : null}
+			{fileName ? <DownloadButton fileName={fileName} /> : null}
 		</div>
 	);
 };
