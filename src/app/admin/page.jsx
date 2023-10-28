@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { List, Button, Modal } from "antd";
+import { List, Button, Modal, Input } from "antd";
 import axios from "@/axiosInstance";
 
 const PDFList = () => {
 	const [pdfs, setPDFs] = useState([]);
 	const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 	const [fileToDelete, setFileToDelete] = useState(null);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [filteredPDFs, setFilteredPDFs] = useState([]);
 
 	const handleDelete = (pdf) => {
 		setFileToDelete(pdf);
@@ -38,20 +40,35 @@ const PDFList = () => {
 
 	useEffect(() => {
 		axios
-			.get("api/admin/list-pdfs") // Use axios to make the GET request
+			.get("api/admin/list-pdfs")
 			.then((response) => {
-				setPDFs(response.data); // Use response.data to access the data
+				setPDFs(response.data);
 			})
 			.catch((error) => {
 				console.error("Error fetching PDF list: ", error);
 			});
 	}, []);
 
+	useEffect(() => {
+		// Filter the PDFs based on the searchQuery without changing the original state
+		const filteredPDFs = pdfs.filter((pdf) =>
+			pdf.toLowerCase().includes(searchQuery.toLowerCase()),
+		);
+		setFilteredPDFs(filteredPDFs); // Update the filtered PDFs state
+	}, [searchQuery, pdfs]);
+
 	return (
 		<div className="p-4">
-			<h2 className="text-2xl font-semibold mb-4">List of Seating Arrangements</h2>
+			<h2 className="text-2xl font-semibold mb-4">
+				List of Seating Arrangements
+			</h2>
+			<Input
+				placeholder="Search PDFs"
+				value={searchQuery}
+				onChange={(e) => setSearchQuery(e.target.value)}
+			/>
 			<List
-				dataSource={pdfs}
+				dataSource={filteredPDFs}
 				renderItem={(pdf, index) => (
 					<List.Item>
 						<div className="flex items-center justify-between w-full">
