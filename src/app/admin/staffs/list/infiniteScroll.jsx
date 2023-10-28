@@ -28,7 +28,7 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		const resultsPerPage = 10;
+		const resultsPerPage = 50;
 		setLoading(true);
 		axios
 			.get(`/api/admin/staff/list`, {
@@ -78,7 +78,7 @@ const App = () => {
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
-		if (addedDataLength < 10) {
+		if (addedDataLength < 50) {
 			setHasMoreData(false);
 		} else {
 			setHasMoreData(data.length < totalDataCount);
