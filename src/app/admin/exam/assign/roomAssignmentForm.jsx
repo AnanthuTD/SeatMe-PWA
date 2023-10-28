@@ -24,6 +24,7 @@ const { Option } = Select;
 const RoomAssignmentForm = ({ setIsSubmit }) => {
 	const [form] = Form.useForm();
 	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
+	const [loading, setLoading] = useState(false);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [examinesCount, setExaminesCount] = useState(0);
 	const [rooms, setRooms] = useState([]);
@@ -104,6 +105,7 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 
 	const assign = async (values) => {
 		try {
+			setLoading(true);
 			const { orderBy, selectedDate } = values;
 			const result = await axios.get("/api/admin/exam/assign", {
 				params: {
@@ -113,6 +115,7 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 			});
 			if (result.status === 201) {
 				{
+					setLoading(false);
 					message.success("Assignments successfully");
 					setWarningMessage("");
 					// setIsSubmit(result.data);
@@ -275,6 +278,7 @@ const RoomAssignmentForm = ({ setIsSubmit }) => {
 									type="primary"
 									className="assign-button"
 									htmlType="submit"
+									loading={loading}
 								>
 									Assign
 								</Button>
