@@ -12,7 +12,8 @@ import {
 	message,
 	Alert,
 	Select,
-    FloatButton
+	FloatButton,
+	Checkbox,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/axiosInstance";
@@ -77,7 +78,7 @@ const DynamicCourseForm = () => {
 
 	return (
 		<div className="p-3">
-            <Link href={"/admin/forms/course/import"}>
+			<Link href={"/admin/forms/course/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -180,27 +181,10 @@ const DynamicCourseForm = () => {
 													"isOpenCourse",
 												]}
 												label="Is Open Course"
-												rules={[
-													{
-														required: true,
-														message:
-															"Please specify if it's an open course (true or false)",
-													},
-												]}
+												initialValue={false}
+												valuePropName="checked"
 											>
-												<Select
-													options={[
-														{
-															key: true,
-															value: true,
-														},
-														{
-															key: false,
-															value: false,
-														},
-													]}
-													placeholder="Select if open course or not"
-												/>
+												<Checkbox defaultChecked={false}/>
 											</Form.Item>
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
