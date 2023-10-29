@@ -2,12 +2,11 @@
 
 import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
-import { message, FloatButton } from "antd";
+import { message, FloatButton, List, Modal, Divider } from "antd";
 import axios from "@/axiosInstance";
 import Model from "./model";
 import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
-
 
 const requiredFields = [
 	{ key: "departmentId", value: "Department id" },
@@ -20,9 +19,16 @@ const requiredFields = [
 
 function Page() {
 	const [data, setData] = useState([]);
+	const [uncreatedStaffs, setUncreatedStaffs] = useState([]);
+	const [duplicateStaffs, setDuplicateStaffs] = useState([]);
+	const [modalVisible, setModalVisible] = useState(false);
+
+	const showModal = () => {
+		setModalVisible(true);
+	};
 
 	const handleSubmission = async (staffs) => {
-		setData([])
+		setData([]);
 		const missingStudents = staffs.filter((staff) => {
 			// Check if any of the required fields are missing for a student
 			return !(
@@ -40,36 +46,97 @@ function Page() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/staff", { staffs });
-			if (result.status === 200) {
-				message.success('successfully submitted');
-				setData(result.data);
-			} else message.error("Submit failed");
+			const response = await axios.post("/api/admin/staff", { staffs });
+
+			if (response.status === 200) {
+				const result = response.data;
+				if (result.status === 201) {
+					message.success("Successfully submitted");
+				}
+			}
 		} catch (error) {
-			console.log(error);
-			if (error.response.status === 400) {
-				message.error(
-					`Record with register number '${error.response.data.value}' already exists`,
-				);
-			} else message.error("Something went wrong");
+			const { data, status } = error.response;
+			
+			console.log('data received : ' , data);
+			const { uncreatedStaffs, duplicateStaffs } = data;
+
+
+			if (status === 400) {
+				message.error(data.message);
+			} else if (status === 409) {
+				message.error(data.message);
+				setUncreatedStaffs(uncreatedStaffs);
+				setDuplicateStaffs(duplicateStaffs);
+				showModal();
+			} else {
+				message.error("Something went wrong.");
+				console.error(error);
+			}
 		}
 	};
 
-	return (
-		<div>
-			<Link href={"/admin/staffs/insert"}>
-				<FloatButton
-					tooltip={<div>Form</div>}
-					icon={<FormOutlined />}
-					type="primary"
-				/>
-			</Link>
-			<DragDrop
-				requiredFields={requiredFields}
-				records={handleSubmission}
+	const modalContent = (
+		<>
+			<List
+				header={<div>Duplicate Staffs :</div>}
+				dataSource={duplicateStaffs}
+				renderItem={(record) => (
+					<List.Item>
+						{/* Display the record data as needed */}
+						<div>{record.id}</div>
+						<div>{record.name}</div>
+						<div>{record.email}</div>
+						<div>{record.department}</div>
+						<div>{record.phone}</div>
+						{/* Add more fields as needed */}
+					</List.Item>
+				)}
 			/>
-			{data.length ? <Model data={data} setData={setData}/> : null}
-		</div>
+			<Divider />
+			<List
+				header={<div>unCreated Staffs (due to some error on insert) :</div>}
+				dataSource={uncreatedStaffs}
+				renderItem={(record) => (
+					<List.Item>
+						{/* Display the record data as needed */}
+						<div>{record.id}</div>
+						<div>{record.name}</div>
+						<div>{record.email}</div>
+						<div>{record.department}</div>
+						<div>{record.phone}</div>
+						{/* Add more fields as needed */}
+					</List.Item>
+				)}
+			/>
+		</>
+	);
+
+	return (
+		<>
+			<div>
+				<Link href={"/admin/staffs/insert"}>
+					<FloatButton
+						tooltip={<div>Form</div>}
+						icon={<FormOutlined />}
+						type="primary"
+					/>
+				</Link>
+				<DragDrop
+					requiredFields={requiredFields}
+					records={handleSubmission}
+				/>
+				{data.length ? <Model data={data} setData={setData} /> : null}
+			</div>
+			<Modal
+				title="Duplicate or Uninserted Records"
+				open={modalVisible}
+				onOk={() => setModalVisible(false)}
+				onCancel={() => setModalVisible(false)}
+				footer={null}
+			>
+				{modalContent}
+			</Modal>
+		</>
 	);
 }
 
