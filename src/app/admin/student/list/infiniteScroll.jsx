@@ -75,12 +75,12 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		if (initialLoad) loadMoreData({ search: true });
+		if (!initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
 		setStartIndex(0);
-		if (initialLoad) loadMoreData({ search: true });
+		if (!initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
@@ -97,23 +97,9 @@ const App = () => {
 		setSorterField("");
 		setSorterOrder("");
 		setSearchedColumn([""]);
-		// setData([]);
-		// loadMoreData({ reset: true });
 	};
 
 	useEffect(() => {
-		/* if(program || semester)
-		axios.get('/api/admin/students/pro-sem', {
-			params:{
-				programId: program,
-				semester
-			}
-		}).then((response) => {
-			console.log(response.data);
-			setData(response.data);
-		}).catch((error) => {
-			message.error('error fetching students')
-		}) */
 		if (program && semester) {
 			setSearchedColumn(["programId", "semester"]);
 			setSearchText([program, semester]);

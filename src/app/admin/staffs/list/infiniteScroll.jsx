@@ -9,11 +9,12 @@ import axios from "@/axiosInstance";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
+	const [initialLoad, setInitialLoading] = useState(true);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
 	const [totalDataCount, setTotalDataCount] = useState(1);
-	const [searchText, setSearchText] = useState("");
-	const [searchedColumn, setSearchedColumn] = useState("");
+	const [searchText, setSearchText] = useState([""]);
+	const [searchedColumn, setSearchedColumn] = useState([""]);
 	const [sorterField, setSorterField] = useState("");
 	const [sorterOrder, setSorterOrder] = useState("");
 	const [hasMoreData, setHasMoreData] = useState(true);
@@ -33,8 +34,8 @@ const App = () => {
 		axios
 			.get(`/api/admin/staff/list`, {
 				params: {
-					query: reset ? "" : searchText,
-					column: reset ? "" : searchedColumn,
+					query: reset ? [""] : searchText,
+					column: reset ? [""] : searchedColumn,
 					sortField: reset ? "" : sorterField,
 					sortOrder: reset ? "" : sorterOrder,
 					limit: resultsPerPage,
@@ -54,6 +55,7 @@ const App = () => {
 					setStartIndex(startIndex + newData.length);
 				}
 				setLoading(false);
+				setInitialLoading(false);
 				return true;
 			})
 			.catch((error) => {
@@ -69,12 +71,12 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		loadMoreData({ search: true });
+		if (!initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
-		setStartIndex(0)
-		loadMoreData({ search: true });
+		setStartIndex(0);
+		if (!initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
@@ -87,15 +89,12 @@ const App = () => {
 
 	const handleReset = () => {
 		setStartIndex(0);
-		setSearchText("");
+		setSearchText([""]);
 		setSorterField("");
 		setSorterOrder("");
-		setSearchedColumn("");
-		// setData([]);
-		// loadMoreData({ reset: true });
+		setSearchedColumn([""]);
 	};
 
-	
 	return (
 		<InfiniteScroll
 			dataLength={data.length}
@@ -115,6 +114,7 @@ const App = () => {
 		>
 			<Table
 				dataSource={data}
+				setDataSource={setData}
 				loading={loading}
 				setSorterField={setSorterField}
 				setSorterOrder={setSorterOrder}

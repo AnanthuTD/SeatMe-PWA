@@ -9,6 +9,7 @@ import axios from "@/axiosInstance";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
+	const [initialLoad, setInitialLoading] = useState(true);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
 	const [totalDataCount, setTotalDataCount] = useState(1);
@@ -54,6 +55,7 @@ const App = () => {
 					setStartIndex(startIndex + newData.length);
 				}
 				setLoading(false);
+				setInitialLoading(false);
 				return true;
 			})
 			.catch((error) => {
@@ -69,12 +71,12 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		loadMoreData({ search: true });
+		if (initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
-		setStartIndex(0)
-		loadMoreData({ search: true });
+		setStartIndex(0);
+		if (initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
@@ -95,7 +97,6 @@ const App = () => {
 		// loadMoreData({ reset: true });
 	};
 
-	
 	return (
 		<InfiniteScroll
 			dataLength={data.length}

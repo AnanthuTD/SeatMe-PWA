@@ -15,18 +15,18 @@ import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/axiosInstance";
+import Highlighter from "react-highlight-words";
 
 const EditableTable = ({
 	dataSource,
-	setDataSource,
-	// handleSave,
+	setDataSource = () => {},
 	loading = false,
-	setSorterField = "",
-	setSorterOrder = "",
+	setSorterField = () => {},
+	setSorterOrder = () => {},
 	searchedColumn = [""],
-	setSearchedColumn = "",
+	setSearchedColumn = () => {},
 	searchText = [""],
-	setSearchText = ()=>{},
+	setSearchText = () => {},
 	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
@@ -42,6 +42,7 @@ const EditableTable = ({
 	const handleTableChange = (pagination, filters, sorter) => {
 		// Handle table sorting
 		if (sorter.field) {
+			alert('Sorting')
 			setSorterField(sorter.field);
 			let order = sorter.order === "descend" ? "desc" : "asc";
 			setSorterOrder(order);
@@ -177,16 +178,15 @@ const EditableTable = ({
 		});
 
 		try {
-            const response = await axios.delete("/api/admin/student", {
-                params: { studentId: studentId },
-            });
-            setDataSource(newData);
-            message.success(response.data.message); // Assuming your response has a "message" field
-        } catch (error) {
-            console.error(error);
-            message.error(error.response.data.error);
-        }
-        
+			const response = await axios.delete("/api/admin/student", {
+				params: { studentId: studentId },
+			});
+			setDataSource(newData);
+			message.success(response.data.message); // Assuming your response has a "message" field
+		} catch (error) {
+			console.error(error);
+			message.error(error.response.data.error);
+		}
 	};
 
 	const defaultColumns = [
@@ -195,7 +195,7 @@ const EditableTable = ({
 			dataIndex: "id",
 			key: "id",
 			width: "10%",
-			// editable: true,
+			sorter: (a, b) => a.id - b.id,
 			...getColumnSearchProps("id"),
 		},
 		{

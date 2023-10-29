@@ -11,6 +11,8 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 	const [mappedData, setMappedData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
 
+	console.log(requiredFields);
+
 	const handleFieldMapping = (field, column) => {
 		const newMappedFields = { ...mappedFields };
 		newMappedFields[field] = column;
