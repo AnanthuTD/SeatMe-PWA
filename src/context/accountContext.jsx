@@ -1,15 +1,14 @@
 "use client";
 
-import Admin from "@/app/admin/page";
 import { createContext, useContext, useState } from "react";
 
 const AccountContext = createContext();
 
 export const AccountProvider = ({ children }) => {
-	const [isAdmin, setIsAdmin] = useState(false);
+	const [user, setUser] = useState(false);
 
 	return (
-		<AccountContext.Provider value={{ isAdmin, setIsAdmin }}>
+		<AccountContext.Provider value={{ user, setUser }}>
 			{children}
 		</AccountContext.Provider>
 	);

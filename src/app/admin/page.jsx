@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { List, Button, Modal, Input } from "antd";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 
 const PDFList = () => {
 	const [pdfs, setPDFs] = useState([]);

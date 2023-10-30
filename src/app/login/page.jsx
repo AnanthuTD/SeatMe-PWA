@@ -1,19 +1,24 @@
 "use client";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 
 import React from "react";
 import { Button, Checkbox, Form, Input, message } from "antd";
 import { useAccount } from "@/context/accountContext";
 import { useRouter } from "next/navigation";
 
-const onFinish = async (values, setIsAdmin, router) => {
+const onFinish = async (values, setUser, router) => {
 	// console.log('Success:', values);
 	try {
-		const response = await axios.post("api/login/", values);
-		const data = response.data;
-		// console.log('user: ', data);
-		setIsAdmin(data.isAdmin);
-		if (data.isAdmin) {
+		const response = await axios.post("api/auth/login/", values);
+		const { user, accessToken } = response.data;
+
+		localStorage.setItem("accessToken", accessToken);
+
+		console.log("user: ", response.data);
+
+		setUser(user.isAdmin);
+
+		if (user.isAdmin) {
 			router.push("/admin"); // Redirect to the admin page
 		} else {
 			router.push("/staff"); // Redirect to the staff page
@@ -36,7 +41,7 @@ const onFinishFailed = (errorInfo) => {
 };
 
 const Login = () => {
-	const { setIsAdmin } = useAccount();
+	const { setUser } = useAccount();
 	const router = useRouter();
 
 	return (
@@ -58,7 +63,7 @@ const Login = () => {
 							remember: true,
 						}}
 						onFinish={(value) =>
-							onFinish(value, setIsAdmin, router)
+							onFinish(value, setUser, router)
 						}
 						onFinishFailed={onFinishFailed}
 						autoComplete="off"
