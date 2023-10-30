@@ -15,7 +15,7 @@ import {
     FloatButton
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 import SelectDepartment from "../../components/select";
 import Link from "next/link";
 

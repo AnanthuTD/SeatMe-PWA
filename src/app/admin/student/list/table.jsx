@@ -14,7 +14,7 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 import Highlighter from "react-highlight-words";
 
 const EditableTable = ({

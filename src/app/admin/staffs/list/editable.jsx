@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 import "./table.css";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 
 async function fetchOpenCourses(programId, isAided) {
 	console.log(programId, isAided);

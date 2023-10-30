@@ -7,7 +7,7 @@ import Navbar from "../navbar";
 import { Button } from "antd";
 import Absentstds from "./absentstds";
 import Link from "next/link";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 
 
 

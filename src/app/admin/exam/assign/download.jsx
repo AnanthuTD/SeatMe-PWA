@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "antd";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 
 const DownloadButton = ({ fileName }) => {
 	const handleDownload = () => {

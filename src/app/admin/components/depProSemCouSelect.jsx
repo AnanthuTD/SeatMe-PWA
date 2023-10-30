@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Select from "./select";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 import CourseSelect from "./courseSelect";
 import { Row, Col, Divider } from "antd";
 

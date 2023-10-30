@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, Skeleton } from "antd";
 import Table from "./table";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosInstance";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
