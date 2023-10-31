@@ -33,7 +33,6 @@ let requestQueue = [];
 axiosInstance.interceptors.response.use(
 	(response) => response,
 	async (error) => {
-		console.log(error.response);
 		if (
 			error.response.status === 401 &&
 			error.response.url !== "api/auth/refresh-token"
@@ -53,7 +52,7 @@ axiosInstance.interceptors.response.use(
 					const newAccessToken =
 						refreshTokenResponse.data.accessToken;
 
-						console.log('new access token: ', newAccessToken);
+					console.log("new access token: ", newAccessToken);
 
 					// Update the stored access token
 					localStorageManager.setItem(newAccessToken);
@@ -77,7 +76,7 @@ axiosInstance.interceptors.response.use(
 						refreshError.response &&
 						refreshError.response.status === 401
 					) {
-						alert("redirecting");
+						// alert("redirecting");
 						// The refresh token is not valid, navigate to the login page
 						/* const router = useRouter();
 						router.push("/login"); */
