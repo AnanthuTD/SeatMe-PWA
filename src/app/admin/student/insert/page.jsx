@@ -16,7 +16,7 @@ import {
 import { FileExcelOutlined } from "@ant-design/icons";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
 import { CloseOutlined } from "@ant-design/icons";
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 import Link from "next/link";
 
 const DynamicStudentForm = () => {

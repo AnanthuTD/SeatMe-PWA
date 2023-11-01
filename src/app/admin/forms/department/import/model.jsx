@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal, Row, Col, Card, message } from "antd";
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 
 const DepartmentModel = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false);

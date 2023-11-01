@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPublic";
 
 const layout = {
 	labelCol: { span: 8 },

@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 import { Spin, Alert, Button } from "antd";
 
-export const LoadingProvider = ({ children, api }) => {
+export const AuthProvider = ({ children, api }) => {
 	const [loading, setLoading] = useState(true);
 
 	const router = useRouter()
@@ -22,12 +22,12 @@ export const LoadingProvider = ({ children, api }) => {
 				} else {
 					setLoading(false); // Set loading to false for non-401 errors.
 					console.error("API call error:", error);
-					setError(error.response.data); // Set the error message.
+					setError('Unexpected error occurred'); // Set the error message.
 				}
 			});
-	}, []);
+	}, [api, router]);
 
-	const [error, setError] = useState(null); // State to hold the error message.
+	const [error, setError] = useState(null);
 
 	return (
 		<>

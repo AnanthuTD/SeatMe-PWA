@@ -1,6 +1,6 @@
 import React from 'react'
 import { message } from 'antd';
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 
 
 function absentstds({data ,conform ,setConform   }) {

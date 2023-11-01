@@ -1,5 +1,5 @@
 import { React, useState, useRef } from "react";
-import { Segmented, Space } from "antd";
+import { Segmented } from "antd";
 import Seating from "./seating";
 import TimeTable from "./timeTable";
 

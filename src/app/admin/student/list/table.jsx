@@ -14,7 +14,7 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
 
 const EditableTable = ({
@@ -42,7 +42,6 @@ const EditableTable = ({
 	const handleTableChange = (pagination, filters, sorter) => {
 		// Handle table sorting
 		if (sorter.field) {
-			alert('Sorting')
 			setSorterField(sorter.field);
 			let order = sorter.order === "descend" ? "desc" : "asc";
 			setSorterOrder(order);

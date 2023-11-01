@@ -1,10 +1,10 @@
 import React from "react";
-import { LoadingProvider } from "@/context/auth";
+import { AuthProvider } from "@/context/auth";
 
 const RootLayout = ({ children }) => {
 	const authApi = "/api/staff";
 
-	return <LoadingProvider api={authApi}>{children}</LoadingProvider>;
+	return <AuthProvider api={authApi}>{children}</AuthProvider>;
 };
 
 export default RootLayout;

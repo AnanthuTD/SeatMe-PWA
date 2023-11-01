@@ -15,7 +15,7 @@ import {
 	Alert,
 	Radio,
 } from "antd";
-import axios from "@/lib/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 import dayjs from "dayjs";
 import DownloadButton from "./download";
 

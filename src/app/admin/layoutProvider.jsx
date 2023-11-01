@@ -4,24 +4,20 @@ import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, theme } from "antd";
 import Menu from "./(menu)/menu";
+import SettingsButton from "./components/settings";
 const { Header, Sider, Content } = Layout;
+
 const App = ({ children }) => {
 	const [collapsed, setCollapsed] = useState(false);
 	const {
 		token: { colorBgContainer },
 	} = theme.useToken();
+
 	return (
 		<Layout className="h-screen">
 			<Sider
 				className="flex-grow overflow-auto"
-				/* style={{
-                overflow: 'auto',
-                height: '100vh',
-                position: 'fixed',
-                left: 0,
-                top: 0,
-                bottom: 0,
-            }} */ trigger={null}
+				trigger={null}
 				collapsible
 				collapsed={collapsed}
 				theme="light"
@@ -47,6 +43,7 @@ const App = ({ children }) => {
 							height: 64,
 						}}
 					/>
+					<SettingsButton />
 				</Header>
 				<Content
 					style={{
