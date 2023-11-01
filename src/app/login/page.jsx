@@ -1,5 +1,5 @@
 "use client";
-import axios from "@/lib/axiosInstance";
+import axios, { setAuthorizationToken } from "@/lib/axiosInstance";
 
 import React from "react";
 import { Button, Checkbox, Form, Input, message } from "antd";
@@ -11,6 +11,8 @@ const onFinish = async (values, setUser, router) => {
 	try {
 		const response = await axios.post("api/auth/login/", values);
 		const { user, accessToken } = response.data;
+
+		setAuthorizationToken(accessToken);
 
 		localStorage.setItem("accessToken", accessToken);
 
@@ -62,9 +64,7 @@ const Login = () => {
 						initialValues={{
 							remember: true,
 						}}
-						onFinish={(value) =>
-							onFinish(value, setUser, router)
-						}
+						onFinish={(value) => onFinish(value, setUser, router)}
 						onFinishFailed={onFinishFailed}
 						autoComplete="off"
 					>

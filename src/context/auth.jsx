@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { permanentRedirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "@/lib/axiosInstance";
 import { Spin, Alert, Button } from "antd";
 
 export const LoadingProvider = ({ children, api }) => {
 	const [loading, setLoading] = useState(true);
+
+	const router = useRouter()
 
 	useEffect(() => {
 		axios
@@ -16,7 +18,7 @@ export const LoadingProvider = ({ children, api }) => {
 			})
 			.catch((error) => {
 				if (error.response && error.response.status === 401) {
-					permanentRedirect("/login", "replace");
+					router.push('/login')
 				} else {
 					setLoading(false); // Set loading to false for non-401 errors.
 					console.error("API call error:", error);

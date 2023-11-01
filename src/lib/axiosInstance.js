@@ -1,32 +1,20 @@
 import axios from "axios";
 
-// Custom hook to safely access localStorage on the client side
-const useLocalStorage = (key) => {
-	const getItem = () => {
-		if (typeof window !== "undefined") {
-			return localStorage.getItem(key);
-		}
-		return null;
-	};
-
-	const setItem = (value) => {
-		if (typeof window !== "undefined") {
-			localStorage.setItem(key, value);
-		}
-	};
-
-	return { getItem, setItem };
-};
-
-const localStorageManager = useLocalStorage("accessToken");
 let isRefreshing = false; // Flag to prevent simultaneous refresh requests
 
 const axiosInstance = axios.create({
 	headers: {
 		"ngrok-skip-browser-warning": "69420",
-		Authorization: `Bearer ${localStorageManager.getItem()}`,
 	},
 });
+
+export function setAuthorizationToken(token) {
+	if (token) {
+	  axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	} else {
+	  delete axiosInstance.defaults.headers.common['Authorization'];
+	}
+  }
 
 let requestQueue = [];
 
