@@ -1,20 +1,20 @@
 import axios from "axios";
 
-let isRefreshing = false; // Flag to prevent simultaneous refresh requests
-
 const axiosInstance = axios.create({
 	headers: {
-		"ngrok-skip-browser-warning": "69420",
+		// "Content-Type": "application/json",
 	},
 });
 
-export function setAuthorizationToken(token) {
+/* export function setAuthorizationToken(token) {
 	if (token) {
-	  axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+		axiosInstance.defaults.headers.common[
+			"Authorization"
+		] = `Bearer ${token}`;
 	} else {
-	  delete axiosInstance.defaults.headers.common['Authorization'];
+		delete axiosInstance.defaults.headers.common["Authorization"];
 	}
-  }
+}
 
 let requestQueue = [];
 
@@ -42,21 +42,24 @@ axiosInstance.interceptors.response.use(
 
 					console.log("new access token: ", newAccessToken);
 
-					// Update the stored access token
-					localStorageManager.setItem(newAccessToken);
+					setAuthorizationToken(newAccessToken);
 
 					// Retry the original request with the new access token
 					error.config.headers.Authorization = `Bearer ${newAccessToken}`;
 
 					isRefreshing = false;
 
-					requestQueue.forEach((config) => {
-						config.headers.Authorization = newAccessToken;
-						axiosInstance(config);
-					});
-					requestQueue = [];
+					// Resolve the stored promises with the new response
+					requestQueue.forEach((requestData) => {
+						const { resolver, rejecter, config } = requestData;
 
-					return axios(error.config);
+						axiosInstance(config)
+							.then((response) => resolver(response))
+							.catch((error) => rejecter(error));
+					});
+
+					// Clear the requestQueue
+					requestQueue = [];
 				} catch (refreshError) {
 					console.log("Refresh error:", refreshError);
 
@@ -64,29 +67,33 @@ axiosInstance.interceptors.response.use(
 						refreshError.response &&
 						refreshError.response.status === 401
 					) {
-						// alert("redirecting");
-						// The refresh token is not valid, navigate to the login page
-						/* const router = useRouter();
-						router.push("/login"); */
 						window.location.href = "/login";
 					}
 
-					// Reject the request with the refresh error
-					return Promise.reject(refreshError);
-				} finally {
-					console.log("hi");
-					isRefreshing = false;
+					// Reject the stored promises with the refresh error
+					requestQueue.forEach((requestData) => {
+						const { rejecter } = requestData;
+						rejecter(refreshError);
+					});
+
+					// Clear the requestQueue
 					requestQueue = [];
+				} finally {
+					isRefreshing = false;
 				}
 			} else {
-				// If a token refresh is in progress, add the request to the queue
-
-				requestQueue.push(error.config);
+				alert("Refresh error");
+				// Store the original request and resolver/rejecter
+				requestQueue.push({
+					config: error.config,
+					resolver: (response) => resolve(response),
+					rejecter: (error) => reject(error),
+				});
 			}
 		}
 
-		return Promise.reject(error);
+		// return Promise.reject(error);
 	},
 );
-
+ */
 export default axiosInstance;
