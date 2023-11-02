@@ -13,12 +13,13 @@ const onFinish = async (values, setUser, router) => {
 		const response = await axios.post("api/auth/login/", values);
 		const { user, accessToken } = response.data;
 
-		// localStorage.setItem("accessToken", accessToken);
+		localStorage.setItem("user", JSON.stringify(user));
+
 		setAuthorizationToken(accessToken);
 
 		console.log("user: ", response.data);
 
-		setUser(user.isAdmin);
+		setUser(user);
 
 		if (user.isAdmin) {
 			router.push("/admin"); // Redirect to the admin page
