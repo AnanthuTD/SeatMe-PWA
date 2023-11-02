@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, theme } from "antd";
 import Menu from "./(menu)/menu";
@@ -9,9 +9,14 @@ const { Header, Sider, Content } = Layout;
 
 const App = ({ children }) => {
 	const [collapsed, setCollapsed] = useState(false);
+	const [layoutRendered, setLayoutRendered] = useState(false);
 	const {
 		token: { colorBgContainer },
 	} = theme.useToken();
+
+	useEffect(() => {
+		setLayoutRendered(true);
+	}, []);
 
 	return (
 		<Layout className="h-screen">
@@ -26,24 +31,36 @@ const App = ({ children }) => {
 				<Menu />
 			</Sider>
 			<Layout>
-				<Header style={{ padding: 0, background: colorBgContainer }}>
-					<Button
-						type="text"
-						icon={
-							collapsed ? (
-								<MenuUnfoldOutlined />
-							) : (
-								<MenuFoldOutlined />
-							)
-						}
-						onClick={() => setCollapsed(!collapsed)}
-						style={{
-							fontSize: "16px",
-							width: 64,
-							height: 64,
-						}}
-					/>
-					<SettingsButton />
+				<Header
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						padding: 0,
+						background: colorBgContainer,
+					}}
+				>
+					<div>
+						<Button
+							type="text"
+							icon={
+								collapsed ? (
+									<MenuUnfoldOutlined />
+								) : (
+									<MenuFoldOutlined />
+								)
+							}
+							onClick={() => setCollapsed(!collapsed)}
+							style={{
+								fontSize: "16px",
+								width: 64,
+								height: 64,
+							}}
+						/>
+					</div>
+					<div>
+						<SettingsButton />
+					</div>
 				</Header>
 				<Content
 					style={{
@@ -58,7 +75,7 @@ const App = ({ children }) => {
 					className="flex-grow"
 					id="scrollableDiv"
 				>
-					{children}
+					{layoutRendered && children}
 				</Content>
 			</Layout>
 		</Layout>
