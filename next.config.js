@@ -1,4 +1,7 @@
-/** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+	enabled: process.env.ANALYZE === "true",
+	openAnalyzer: false,
+});
 
 const proxy = {
 	async rewrites() {
@@ -11,7 +14,7 @@ const proxy = {
 	},
 };
 
-module.exports = {
+module.exports = withBundleAnalyzer({
 	...proxy,
 	// reactStrictMode: false,
 	eslint: {
@@ -19,4 +22,4 @@ module.exports = {
 		// your project has ESLint errors.
 		ignoreDuringBuilds: true,
 	},
-};
+});
