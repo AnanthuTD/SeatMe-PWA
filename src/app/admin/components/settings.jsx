@@ -1,9 +1,31 @@
 import React, { useState } from "react";
-import { Button, Modal, Menu, Dropdown, Switch } from "antd";
-import {UserOutlined, RightOutlined, } from "@ant-design/icons";
+import {
+	Button,
+	Modal,
+	Anchor,
+	Form,
+	Input,
+	Switch,
+	Row,
+	Col,
+	message,
+} from "antd";
+import {
+	UserOutlined,
+	LogoutOutlined,
+	NotificationOutlined,
+	SettingFilled,
+} from "@ant-design/icons";
+import axios from "axios";
+import { setAuthorizationToken } from "@/lib/axiosPrivate";
+import { useRouter } from "next/navigation";
+
+const { Link } = Anchor;
 
 const SettingsButton = ({ profilePicture }) => {
 	const [visible, setVisible] = useState(false);
+
+	const router = useRouter();
 
 	const handleSettingsClick = () => {
 		setVisible(true);
@@ -13,15 +35,25 @@ const SettingsButton = ({ profilePicture }) => {
 		setVisible(false);
 	};
 
-	const profileMenu = (
-		<Menu>
-			<Menu.Item key="viewProfile">View Profile</Menu.Item>
-			<Menu.Item key="editProfile">Edit Profile</Menu.Item>
-		</Menu>
-	);
+	const handleProfileFormSubmit = (values) => {
+		// Handle form submission for profile settings
+		console.log("Profile Settings:", values);
+	};
+
+	const handleLogout = async () => {
+		try {
+			await axios.delete("/api/auth/logout");
+			setVisible(false);
+			setAuthorizationToken();
+			router.push("/login");
+		} catch (e) {
+			console.error(e);
+			message.error("Logout failed!");
+		}
+	};
 
 	return (
-		<div style={{ position: "fixed", bottom: 20, right: 20 }}>
+		<>
 			{profilePicture ? (
 				<Button
 					type="primary"
@@ -36,14 +68,10 @@ const SettingsButton = ({ profilePicture }) => {
 					onClick={handleSettingsClick}
 				/>
 			) : (
-				<Button
-					type="primary"
-					shape="circle"
-					icon={<UserOutlined />}
+				<SettingFilled
+					style={{ fontSize: "25px" }}
 					onClick={handleSettingsClick}
-				>
-					Profile
-				</Button>
+				/>
 			)}
 
 			<Modal
@@ -52,40 +80,31 @@ const SettingsButton = ({ profilePicture }) => {
 				onCancel={handleCancel}
 				footer={null}
 			>
-				<Menu>
-					<Menu.Item key="profile" className="profile-menu">
-						Profile
-						<Dropdown menu={profileMenu}>
-							<a
-								className="ant-dropdown-link"
-								onClick={(e) => e.preventDefault()}
-							>
-								<RightOutlined />
-							</a>
-						</Dropdown>
-					</Menu.Item>
-					<Menu.Item key="darkMode">
-						Dark Mode
-						<Switch />
-					</Menu.Item>
-					{/* <Menu.Item key="language">
-						Language
-						<Dropdown overlay={languageMenu}>
-							<a
-								className="ant-dropdown-link"
-								onClick={(e) => e.preventDefault()}
-							>
-								English <DownOutlined />
-							</a>
-						</Dropdown>
-					</Menu.Item> */}
-					<Menu.Item key="notifications">
-						Notifications
-						<Switch />
-					</Menu.Item>
-				</Menu>
+				<Row gutter={16}>
+					<Col span={8}>
+						<Anchor affix={false} style={{ height: "100%" }}>
+							<Link href="#viewProfile" title="View Profile" />
+							<Link href="#editProfile" title="Edit Profile" />
+							<Link
+								href="#profileSettings"
+								title="Profile Settings"
+							/>
+						</Anchor>
+					</Col>
+					<Col span={16}></Col>
+				</Row>
+
+				<div style={{ marginTop: 20 }}>
+					<Button
+						type="danger"
+						icon={<LogoutOutlined />}
+						onClick={handleLogout}
+					>
+						Logout
+					</Button>
+				</div>
 			</Modal>
-		</div>
+		</>
 	);
 };
 
