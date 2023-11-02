@@ -1,6 +1,6 @@
 import mem from "mem";
 
-import axios from "./axiosPrivate";
+import axios, { setAuthorizationToken } from "./axiosPrivate";
 
 const refreshTokenFn = async () => {
   try {
@@ -13,12 +13,14 @@ const refreshTokenFn = async () => {
       localStorage.removeItem("user");
     }
 
-    localStorage.setItem("accessToken", accessToken);
+    // localStorage.setItem("accessToken", accessToken);
+		setAuthorizationToken(accessToken);
 
     return accessToken;
   } catch (error) {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+    // localStorage.removeItem("accessToken");
+    // localStorage.removeItem("user");
+		setAuthorizationToken();
   }
 };
 

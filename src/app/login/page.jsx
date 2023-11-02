@@ -1,5 +1,6 @@
 "use client";
 import axios from "@/lib/axiosPublic";
+import {setAuthorizationToken} from "@/lib/axiosPrivate";
 
 import React from "react";
 import { Button, Checkbox, Form, Input, message } from "antd";
@@ -12,7 +13,8 @@ const onFinish = async (values, setUser, router) => {
 		const response = await axios.post("api/auth/login/", values);
 		const { user, accessToken } = response.data;
 
-		localStorage.setItem("accessToken", accessToken);
+		// localStorage.setItem("accessToken", accessToken);
+		setAuthorizationToken(accessToken);
 
 		console.log("user: ", response.data);
 

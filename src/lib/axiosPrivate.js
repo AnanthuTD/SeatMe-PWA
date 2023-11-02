@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { memoizedRefreshToken } from "./refreshToken";
 
-axios.interceptors.request.use(
+/* axios.interceptors.request.use(
   async (config) => {
     const accessToken = localStorage.getItem("accessToken");
 
@@ -16,7 +16,17 @@ axios.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
-);
+); */
+
+export function setAuthorizationToken(accessToken) {
+	if (accessToken) {
+		axios.defaults.headers.common[
+			"Authorization"
+		] = `Bearer ${accessToken}`;
+	} else {
+		delete axios.defaults.headers.common["Authorization"];
+	}
+}
 
 axios.interceptors.response.use(
   (response) => response,
