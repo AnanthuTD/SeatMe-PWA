@@ -42,7 +42,7 @@ const RoomAssignmentForm = () => {
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [examinesCount, setExaminesCount] = useState(0);
 	const [rooms, setRooms] = useState([]);
-	const [filteredOptions, setFilteredOptions] = useState([]);
+	// const [filteredOptions, setFilteredOptions] = useState([]);
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
 	const [date, setDate] = useState(new Date());
@@ -92,10 +92,14 @@ const RoomAssignmentForm = () => {
 
 	useEffect(() => {
 		calculateTotalSeats();
-		setFilteredOptions(
+		/* setFilteredOptions(
 			rooms.filter((o) => !selectedRoomIds.includes(o.id)),
-		);
+		); */
 	}, [selectedRoomIds]);
+
+	const filteredOptions = rooms.filter(
+		(o) => !selectedRoomIds.includes(o.id),
+	);
 
 	const onFinish = async (values) => {
 		try {
