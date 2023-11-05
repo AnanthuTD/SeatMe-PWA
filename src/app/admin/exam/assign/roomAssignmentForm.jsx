@@ -35,6 +35,9 @@ const Space = dynamic(() =>
 const Alert = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Alert })),
 );
+const Switch = dynamic(() =>
+	import("antd").then((module) => ({ default: module.Switch })),
+);
 
 const RoomAssignmentForm = () => {
 	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
@@ -125,14 +128,16 @@ const RoomAssignmentForm = () => {
 	};
 
 	const assign = async (values) => {
+		console.log(values);
 		try {
 			setLoading(true);
-			const { orderBy, selectedDate, examType } = values;
-			const result = await axios.get("/api/admin/exam/assign", {
+			const { orderBy, selectedDate, examType, optimize } = values;
+			const result = await axios.get("/api/admin/exams/assign", {
 				params: {
 					orderBy,
 					date: selectedDate,
 					examType,
+					optimize,
 				},
 			});
 			if (result.status === 201) {
@@ -170,7 +175,7 @@ const RoomAssignmentForm = () => {
 						onFinish={onFinish}
 					>
 						<Row gutter={16}>
-							<Col sm={24}>
+							<Col sm={20}>
 								<Form.Item
 									name="selectedDate"
 									initialValue={dayjs(date)}
@@ -189,6 +194,11 @@ const RoomAssignmentForm = () => {
 											setDate(newDate.toDate()); // Update the date when it changes
 										}}
 									/>
+								</Form.Item>
+							</Col>
+							<Col sm={4}>
+								<Form.Item name="optimize" initialValue={true}>
+									<Switch defaultChecked={true} />
 								</Form.Item>
 							</Col>
 						</Row>

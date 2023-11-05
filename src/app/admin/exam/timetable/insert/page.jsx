@@ -156,7 +156,7 @@ function Page() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/timetable", formData);
+			const result = await axios.post("/api/admin/exams/timetable", formData);
 			if (result.status >= 200 && result.status < 300) {
 				message.success(result.data)
 				return true;
