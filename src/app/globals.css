@@ -1,11 +1,11 @@
-@tailwind base;
+/* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
 
 :root {
-	--foreground-rgb: 0, 0, 0;
-	--background-start-rgb: 214, 219, 220;
-	--background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -28,8 +28,8 @@
 }*/
 
 .demo-logo-vertical {
-	height: 32px;
-	margin: 16px;
-	background: rgba(255, 255, 255, 0.2);
-	border-radius: 6px;
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
 }
