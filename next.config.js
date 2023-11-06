@@ -8,6 +8,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	openAnalyzer: false,
 });
 
+/** @type {import('next').NextConfig} */
 const proxy = {
 	async rewrites() {
 		return [
