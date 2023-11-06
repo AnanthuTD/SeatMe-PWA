@@ -1,3 +1,8 @@
+const withPWA = require("next-pwa")({
+	dest: "public",
+	register: true,
+	skipWaiting: true,
+});
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true",
 	openAnalyzer: false,
@@ -14,7 +19,7 @@ const proxy = {
 	},
 };
 
-module.exports = withBundleAnalyzer({
+module.exports = withPWA({
 	...proxy,
 	// reactStrictMode: false,
 	eslint: {
