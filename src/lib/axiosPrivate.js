@@ -41,7 +41,7 @@ axios.interceptors.response.use(
 			if (accessToken) {
 				config.headers = {
 					...config.headers,
-					authorization: `Bearer ${result?.accessToken}`,
+					authorization: `Bearer ${accessToken}`,
 				};
 			}
 
