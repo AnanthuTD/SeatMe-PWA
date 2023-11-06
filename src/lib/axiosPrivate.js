@@ -32,7 +32,7 @@ axios.interceptors.response.use(
 	(response) => response,
 	async (error) => {
 		const config = error?.config;
-		console.log(error);
+
 		if (error?.response?.status === 401 && !config?.sent) {
 			config.sent = true;
 
@@ -45,7 +45,6 @@ axios.interceptors.response.use(
 				};
 			}
 
-			console.log(config);
 			return axios(config);
 		}
 		return Promise.reject(error);
