@@ -29,26 +29,27 @@ export function setAuthorizationToken(accessToken) {
 }
 
 axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const config = error?.config;
+	(response) => response,
+	async (error) => {
+		const config = error?.config;
+		console.log(error);
+		if (error?.response?.status === 401 && !config?.sent) {
+			config.sent = true;
 
-    if (error?.response?.status === 401 && !config?.sent) {
-      config.sent = true;
+			const accessToken = await memoizedRefreshToken();
 
-      const result = await memoizedRefreshToken();
+			if (accessToken) {
+				config.headers = {
+					...config.headers,
+					authorization: `Bearer ${result?.accessToken}`,
+				};
+			}
 
-      if (result?.accessToken) {
-        config.headers = {
-          ...config.headers,
-          authorization: `Bearer ${result?.accessToken}`,
-        };
-      }
-
-      return axios(config);
-    }
-    return Promise.reject(error);
-  }
+			console.log(config);
+			return axios(config);
+		}
+		return Promise.reject(error);
+	},
 );
 
 export default axios;
