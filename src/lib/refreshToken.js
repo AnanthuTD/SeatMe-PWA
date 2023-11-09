@@ -10,16 +10,13 @@ const refreshTokenFn = async () => {
 
 		if (!accessToken) {
 			setAuthorizationToken();
-			// localStorage.removeItem("accessToken");
 			localStorage.removeItem("user");
 		}
 
-		// localStorage.setItem("accessToken", accessToken);
 		setAuthorizationToken(accessToken);
 
 		return accessToken;
 	} catch (error) {
-		// localStorage.removeItem("accessToken");
 		localStorage.removeItem("user");
 		setAuthorizationToken();
 	}
