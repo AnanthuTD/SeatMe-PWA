@@ -110,7 +110,7 @@ const EditableTable = ({
 					>
 						Reset
 					</Button>
-					<Button
+					{/* <Button
 						type="link"
 						size="small"
 						onClick={() => {
@@ -122,7 +122,7 @@ const EditableTable = ({
 						}}
 					>
 						Filter
-					</Button>
+					</Button> */}
 					<Button
 						type="link"
 						size="small"
@@ -142,11 +142,13 @@ const EditableTable = ({
 				}}
 			/>
 		),
-		onFilter: (value, record) =>
-			record[dataIndex]
-				.toString()
+		onFilter: (value, record) => {
+			console.log(value, record);
+			return record[dataIndex]
+				?.toString()
 				.toLowerCase()
-				.includes(value.toLowerCase()),
+				.includes(value.toLowerCase());
+		},
 		onFilterDropdownOpenChange: (visible) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
@@ -206,7 +208,7 @@ const EditableTable = ({
 		},
 		{
 			title: "Department",
-			dataIndex: "departmentId",
+			dataIndex: "departmentName",
 			key: "departmentId",
 			...getColumnSearchProps("departmentId"),
 			editable: true,

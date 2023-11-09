@@ -225,7 +225,7 @@ const EditableTable = ({
 		},
 		{
 			title: "Program",
-			dataIndex: "program.name",
+			dataIndex: "programName",
 			key: "programName",
 			width: "20%",
 			editable: true,
@@ -233,7 +233,7 @@ const EditableTable = ({
 		},
 		{
 			title: "aided",
-			dataIndex: "program.isAided",
+			dataIndex: "isAided",
 			key: "isAided",
 		},
 		{
