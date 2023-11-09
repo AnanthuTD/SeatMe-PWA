@@ -39,13 +39,15 @@ const Switch = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Switch })),
 );
 
-const RoomAssignmentForm = () => {
+const RoomAssignmentForm = ({
+	setIsSuccess = () => {},
+	setSelectedRooms = () => {},
+}) => {
 	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [examinesCount, setExaminesCount] = useState(0);
 	const [rooms, setRooms] = useState([]);
-	// const [filteredOptions, setFilteredOptions] = useState([]);
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
 	const [date, setDate] = useState(new Date());
@@ -87,6 +89,9 @@ const RoomAssignmentForm = () => {
 		const selectedRooms = rooms.filter((room) =>
 			selectedRoomIds.includes(room.id),
 		);
+
+		setSelectedRooms(selectedRooms);
+
 		const newTotalSeats = selectedRooms.reduce((total, room) => {
 			return total + room.seats;
 		}, 0);
@@ -144,11 +149,12 @@ const RoomAssignmentForm = () => {
 				{
 					message.success("Assignments successfully");
 					setWarningMessage("");
-					// setIsSubmit(result.data);
+					setIsSuccess(true);
 					setFileName(result.data.fileName);
 				}
 			} else if (result.status === 200) {
 				setWarningMessage(result.data.message);
+				setIsSuccess(false);
 			}
 		} catch (error) {
 			if (
@@ -371,6 +377,7 @@ const RoomAssignmentForm = () => {
 					/>
 				</Row>
 			) : null}
+
 			{fileName ? <DownloadButton fileName={fileName} /> : null}
 		</div>
 	);
