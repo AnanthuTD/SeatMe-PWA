@@ -4,17 +4,26 @@ import RoomAssignmentForm from "./roomAssignmentForm";
 import TeacherAssignment from "./teacherAssignment";
 
 function Page() {
-	const [isSuccess, setIsSuccess] = useState(false);
+	const [dateTime, setDateTime] = useState(undefined);
 	const [selectedRooms, setSelectedRooms] = useState([]);
+	const [roomTeachers, setRoomTeachers] = useState({});
+	const [assignTeachers, setAssignTeachers] = useState(false);
 
 	return (
 		<div>
-			{isSuccess ? (
-				<TeacherAssignment rooms={selectedRooms} />
+			{/* date is set when students are assigned seats successfully. */}
+			{assignTeachers ? (
+				<TeacherAssignment
+					rooms={selectedRooms}
+					roomTeachers={roomTeachers}
+					setRoomTeachers={setRoomTeachers}
+					date={dateTime}
+				/>
 			) : (
 				<RoomAssignmentForm
-					setIsSuccess={setIsSuccess}
+					setDateTime={setDateTime}
 					setSelectedRooms={setSelectedRooms}
+					setAssignTeachers={setAssignTeachers}
 				/>
 			)}
 		</div>

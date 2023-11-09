@@ -40,8 +40,9 @@ const Switch = dynamic(() =>
 );
 
 const RoomAssignmentForm = ({
-	setIsSuccess = () => {},
+	setDateTime = () => {},
 	setSelectedRooms = () => {},
+	setAssignTeachers = () => {},
 }) => {
 	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -149,8 +150,8 @@ const RoomAssignmentForm = ({
 				{
 					message.success("Assignments successfully");
 					setWarningMessage("");
-					setIsSuccess(true);
 					setFileName(result.data.fileName);
+					setDateTime({ date: selectedDate, timeCode: "AN" });
 				}
 			} else if (result.status === 200) {
 				setWarningMessage(result.data.message);
@@ -197,7 +198,7 @@ const RoomAssignmentForm = ({
 										format="YYYY-MM-DD"
 										className="date-picker"
 										onChange={(newDate) => {
-											setDate(newDate.toDate()); // Update the date when it changes
+											setDateTime(newDate.toDate()); // Update the date when it changes
 										}}
 									/>
 								</Form.Item>
@@ -378,7 +379,12 @@ const RoomAssignmentForm = ({
 				</Row>
 			) : null}
 
-			{fileName ? <DownloadButton fileName={fileName} /> : null}
+			{fileName ? (
+				<div className="flex gap-3">
+					<DownloadButton fileName={fileName} />
+					<Button type="primary" onClick={()=>setAssignTeachers(true)}>Assign Teachers</Button>
+				</div>
+			) : null}
 		</div>
 	);
 };

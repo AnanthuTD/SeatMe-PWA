@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Select, Descriptions, Collapse, Row, Col } from "antd";
+import { Collapse, Button, message, Divider } from "antd";
 import axios from "@/lib/axiosPrivate";
-import SelectDepartment from "../../components/select";
+import RoomPanel from "./roomPanel";
+import DownloadButton from "./download";
 
-const { Option } = Select;
-const { Panel } = Collapse;
-
-function TeacherAssignment({ rooms = [], teachers = [] }) {
-	const [roomTeachers, setRoomTeachers] = useState({});
-	const [teacherList, setTeacherList] = useState([]);
+function TeacherAssignment({
+	rooms = [],
+	roomTeachers = {},
+	setRoomTeachers = () => {},
+	dateTime = { date: new Date(), timeCode: "AN" },
+}) {
 	const [departments, setDepartments] = useState([]);
-	const [selectedDepartment, setSelectedDepartment] = useState([]);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [dateTimeId, setDateTimeId] = useState(false);
+	const [failedAssignments, setFailedAssignments] = useState([]);
+	const [visibleDownloadButton, setVisibleDownloadButton] = useState(false);
+
+	const pdfFileName = `${dateTime.date.toISOString().split("T")[0]}-${
+		dateTime.timeCode
+	}.pdf`;
 
 	const loadDepartments = async () => {
 		try {
@@ -21,9 +29,26 @@ function TeacherAssignment({ rooms = [], teachers = [] }) {
 		}
 	};
 
+	const getDateTimeId = async (dateTime) => {
+		try {
+			const result = await axios.get("/api/admin/date-time-id/", {
+				params: dateTime,
+			});
+			if (result.data) setDateTimeId(result.data.dateTimeId);
+		} catch (error) {
+			console.error(error);
+			message.error("something went wrong while fetching dateTimeId!");
+		}
+	};
+
 	useEffect(() => {
 		loadDepartments();
+		setDateTimeId(getDateTimeId(dateTime));
 	}, []);
+
+	useEffect(() => {
+		console.log(JSON.stringify(roomTeachers, null, 2));
+	}, [roomTeachers]);
 
 	const handleTeacherSelect = (roomId, teacherId) => {
 		setRoomTeachers({
@@ -32,96 +57,69 @@ function TeacherAssignment({ rooms = [], teachers = [] }) {
 		});
 	};
 
-	const handleDepartmentChange = (departmentId) => {
-		setSelectedDepartment(departmentId);
+	const handleAssign = async () => {
+		if (Object.keys(roomTeachers).length === 0) {
+			message.warning("No teachers to assign");
+			return;
+		}
+
+		setIsSubmitting(true);
+
+		try {
+			const reqData = {
+				...roomTeachers,
+				dateTimeId: dateTimeId,
+			};
+			const response = await axios.post(
+				"/api/admin/exams/assign-teacher",
+				reqData,
+			);
+			if (response.data.error && response.data.failedAssignments) {
+				// Handle failed assignments
+				const { error, failedAssignments } = response.data;
+				setFailedAssignments(failedAssignments);
+				console.error("Error assigning teachers: ", error);
+				message.error("Failed to assign some teachers.");
+				console.log("Failed Assignments:", failedAssignments);
+			} else {
+				message.success("Teachers assigned successfully!");
+			}
+			setVisibleDownloadButton(true);
+		} catch (error) {
+			console.error("Error assigning teachers: ", error);
+			message.error("Failed to assign teachers.");
+		}
+
+		setIsSubmitting(false);
 	};
 
-    const loadTeachers = ()=>{}
-
-    useEffect(() => {
-		if (selectedDepartment) {
-			loadTeachers(selectedDepartment);
-		}
-	}, [selectedDepartment]);
+	const Items = rooms.map((room) =>
+		RoomPanel({
+			room,
+			departments,
+			roomTeachers,
+			handleTeacherSelect,
+			isFailed: failedAssignments.length
+				? failedAssignments.includes(room.id)
+				: false,
+		}),
+	);
 
 	return (
 		<div className="p-4">
 			<h2 className="text-xl font-bold mb-4">Teacher Assignment</h2>
-			<Collapse accordion>
-				{rooms.map((room) => (
-					<Panel
-						key={room.id}
-						header={
-							<Row gutter={8}>
-								<Col xs={24} sm={24} md={12} lg={12} xl={12}>
-									<h4 className="text-md font-semibold mb-2">
-										Room ID: {room.id}
-									</h4>
-								</Col>
-								<SelectDepartment
-									options={departments}
-									onChange={handleDepartmentChange}
-									placeholder="Select Department"
-								/>
-								<Col xs={24} sm={24} md={12} lg={12} xl={12}>
-									<Select
-										id={`teacherSelect-${room.id}`}
-										showSearch
-										style={{ width: "100%" }}
-										placeholder="Select a teacher"
-										optionFilterProp="children"
-										onChange={(value) =>
-											handleTeacherSelect(room.id, value)
-										}
-										value={roomTeachers[room.id]}
-									>
-										{teacherList.map((teacher) => (
-											<Option
-												key={teacher.id}
-												value={teacher.id}
-											>
-												{teacher.name}
-											</Option>
-										))}
-									</Select>
-								</Col>
-							</Row>
-						}
-					>
-						<div className="mb-4 p-4 border rounded-lg shadow">
-							<Descriptions bordered column={1}>
-								<Descriptions.Item label="Rows">
-									{room.rows}
-								</Descriptions.Item>
-								<Descriptions.Item label="Cols">
-									{room.cols}
-								</Descriptions.Item>
-								<Descriptions.Item label="Block ID">
-									{room.blockId}
-								</Descriptions.Item>
-								<Descriptions.Item label="Available">
-									{room.isAvailable ? "Yes" : "No"}
-								</Descriptions.Item>
-								<Descriptions.Item label="Floor">
-									{room.floor}
-								</Descriptions.Item>
-								<Descriptions.Item label="Seats">
-									{room.seats}
-								</Descriptions.Item>
-								<Descriptions.Item label="Selected Teacher">
-									{roomTeachers[room.id]
-										? teacherList.find(
-												(teacher) =>
-													teacher.id ===
-													roomTeachers[room.id],
-										  ).name
-										: "Not selected"}
-								</Descriptions.Item>
-							</Descriptions>
-						</div>
-					</Panel>
-				))}
-			</Collapse>
+			<Collapse accordion collapsible="icon" items={Items} />
+			<Divider />
+			<Button
+				type="primary"
+				onClick={handleAssign}
+				loading={isSubmitting}
+			>
+				Assign
+			</Button>
+			{visibleDownloadButton ? (
+				<DownloadButton fileName={pdfFileName} />
+			) : null}
 		</div>
 	);
 }
