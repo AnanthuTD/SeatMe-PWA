@@ -29,7 +29,7 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		const resultsPerPage = 50;
+		const resultsPerPage = 30;
 		setLoading(true);
 		axios
 			.get(`/api/admin/exams/`, {
@@ -71,7 +71,7 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		if (initialLoad) loadMoreData({ search: true });
+		if (!initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
@@ -80,7 +80,7 @@ const App = () => {
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
-		if (addedDataLength < 50) {
+		if (addedDataLength < 30) {
 			setHasMoreData(false);
 		} else {
 			setHasMoreData(data.length < totalDataCount);
@@ -93,8 +93,6 @@ const App = () => {
 		setSorterField("");
 		setSorterOrder("");
 		setSearchedColumn("");
-		// setData([]);
-		// loadMoreData({ reset: true });
 	};
 
 	return (

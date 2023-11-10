@@ -6,12 +6,12 @@ import { Button, Input, Space, Table } from "antd";
 const App = ({
 	dataSource,
 	loading = false,
-	setSorterField = "",
-	setSorterOrder = "",
+	setSorterField = () => {},
+	setSorterOrder = () => {},
 	searchedColumn = "",
-	setSearchedColumn = "",
+	setSearchedColumn = () => {},
 	searchText = "",
-	setSearchText = "",
+	setSearchText = () => {},
 	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
@@ -97,19 +97,6 @@ const App = ({
 						type="link"
 						size="small"
 						onClick={() => {
-							confirm({
-								closeDropdown: false,
-							});
-							setSearchText(selectedKeys[0]);
-							setSearchedColumn(dataIndex);
-						}}
-					>
-						Filter
-					</Button>
-					<Button
-						type="link"
-						size="small"
-						onClick={() => {
 							close();
 						}}
 					>
@@ -154,33 +141,35 @@ const App = ({
 	const columns = [
 		{
 			title: "ID",
-			dataIndex: "id",
+			dataIndex: "course.id",
 			key: "id",
-			...getColumnSearchProps("id"),
+			...getColumnSearchProps("course.id"),
 			sorter: true, // Example sorting for numeric column
 		},
 		{
 			title: "Course",
-			dataIndex: "name",
+			dataIndex: "course.name",
 			key: "name",
-			...getColumnSearchProps("name"),
-			sorter: (a, b) => textColumnSorter(a.name, b.name),
+			...getColumnSearchProps("course.name"),
+			sorter: (a, b) =>
+				textColumnSorter(a["course.name"], b["course.name"]),
 		},
 		{
 			title: "Semester",
-			dataIndex: "semester",
+			dataIndex: "course.semester",
 			key: "semester",
-			sorter: (a, b) => a.semester - b.semester,
+			sorter: (a, b) => a["course.semester"] - b["course.semester"],
 		},
 		{
 			title: "Date",
-			dataIndex: "dateTimes.date",
+			dataIndex: "date",
 			key: "date",
+			...getColumnSearchProps("date"),
 			sorter: (a, b) => a.programName - b.programName,
 		},
 		{
 			title: "Time Code",
-			dataIndex: "dateTimes.timeCode",
+			dataIndex: "timeCode",
 			key: "timeCode",
 			sorter: (a, b) => a.programName - b.programName,
 			filters: [
