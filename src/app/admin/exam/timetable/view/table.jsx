@@ -1,7 +1,58 @@
 import { SearchOutlined } from "@ant-design/icons";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
-import { Button, Input, Space, Table } from "antd";
+import {
+	Button,
+	Input,
+	Space,
+	Table,
+	Form,
+	InputNumber,
+	Popconfirm,
+	Typography,
+	DatePicker,
+} from "antd";
+import "./table.css";
+import dayjs from "dayjs";
+
+const EditableCell = ({
+	editing,
+	dataIndex,
+	title,
+	inputType,
+	record,
+	index,
+	children,
+	...restProps
+}) => {
+	if (!record) return <td {...restProps}>{children}</td>;
+
+	const inputNode =
+		inputType === "date" ? <DatePicker format="YYYY-MM-DD" /> : <Input />;
+
+	return (
+		<td {...restProps}>
+			{editing && record ? (
+				<Form.Item
+					name={dataIndex}
+					style={{
+						margin: 0,
+					}}
+					rules={[
+						{
+							required: true,
+							message: `Please Input ${title}!`,
+						},
+					]}
+				>
+					{inputNode}
+				</Form.Item>
+			) : (
+				children
+			)}
+		</td>
+	);
+};
 
 const App = ({
 	dataSource,
@@ -138,18 +189,59 @@ const App = ({
 			),
 	});
 
+	const [form] = Form.useForm();
+	const [editingKey, setEditingKey] = useState("");
+
+	const isEditing = (record) => record.id === editingKey;
+
+	const edit = (record) => {
+		record.date = dayjs(record.date);
+
+		form.setFieldsValue({
+			...record,
+		});
+		setEditingKey(record.id);
+	};
+
+	const cancel = () => {
+		setEditingKey("");
+	};
+
+	const save = async (key) => {
+		try {
+			const row = await form.validateFields();
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => key === item.key);
+			if (index > -1) {
+				const item = newData[index];
+				newData.splice(index, 1, {
+					...item,
+					...row,
+				});
+				setData(newData);
+				setEditingKey("");
+			} else {
+				newData.push(row);
+				setData(newData);
+				setEditingKey("");
+			}
+		} catch (errInfo) {
+			console.log("Validate Failed:", errInfo);
+		}
+	};
+
 	const columns = [
 		{
 			title: "ID",
 			dataIndex: "course.id",
-			key: "id",
+			key: "course.id",
 			...getColumnSearchProps("course.id"),
-			sorter: true, // Example sorting for numeric column
+			sorter: true,
 		},
 		{
 			title: "Course",
 			dataIndex: "course.name",
-			key: "name",
+			key: "course.name",
 			...getColumnSearchProps("course.name"),
 			sorter: (a, b) =>
 				textColumnSorter(a["course.name"], b["course.name"]),
@@ -157,7 +249,7 @@ const App = ({
 		{
 			title: "Semester",
 			dataIndex: "course.semester",
-			key: "semester",
+			key: "course.semester",
 			sorter: (a, b) => a["course.semester"] - b["course.semester"],
 		},
 		{
@@ -166,6 +258,7 @@ const App = ({
 			key: "date",
 			...getColumnSearchProps("date"),
 			sorter: (a, b) => a.programName - b.programName,
+			editable: true,
 		},
 		{
 			title: "Time Code",
@@ -182,18 +275,74 @@ const App = ({
 					value: "FN",
 				},
 			],
+			editable: true,
+		},
+		{
+			title: "operation",
+			dataIndex: "operation",
+			render: (_, record) => {
+				const editable = isEditing(record);
+				return editable ? (
+					<span>
+						<Typography.Link
+							onClick={() => save(record.key)}
+							style={{
+								marginRight: 8,
+							}}
+						>
+							Save
+						</Typography.Link>
+						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+							<a>Cancel</a>
+						</Popconfirm>
+					</span>
+				) : (
+					<Typography.Link
+						disabled={editingKey !== ""}
+						onClick={() => edit(record)}
+					>
+						Edit
+					</Typography.Link>
+				);
+			},
 		},
 	];
 
+	const mergedColumns = columns.map((col) => {
+		if (!col.editable) {
+			return col;
+		}
+		return {
+			...col,
+			onCell: (record) => ({
+				record,
+				inputType: col.dataIndex === "date" ? "date" : "text",
+				dataIndex: col.dataIndex,
+				title: col.title,
+				editing: isEditing(record),
+			}),
+		};
+	});
+
 	return (
-		<Table
-			columns={columns}
-			dataSource={dataSource}
-			pagination={false}
-			loading={loading}
-			onChange={handleTableChange}
-			rowKey={(record) => record.id}
-		/>
+		<Form form={form} component={false}>
+			<Table
+				components={{
+					body: {
+						cell: EditableCell,
+					},
+				}}
+				bordered
+				dataSource={dataSource}
+				columns={mergedColumns}
+				rowClassName="editable-row"
+				loading={loading}
+				pagination={false}
+				onChange={handleTableChange}
+				rowKey={(record) => record.id}
+			/>
+		</Form>
 	);
 };
+
 export default App;
