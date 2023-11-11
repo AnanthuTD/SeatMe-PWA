@@ -152,17 +152,14 @@ const EditableTable = ({
 	});
 
 	const handleDelete = async (id) => {
-		let studentId = undefined;
+		let staffId = undefined;
 		const newData = dataSource.filter((item) => {
 			if (item.id !== id) return true;
-			console.log(item);
-			studentId = item.id;
+			staffId = item.id;
 		});
 
 		try {
-			await axios.delete(`/api/admin/staff/${id}`, {
-				params: { studentId: studentId },
-			});
+			await axios.delete(`/api/admin/staff/${id}`);
 			setDataSource(newData);
 			message.success('Deleted successfully!');
 		} catch (error) {
@@ -278,10 +275,8 @@ const EditableTable = ({
 
 	const handleSave = async (row) => {
 		try {
-			console.log(row);
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => row.id === item.id);
-			// row.departmentId = row.departmentName;
 
 			if (index > -1) {
 				const item = newData[index];
@@ -294,7 +289,12 @@ const EditableTable = ({
 				setDataSource(newData);
 			}
 		} catch (error) {
-			message.error('Something went wrong! unable to update!')
+			if (error.response && error.response.status === 404) {
+				message.error('Staff not found!');
+			} else {
+				console.error('Error updating staff:', error);
+				message.error('Something went wrong! Unable to update.');
+			}
 		}
 	};
 
