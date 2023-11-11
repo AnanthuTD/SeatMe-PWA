@@ -14,6 +14,7 @@ import {
 } from "antd";
 import "./table.css";
 import dayjs from "dayjs";
+import Link from "next/link";
 
 const EditableCell = ({
 	editing,
@@ -32,7 +33,7 @@ const EditableCell = ({
 
 	return (
 		<td {...restProps}>
-			{editing && record ? (
+			{editing ? (
 				<Form.Item
 					name={dataIndex}
 					style={{
@@ -57,13 +58,13 @@ const EditableCell = ({
 const App = ({
 	dataSource,
 	loading = false,
-	setSorterField = () => {},
-	setSorterOrder = () => {},
+	setSorterField = () => { },
+	setSorterOrder = () => { },
 	searchedColumn = "",
-	setSearchedColumn = () => {},
+	setSearchedColumn = () => { },
 	searchText = "",
-	setSearchText = () => {},
-	handleReset = () => {},
+	setSearchText = () => { },
+	handleReset = () => { },
 }) => {
 	const searchInput = useRef(null);
 
@@ -207,11 +208,11 @@ const App = ({
 		setEditingKey("");
 	};
 
-	const save = async (key) => {
+	const save = async (id) => {
 		try {
 			const row = await form.validateFields();
 			const newData = [...dataSource];
-			const index = newData.findIndex((item) => key === item.key);
+			const index = newData.findIndex((item) => id === item.id);
 			if (index > -1) {
 				const item = newData[index];
 				newData.splice(index, 1, {
@@ -285,7 +286,7 @@ const App = ({
 				return editable ? (
 					<span>
 						<Typography.Link
-							onClick={() => save(record.key)}
+							onClick={() => save(record.id)}
 							style={{
 								marginRight: 8,
 							}}
@@ -297,12 +298,21 @@ const App = ({
 						</Popconfirm>
 					</span>
 				) : (
-					<Typography.Link
-						disabled={editingKey !== ""}
-						onClick={() => edit(record)}
-					>
-						Edit
-					</Typography.Link>
+					<span className="gap-2 flex">
+						<Link href={`/admin/exam/timetable/view/${record.id}`}>Attendance</Link>
+						<Typography.Link
+							disabled={editingKey !== ""}
+							onClick={() => edit(record)}
+						>
+							Edit
+						</Typography.Link>
+						<Popconfirm
+							title="Sure to delete?"
+							onConfirm={() => handleDelete(record.id)}
+						>
+							<a>Delete</a>
+						</Popconfirm>
+					</span>
 				);
 			},
 		},
