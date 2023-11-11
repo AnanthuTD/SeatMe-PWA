@@ -1,6 +1,7 @@
 import mem from "mem";
 
-import axios, { setAuthorizationToken } from "./axiosPrivate";
+import axios from "./axiosPublic";
+import { setAuthorizationToken } from "./axiosPrivate";
 
 const refreshTokenFn = async () => {
 	try {
@@ -17,6 +18,7 @@ const refreshTokenFn = async () => {
 
 		return accessToken;
 	} catch (error) {
+		console.error('refreshToken', error);
 		localStorage.removeItem("user");
 		setAuthorizationToken();
 	}
