@@ -10,6 +10,7 @@ import {
 	Modal,
 	FloatButton,
 	message,
+	Tooltip,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
@@ -19,15 +20,15 @@ import axios from "@/lib/axiosPrivate";
 
 const EditableTable = ({
 	dataSource,
-	setDataSource = () => {},
+	setDataSource = () => { },
 	loading = false,
-	setSorterField = () => {},
-	setSorterOrder = () => {},
+	setSorterField = () => { },
+	setSorterOrder = () => { },
 	searchedColumn = [""],
-	setSearchedColumn = () => {},
+	setSearchedColumn = () => { },
 	searchText = [""],
-	setSearchText = () => {},
-	handleReset = () => {},
+	setSearchText = () => { },
+	handleReset = () => { },
 }) => {
 	const searchInput = useRef(null);
 	const [editedData, setEditedData] = useState([]);
@@ -46,10 +47,6 @@ const EditableTable = ({
 			let order = sorter.order === "descend" ? "desc" : "asc";
 			setSorterOrder(order);
 		}
-	};
-
-	const textColumnSorter = (a, b) => {
-		return a.localeCompare(b);
 	};
 
 	const getColumnSearchProps = (dataIndex) => ({
@@ -110,19 +107,6 @@ const EditableTable = ({
 					>
 						Reset
 					</Button>
-					{/* <Button
-						type="link"
-						size="small"
-						onClick={() => {
-							confirm({
-								closeDropdown: false,
-							});
-							setSearchText([selectedKeys[0]]);
-							setSearchedColumn([dataIndex]);
-						}}
-					>
-						Filter
-					</Button> */}
 					<Button
 						type="link"
 						size="small"
@@ -179,7 +163,7 @@ const EditableTable = ({
 		});
 
 		try {
-			const response = await axios.delete("/api/admin/student", {
+			const response = await axios.delete("/api/admin/staff", {
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
@@ -226,7 +210,6 @@ const EditableTable = ({
 			title: "Aided/Unaided",
 			dataIndex: "aided/unaided",
 			key: "aided/unaided",
-			editable: true,
 			sorter: (a, b) => a["aided/unaided"] - b["aided/unaided"],
 		},
 		{
@@ -257,6 +240,7 @@ const EditableTable = ({
 				) : null,
 		},
 	];
+
 	const components = {
 		body: {
 			row: EditableRow,
@@ -368,7 +352,9 @@ const EditableTable = ({
 				onChange={handleTableChange}
 				rowKey={(record) => record.id}
 			/>
-			<FloatButton onClick={showModal}>Show Edited Rows</FloatButton>
+			<Tooltip title="save changes">
+				<FloatButton type="primary" onClick={showModal} shape="square" />
+			</Tooltip>
 
 			{isModalVisible && <EditedRowsModal />}
 		</div>

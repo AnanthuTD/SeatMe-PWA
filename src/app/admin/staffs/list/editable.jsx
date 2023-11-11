@@ -2,24 +2,16 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
+import SelectDepartment from "../../components/select";
 
-async function fetchOpenCourses(programId, isAided) {
-	console.log(programId, isAided);
-	const apiUrl = "/api/admin/open-courses";
-
-	let openCourses = [];
+const loadDepartments = async () => {
 	try {
-		const response = await axios.get(apiUrl, {
-			params: { programId, isAided },
-		});
-		openCourses = response.data;
-		console.log(JSON.stringify(openCourses, null, 2));
-	} catch (err) {
-
+		const result = await axios.get("/api/admin/departments");
+		return (result.data);
+	} catch (error) {
+		console.error("Error fetching departments: ", error);
 	}
-
-	return openCourses;
-}
+};
 
 const EditableContext = React.createContext(null);
 
@@ -44,7 +36,7 @@ const EditableCell = ({
 	...restProps
 }) => {
 	const [editing, setEditing] = useState(false);
-	const [openCourses, setOpenCourses] = useState([]);
+	const [departments, setDepartments] = useState([]);
 	const inputRef = useRef(null);
 	const form = useContext(EditableContext);
 
@@ -57,13 +49,10 @@ const EditableCell = ({
 	}, [editing]);
 
 	useEffect(() => {
-		if (dataIndex === "openCourseId") {
+		if (dataIndex === "departmentName") {
 			const fun = async () => {
-				const openCourses = await fetchOpenCourses(
-					record.programId,
-					record["program.isAided"],
-				);
-				setOpenCourses(openCourses);
+				const departments = await loadDepartments();
+				setDepartments(departments);
 			};
 			fun();
 		}
@@ -105,13 +94,8 @@ const EditableCell = ({
 					},
 				]}
 			>
-				{dataIndex === "openCourseId" ? (
-					<Select
-						options={openCourses}
-						ref={inputRef}
-						onSelect={save}
-						fieldNames={{label:'name', value:'id'}}
-					/>
+				{dataIndex === "departmentName" ? (
+					<SelectDepartment options={departments} onChange={save} />
 				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />
 				)}
