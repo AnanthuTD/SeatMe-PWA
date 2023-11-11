@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
 	Button,
 	Input,
 	Table,
 	Space,
 	Popconfirm,
-	Modal,
-	FloatButton,
 	message,
-	Tooltip,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
@@ -31,8 +28,6 @@ const EditableTable = ({
 	handleReset = () => { },
 }) => {
 	const searchInput = useRef(null);
-	const [editedData, setEditedData] = useState([]);
-	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
 		setSearchText([selectedKeys[0]]);
@@ -163,14 +158,14 @@ const EditableTable = ({
 		});
 
 		try {
-			const response = await axios.delete("/api/admin/staff", {
+			await axios.delete(`/api/admin/staff/${id}`, {
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
-			message.success(response.data.message); // Assuming your response has a "message" field
+			message.success('Deleted successfully!');
 		} catch (error) {
 			console.error(error);
-			message.error(error.response.data.error);
+			message.error("Deletion failed!");
 		}
 	};
 
@@ -264,100 +259,39 @@ const EditableTable = ({
 		};
 	});
 
-	const handleSave = (row) => {
-		console.log(row);
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.id === item.id);
-
-		if (index > -1) {
-			const item = newData[index];
-			newData.splice(index, 1, {
-				...item,
-				...row,
-			});
-
-			// Check if row is not already in editedData
-			if (!editedData.some((editedRow) => editedRow.id === row.id)) {
-				setEditedData([...editedData, row]);
-			} else {
-				// If the row is already in editedData, update it instead of adding a duplicate
-				const updatedEditedData = editedData.map((editedRow) =>
-					editedRow.id === row.id
-						? { ...editedRow, ...row }
-						: editedRow,
-				);
-				setEditedData(updatedEditedData);
-			}
-		}
-
-		setDataSource(newData);
-	};
-
-	const showModal = () => {
-		setIsModalVisible(true);
-	};
-
-	const handleCancel = () => {
-		setIsModalVisible(false);
-	};
-
-	const handleUpdate = async () => {
+	const handleSave = async (row) => {
 		try {
-			const response = await axios.patch("/api/admin/staff", editedData);
-			setEditedData(response.data);
-			if (response.data.length > 0) {
-				message.warning("unable to update some records");
-			} else {
-				handleCancel();
+			console.log(row);
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => row.id === item.id);
+			row.departmentId = row.departmentName;
+
+			if (index > -1) {
+				const item = newData[index];
+				newData.splice(index, 1, {
+					...item,
+					...row,
+				});
+				await axios.patch(`/api/admin/staff/${row.id}`, row);
 				message.success("Updated successfully");
+				setDataSource(newData);
 			}
 		} catch (error) {
-			message.error(error.response.data.error);
+			message.error('Something went wrong! unable to update!')
 		}
-	};
-
-	const EditedRowsModal = () => {
-		return (
-			<Modal
-				title="Edited Rows"
-				open={isModalVisible}
-				onOk={handleUpdate}
-				onCancel={handleCancel}
-				style={{ maxHeight: "80vh" }}
-				width={1000}
-			>
-				<Table
-					dataSource={editedData}
-					columns={defaultColumns}
-					pagination={false}
-					rowKey={(record) => record.key}
-					style={{
-						overflowY: "auto",
-						maxHeight: "calc(80vh - 100px)",
-					}}
-				/>
-			</Modal>
-		);
 	};
 
 	return (
-		<div>
-			<Table
-				components={components}
-				rowClassName={() => "editable-row"}
-				dataSource={dataSource}
-				columns={columns}
-				pagination={false}
-				loading={loading}
-				onChange={handleTableChange}
-				rowKey={(record) => record.id}
-			/>
-			<Tooltip title="save changes">
-				<FloatButton type="primary" onClick={showModal} shape="square" />
-			</Tooltip>
-
-			{isModalVisible && <EditedRowsModal />}
-		</div>
+		<Table
+			components={components}
+			rowClassName={() => "editable-row"}
+			dataSource={dataSource}
+			columns={columns}
+			pagination={false}
+			loading={loading}
+			onChange={handleTableChange}
+			rowKey={(record) => record.id}
+		/>
 	);
 };
 
