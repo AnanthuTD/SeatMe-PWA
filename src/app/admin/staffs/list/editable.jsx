@@ -49,7 +49,7 @@ const EditableCell = ({
 	}, [editing]);
 
 	useEffect(() => {
-		if (dataIndex === "departmentName") {
+		if (dataIndex === "departmentId") {
 			const fun = async () => {
 				const departments = await loadDepartments();
 				setDepartments(departments);
@@ -94,7 +94,7 @@ const EditableCell = ({
 					},
 				]}
 			>
-				{dataIndex === "departmentName" ? (
+				{dataIndex === "departmentId" ? (
 					<SelectDepartment options={departments} onChange={save} />
 				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />

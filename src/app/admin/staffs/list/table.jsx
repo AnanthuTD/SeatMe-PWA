@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
 	Button,
 	Input,
@@ -8,12 +8,14 @@ import {
 	Space,
 	Popconfirm,
 	message,
+	Tag
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import Highlighter from "react-highlight-words";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
+import PasswordUpdateModal from "./passwordUpdateModel";
 
 const EditableTable = ({
 	dataSource,
@@ -176,6 +178,7 @@ const EditableTable = ({
 			key: "id",
 			...getColumnSearchProps("id"),
 			sorter: true,
+			fixed: 'left',
 		},
 		{
 			title: "Name",
@@ -187,11 +190,17 @@ const EditableTable = ({
 		},
 		{
 			title: "Department",
-			dataIndex: "departmentName",
+			dataIndex: "departmentId",
 			key: "departmentId",
 			...getColumnSearchProps("departmentId"),
 			editable: true,
 			sorter: true,
+			render: (_, record) =>
+				dataSource.length >= 1 ? (
+					<span className="flex gap-1">
+						{record.departmentName}
+					</span>
+				) : null,
 		},
 		{
 			title: "Designation",
@@ -222,16 +231,24 @@ const EditableTable = ({
 			...getColumnSearchProps("phone"),
 		},
 		{
-			title: "operation",
+			title: "Operation",
 			dataIndex: "operation",
+			fixed: 'right',
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
-					<Popconfirm
-						title="Sure to delete?"
-						onConfirm={() => handleDelete(record.id)}
-					>
-						<a>Delete</a>
-					</Popconfirm>
+					<span className="flex gap-1">
+						{dataSource.length >= 1 && (
+							<Tag color="red" className="cursor-pointer">
+								<Popconfirm
+									title="Sure to delete?"
+									onConfirm={() => handleDelete(record.id)}
+								>
+									Delete
+								</Popconfirm>
+							</Tag>
+						)}
+						<Tag color="gold" className="cursor-pointer" onClick={() => showPasswordUpdateModal(record.id)}>Password</Tag>
+					</span>
 				) : null,
 		},
 	];
@@ -264,7 +281,7 @@ const EditableTable = ({
 			console.log(row);
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => row.id === item.id);
-			row.departmentId = row.departmentName;
+			// row.departmentId = row.departmentName;
 
 			if (index > -1) {
 				const item = newData[index];
@@ -281,17 +298,53 @@ const EditableTable = ({
 		}
 	};
 
+	const [passwordUpdateModalVisible, setPasswordUpdateModalVisible] = useState(false);
+	const [selectedStaffId, setSelectedStaffId] = useState(null);
+
+	const showPasswordUpdateModal = (staffId) => {
+		setSelectedStaffId(staffId);
+		setPasswordUpdateModalVisible(true);
+	};
+
+	const hidePasswordUpdateModal = () => {
+		setSelectedStaffId(null);
+		setPasswordUpdateModalVisible(false);
+	};
+
+	const handlePasswordUpdate = async (newPassword) => {
+		try {
+			const response = await axios.patch(`/api/admin/staff/update-password`, {
+				staffId: selectedStaffId,
+				newPassword: newPassword,
+			});
+
+			if (response.status === 200)
+				message.success(response.data.message)
+			else message.warning(response.data.message);
+		} catch (error) {
+			console.error('Error:', error);
+			message.error(error.response.data.message || 'Something went wrong!');
+		}
+	};
+
 	return (
-		<Table
-			components={components}
-			rowClassName={() => "editable-row"}
-			dataSource={dataSource}
-			columns={columns}
-			pagination={false}
-			loading={loading}
-			onChange={handleTableChange}
-			rowKey={(record) => record.id}
-		/>
+		<>
+			<Table
+				components={components}
+				rowClassName={() => "editable-row"}
+				dataSource={dataSource}
+				columns={columns}
+				pagination={false}
+				loading={loading}
+				onChange={handleTableChange}
+				rowKey={(record) => record.id}
+			/>
+			<PasswordUpdateModal
+				visible={passwordUpdateModalVisible}
+				onCancel={hidePasswordUpdateModal}
+				onOk={handlePasswordUpdate}
+			/>
+		</>
 	);
 };
 
