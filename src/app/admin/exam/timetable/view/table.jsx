@@ -7,14 +7,17 @@ import {
 	Space,
 	Table,
 	Form,
-	InputNumber,
 	Popconfirm,
 	Typography,
 	DatePicker,
+	Select,
+	message,
+	Tag
 } from "antd";
 import "./table.css";
 import dayjs from "dayjs";
 import Link from "next/link";
+import axios from "@/lib/axiosPrivate";
 
 const EditableCell = ({
 	editing,
@@ -29,7 +32,10 @@ const EditableCell = ({
 	if (!record) return <td {...restProps}>{children}</td>;
 
 	const inputNode =
-		inputType === "date" ? <DatePicker format="YYYY-MM-DD" /> : <Input />;
+		inputType === "date" ? <DatePicker format="YYYY-MM-DD" /> : <Select style={{ width: 120 }}>
+			<Select.Option value="AN">AN</Select.Option>
+			<Select.Option value="FN">FN</Select.Option>
+		</Select>;
 
 	return (
 		<td {...restProps}>
@@ -57,6 +63,7 @@ const EditableCell = ({
 
 const App = ({
 	dataSource,
+	setData = () => { },
 	loading = false,
 	setSorterField = () => { },
 	setSorterOrder = () => { },
@@ -193,6 +200,28 @@ const App = ({
 	const [form] = Form.useForm();
 	const [editingKey, setEditingKey] = useState("");
 
+	const handleDelete = async (id) => {
+		try {
+			const response = await axios.delete(`/api/admin/exams/${id}`); // Adjust the endpoint as per your server API
+
+			if (response.status === 200) {
+				const newData = [...dataSource];
+				const index = newData.findIndex((item) => id === item.id);
+				if (index > -1) {
+					newData.splice(index, 1);
+					setData(newData);
+				}
+				message.success('Record deleted successfully!');
+			} else {
+				message.error(response.data.error || 'Failed to delete record.');
+			}
+		} catch (error) {
+			message.error('Error deleting record!');
+			console.error('Error deleting record:', error);
+		}
+	};
+
+
 	const isEditing = (record) => record.id === editingKey;
 
 	const edit = (record) => {
@@ -204,8 +233,23 @@ const App = ({
 		setEditingKey(record.id);
 	};
 
-	const cancel = () => {
-		setEditingKey("");
+	const cancel = (record) => {
+		try {
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => record.id === item.id);
+			if (index > -1) {
+				const item = newData[index];
+				record.date = dayjs(record.date).format('YYYY-MM-DD');
+				newData.splice(index, 1, {
+					...item,
+					...record,
+				});
+				setData(newData);
+				setEditingKey("");
+			}
+		} catch (error) {
+			console.error('try refreshing', error);
+		}
 	};
 
 	const save = async (id) => {
@@ -213,20 +257,26 @@ const App = ({
 			const row = await form.validateFields();
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => id === item.id);
+
 			if (index > -1) {
 				const item = newData[index];
+				row.date = dayjs(row.date).format('YYYY-MM-DD');
 				newData.splice(index, 1, {
 					...item,
 					...row,
 				});
+
+				console.log(JSON.stringify(newData));
+
+				await axios.put(`/api/admin/exams/${id}`, row);
+
 				setData(newData);
 				setEditingKey("");
-			} else {
-				newData.push(row);
-				setData(newData);
-				setEditingKey("");
+
+				message.success('Data updated successfully!');
 			}
 		} catch (errInfo) {
+			message.error("Validate Failed!")
 			console.log("Validate Failed:", errInfo);
 		}
 	};
@@ -293,25 +343,25 @@ const App = ({
 						>
 							Save
 						</Typography.Link>
-						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+						<Popconfirm title="Sure to cancel?" onConfirm={() => cancel(record)}>
 							<a>Cancel</a>
 						</Popconfirm>
 					</span>
 				) : (
 					<span className="gap-2 flex">
-						<Link href={`/admin/exam/timetable/view/${record.id}`}>Attendance</Link>
-						<Typography.Link
-							disabled={editingKey !== ""}
-							onClick={() => edit(record)}
-						>
+						<Link href={`/admin/exam/timetable/view/${record.id}`}><Tag color="green">Attendance</Tag></Link>
+						<Tag color="orange" className="cursor-pointer" disabled={editingKey !== ""}
+							onClick={() => edit(record)}>
 							Edit
-						</Typography.Link>
-						<Popconfirm
-							title="Sure to delete?"
-							onConfirm={() => handleDelete(record.id)}
-						>
-							<a>Delete</a>
-						</Popconfirm>
+						</Tag>
+						<Tag color="red" className="cursor-pointer">
+							<Popconfirm
+								title="Sure to delete?"
+								onConfirm={() => handleDelete(record.id)}
+							>
+								Delete
+							</Popconfirm>
+						</Tag>
 					</span>
 				);
 			},

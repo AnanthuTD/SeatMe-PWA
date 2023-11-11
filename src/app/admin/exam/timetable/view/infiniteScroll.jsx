@@ -111,9 +111,11 @@ const App = () => {
 			}
 			endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
 			scrollableTarget="scrollableDiv"
+			className="mt-3"
 		>
 			<Table
 				dataSource={data}
+				setData={setData}
 				loading={loading}
 				setSorterField={setSorterField}
 				setSorterOrder={setSorterOrder}
