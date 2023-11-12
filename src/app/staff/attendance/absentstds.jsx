@@ -1,25 +1,27 @@
 import React from "react";
 import { message } from "antd";
 import axios from "@/lib/axiosPrivate";
+import { useState } from "react";
 
 function absentstds({ data, conform, setConform }) {
 	const absentees = data.filter((std) => !std.isPresent);
 	const confirmpage = () => {
 		setConform(!conform);
 	};
+	const [Submited , setSubmited] = useState(false);
 
 	const finished = async (absentstd) => {
 		try {
 			const result = await axios.post("/api/staff/attendance", absentstd);
 			if (result.status == 200) {
 				//	message.success(result.data);
-				return true;
+				setSubmited(true);
 			} else {
 				//	message.error(result.data)
 				return false;
 			}
 		} catch (error) {
-			//message.error("Error while making the request:", error.message);
+			message.error("Error while making the request:", error.message);
 		}
 		return false;
 	};

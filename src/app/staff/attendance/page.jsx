@@ -69,7 +69,7 @@ function page() {
 						className=" ml-36 mt-5 mb-4  px-4 py-3 bg-blue-600 border-blue-600  rounded-3xl border-4 "
 						onClick={() => confirmpage()}
 					>
-						<p className="text-lg  text-white  "> Submit</p>
+						<p className="text-lg  text-white"> Submit</p>
 					</button>
 				</>
 			)}
