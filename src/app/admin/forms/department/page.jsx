@@ -11,7 +11,8 @@ import {
 	Card,
 	message,
 	Alert,
-    FloatButton
+    FloatButton,
+	Table
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/axiosInstance";
@@ -25,7 +26,7 @@ const DynamicDepartmentForm = () => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/department", {
+			const result = await axios.post("/api/admin/departmententry/department", {
 				departments: values.departments,
 			});
 			if (result.status === 200) {
@@ -51,10 +52,24 @@ const DynamicDepartmentForm = () => {
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
+	const [departments, setDepartments] = useState([]);
 
+	const loadDepartments = async () => {
+		try {
+		const result = await axios.get("/api/admin/departments");
+		setDepartments(result.data);
+		} catch (error) {
+		console.error("Error fetching departments: ", error);
+		}
+	};
+	useEffect(() => {
+		// Load departments when the component mounts
+		loadDepartments();
+	  }, []);
 	useEffect(() => {
 		form.setFieldsValue({ departments: [{}] });
 	}, [form]);
+
 
 	return (
 		<div className="p-3">
@@ -155,7 +170,28 @@ const DynamicDepartmentForm = () => {
 					</Col>
 				</Row>
 			</Form>
+			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
+				<Table
+				dataSource={departments}
+				columns={[
+					{
+					title: 'ID',
+					dataIndex: 'id',
+					key: 'id',
+					},
+					{
+					title: 'Name',
+					dataIndex: 'name',
+					key: 'name',
+					},
+				]}
+				pagination={false}
+				style={{ width: '100%' }}
+				/>
+			</Card>
+
 		</div>
+		
 	);
 };
 

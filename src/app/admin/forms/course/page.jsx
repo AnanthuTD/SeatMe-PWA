@@ -12,7 +12,8 @@ import {
 	message,
 	Alert,
 	Select,
-    FloatButton
+    FloatButton,
+	Table
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/axiosInstance";
@@ -42,7 +43,7 @@ const DynamicCourseForm = () => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/courses", {
+			const result = await axios.post("/api/admin/courseentry/course", {
 				courses: values.courses,
 			});
 			if (result.status === 200) {
@@ -70,6 +71,20 @@ const DynamicCourseForm = () => {
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
+	const [courses, setCourses] = useState([]);
+
+	const loadCourses = async () => {
+		try {
+		const result = await axios.get("/api/admin/courses");
+		setCourses(result.data);
+		} catch (error) {
+		console.error("Error fetching courses: ", error);
+		}
+	};
+	useEffect(() => {
+		// Load departments when the component mounts
+		loadCourses();
+	  }, []);
 
 	useEffect(() => {
 		form.setFieldsValue({ courses: [{}] });
@@ -239,6 +254,36 @@ const DynamicCourseForm = () => {
 					</Col>
 				</Row>
 			</Form>
+			<Card size="small" title="Courses" style={{ marginTop: 16 }}>
+				<Table
+				dataSource={courses}
+				columns={[
+					{
+					title: 'ID',
+					dataIndex: 'id',
+					key: 'id',
+					},
+					{
+					title: 'Name',
+					dataIndex: 'name',
+					key: 'name',
+					},
+					{
+					title: 'Semester',
+					dataIndex: 'semester',
+					key: 'name',
+					},
+					{
+					title: 'Is Open Course',
+					dataIndex: 'name',
+					key: 'name',
+					},
+
+				]}
+				pagination={false}
+				style={{ width: '100%' }}
+				/>
+			</Card>
 		</div>
 	);
 };
