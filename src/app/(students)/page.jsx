@@ -22,12 +22,6 @@ const App = () => {
 	const onFinish = async (values) => {
 		localStorage.setItem('rememberedRegisterId', values.studentId.toString());
 
-		if (values.rememberMe) {
-			localStorage.setItem('rememberMe', 'true');
-		} else {
-			localStorage.removeItem('rememberMe');
-		}
-
 		const result = await axios.get("api/", {
 			params: { studentId: values.studentId },
 		});
@@ -37,16 +31,14 @@ const App = () => {
 
 	useEffect(() => {
 		const storedRegisterId = localStorage.getItem('rememberedRegisterId');
-		const shouldRemember = localStorage.getItem('rememberMe') === 'true';
 
-		if (storedRegisterId && shouldRemember) {
-			form.setFieldsValue({ studentId: parseInt(storedRegisterId), rememberMe: shouldRemember });
+		if (storedRegisterId) {
+			form.setFieldsValue({ studentId: parseInt(storedRegisterId) });
 		}
 	}, [form]);
 
 	const onReset = () => {
 		localStorage.removeItem('rememberedRegisterId');
-		localStorage.removeItem('rememberMe');
 		form.resetFields();
 	};
 	return (
@@ -75,32 +67,18 @@ const App = () => {
 						>
 							<InputNumber style={{ width: "100%" }} />
 						</Form.Item>
-						<Row className="w-full" justify="center" align="middle">
-							<Col xs={24} sm={12} md={10} lg={6} xl={4}>
-								<Form.Item name="rememberMe" valuePropName="checked" {...tailLayout}>
-									<Checkbox>Remember me</Checkbox>
-								</Form.Item>
-							</Col>
-							<Col xs={24} sm={12} md={14} lg={18} xl={20}>
-								<Row className="w-full" justify="center" align="middle">
-
-									<Col xs={12} sm={12} md={8} lg={6} xl={4} justify="center" align="middle">
-										<Form.Item>
-											<Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
-												Submit
-											</Button>
-										</Form.Item>
-									</Col>
-									<Col xs={12} sm={12} md={8} lg={6} xl={4} justify="center" align="middle">
-										<Form.Item>
-											<Button htmlType="button" onClick={onReset}>
-												Reset
-											</Button>
-										</Form.Item>
-									</Col>
-								</Row>
-							</Col>
-						</Row>
+						<Form.Item {...tailLayout}>
+							<Button type="primary" htmlType="submit">
+								Submit
+							</Button>
+							<Button
+								htmlType="button"
+								onClick={onReset}
+								className="m-1"
+							>
+								Reset
+							</Button>
+						</Form.Item>
 
 					</Form>
 				</div>
