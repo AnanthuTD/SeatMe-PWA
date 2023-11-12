@@ -19,26 +19,117 @@ const App = () => {
 	const [seatingInfo, setSeatingInfo] = useState(undefined);
 	const [upcomingExams, setUpcomingExams] = useState([]);
 
-	const onFinish = async (values) => {
-		localStorage.setItem('rememberedRegisterId', values.studentId.toString());
+	const storeUpcomingExamsInLocalStorage = (examsData) => {
+		const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 1 day in milliseconds
+		const storageData = {
+			expirationTime,
+			examsData,
+		};
 
-		const result = await axios.get("api/", {
-			params: { studentId: values.studentId },
-		});
-
-		setSeatingInfo(result.data || undefined);
+		localStorage.setItem('upcomingExams', JSON.stringify(storageData));
 	};
 
-	useEffect(() => {
-		const storedRegisterId = localStorage.getItem('rememberedRegisterId');
+	const getUpcomingExamsFromLocalStorage = () => {
+		const storedData = localStorage.getItem('upcomingExams');
+		if (!storedData) {
+			return null;
+		}
 
-		if (storedRegisterId) {
-			form.setFieldsValue({ studentId: parseInt(storedRegisterId) });
+		const { expirationTime, examsData } = JSON.parse(storedData);
+
+		if (expirationTime && new Date().getTime() > expirationTime) {
+			localStorage.removeItem('upcomingExams');
+			return null;
+		}
+
+		return examsData;
+	};
+
+	const onFinish = async (values) => {
+		const studentId = values.studentId.toString();
+		localStorage.setItem('rememberedRegisterId', studentId);
+
+		try {
+			const response = await axios.get("api/", {
+				params: { studentId: values.studentId },
+			});
+
+			const { data } = response;
+			const { seatingInfo } = data;
+
+			setSeatingInfo(seatingInfo);
+
+			const { programId, semester, openCourseId } = seatingInfo || {};
+			const userObject = { programId, semester, openCourseId, studentId };
+			localStorage.setItem('user', JSON.stringify(userObject));
+
+			const cachedExams = getUpcomingExamsFromLocalStorage();
+			if (cachedExams) {
+				const examsResponse = await axios.get("api/exams", {
+					params: { programId, semester, openCourseId },
+				});
+
+				const examsData = examsResponse.data;
+				console.log(examsData);
+				setUpcomingExams(examsData);
+			}
+		} catch (error) {
+			setSeatingInfo(undefined);
+			const storedUser = localStorage.getItem('user');
+			const userObject = JSON.parse(storedUser);
+			if (userObject) {
+				const { programId, semester, openCourseId, studentId: existingStudentId } = userObject
+				if (studentId === existingStudentId) {
+					if (!upcomingExams.length) {
+						const examsResponse = await axios.get("api/exams", {
+							params: { programId, semester, openCourseId },
+						});
+
+						const examsData = examsResponse.data;
+						console.log(examsData);
+						setUpcomingExams(examsData);
+					}
+					return;
+				}
+			}
+			axios.get(`api/exams/${values.studentId}`).then((response) => {
+				const { data } = response;
+				console.log(data);
+				setUpcomingExams(data);
+			});
+		}
+	}
+
+	useEffect(() => {
+		if (upcomingExams) {
+			storeUpcomingExamsInLocalStorage(upcomingExams);
+		}
+	}, [upcomingExams]);
+
+	useEffect(() => {
+		try {
+			const cachedExams = getUpcomingExamsFromLocalStorage();
+			if (cachedExams) {
+				setUpcomingExams(cachedExams);
+			}
+		} catch (error) {
+			console.error('Error retrieving cached exams from localStorage:', error);
+		}
+	}, []);
+
+	useEffect(() => {
+		const storedUser = localStorage.getItem('user');
+		const userObject = JSON.parse(storedUser);
+		const { studentId } = userObject;
+
+		if (studentId) {
+			form.setFieldsValue({ studentId: parseInt(studentId) });
 		}
 	}, [form]);
 
 	const onReset = () => {
-		localStorage.removeItem('rememberedRegisterId');
+		localStorage.removeItem('user');
+		localStorage.removeItem('upcomingExams');
 		form.resetFields();
 	};
 	return (
@@ -85,7 +176,7 @@ const App = () => {
 			</section >
 			<section className="w-full h-[60%]">
 				<div className="mx-auto w-full h-full">
-					<Segment seatingInfo={seatingInfo} />
+					<Segment seatingInfo={seatingInfo} upcomingExams={upcomingExams} />
 				</div>
 			</section>
 		</div >

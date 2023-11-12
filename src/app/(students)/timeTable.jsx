@@ -1,22 +1,10 @@
 import React from "react";
 import { Descriptions } from "antd";
 
-const TimeTable = ({ data }) => {
-	const convertedData = data.map((value) => {
-		const dateParts = value.date?.split("-");
-		const formattedDate = dateParts
-			? `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`
-			: "not issued";
-		return {
-			date: formattedDate,
-			courseName: value.courseName,
-			timeCode: value.timeCode ? value.timeCode : "not issued",
-		};
-	});
-
+const TimeTable = ({ upcomingExams }) => {
 	return (
 		<div>
-			{convertedData.map((item, index) => (
+			{upcomingExams.map((item, index) => (
 				<div key={index} className="mb-4">
 					{" "}
 					<Descriptions
