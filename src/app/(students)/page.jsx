@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button, Form, InputNumber } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Form, InputNumber, Checkbox, Row, Space, Col } from "antd";
 import Segment from "./segment";
 import axios from "@/lib/axiosPublic";
 
@@ -14,55 +14,41 @@ const tailLayout = {
 	wrapperCol: { offset: 8, span: 16 },
 };
 
-/**
- * @param {Object} props - The component's props.
- * @param {import('antd').FormInstance} props.form - The form instance to associate with the SubmitButton.
- * @returns {JSX.Element} - The rendered JSX element.
- * */
-const SubmitButton = ({ form }) => {
-	const [submittable, setSubmittable] = React.useState(false);
-
-	// Watch all values
-	const values = Form.useWatch([], form);
-
-	React.useEffect(() => {
-		form.validateFields({ validateOnly: true }).then(
-			() => {
-				setSubmittable(true);
-			},
-			() => {
-				setSubmittable(false);
-			},
-		);
-	}, [values]);
-
-	return (
-		<Button type="primary" htmlType="submit" disabled={!submittable}>
-			Submit
-		</Button>
-	);
-};
-
 const App = () => {
 	const [form] = Form.useForm();
-	const [data, setData] = useState([]);
+	const [seatingInfo, setSeatingInfo] = useState(undefined);
+	const [upcomingExams, setUpcomingExams] = useState([]);
 
 	const onFinish = async (values) => {
+		localStorage.setItem('rememberedRegisterId', values.studentId.toString());
+
+		if (values.rememberMe) {
+			localStorage.setItem('rememberMe', 'true');
+		} else {
+			localStorage.removeItem('rememberMe');
+		}
+
 		const result = await axios.get("api/", {
 			params: { studentId: values.studentId },
 		});
-		
-		setData(result.data);
+
+		setSeatingInfo(result.data || undefined);
 	};
+
+	useEffect(() => {
+		const storedRegisterId = localStorage.getItem('rememberedRegisterId');
+		const shouldRemember = localStorage.getItem('rememberMe') === 'true';
+
+		if (storedRegisterId && shouldRemember) {
+			form.setFieldsValue({ studentId: parseInt(storedRegisterId), rememberMe: shouldRemember });
+		}
+	}, [form]);
 
 	const onReset = () => {
+		localStorage.removeItem('rememberedRegisterId');
+		localStorage.removeItem('rememberMe');
 		form.resetFields();
 	};
-
-	const onChange = (key) => {
-		console.log(key);
-	};
-
 	return (
 		<div className="flex h-screen flex-col w-full p-5 overflow-hidden">
 			<section className="h-[40%] flex justify-center items-center w-full">
@@ -81,33 +67,50 @@ const App = () => {
 								{
 									required: true,
 									type: "number",
-									// min: 10000000000,
-									// max: 300000,
+									min: 100000000000,
+									max: 999999999999,
 									message: "Invalid Register number",
 								},
 							]}
 						>
 							<InputNumber style={{ width: "100%" }} />
 						</Form.Item>
-						<Form.Item {...tailLayout}>
-							<SubmitButton form={form} />
-							<Button
-								htmlType="button"
-								onClick={onReset}
-								className="m-1"
-							>
-								Reset
-							</Button>
-						</Form.Item>
+						<Row className="w-full" justify="center" align="middle">
+							<Col xs={24} sm={12} md={10} lg={6} xl={4}>
+								<Form.Item name="rememberMe" valuePropName="checked" {...tailLayout}>
+									<Checkbox>Remember me</Checkbox>
+								</Form.Item>
+							</Col>
+							<Col xs={24} sm={12} md={14} lg={18} xl={20}>
+								<Row className="w-full" justify="center" align="middle">
+
+									<Col xs={12} sm={12} md={8} lg={6} xl={4} justify="center" align="middle">
+										<Form.Item>
+											<Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
+												Submit
+											</Button>
+										</Form.Item>
+									</Col>
+									<Col xs={12} sm={12} md={8} lg={6} xl={4} justify="center" align="middle">
+										<Form.Item>
+											<Button htmlType="button" onClick={onReset}>
+												Reset
+											</Button>
+										</Form.Item>
+									</Col>
+								</Row>
+							</Col>
+						</Row>
+
 					</Form>
 				</div>
-			</section>
+			</section >
 			<section className="w-full h-[60%]">
 				<div className="mx-auto w-full h-full">
-					<Segment data={data} />
+					<Segment seatingInfo={seatingInfo} />
 				</div>
 			</section>
-		</div>
+		</div >
 	);
 };
 
