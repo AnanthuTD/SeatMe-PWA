@@ -7,7 +7,7 @@ import DownloadButton from "./download";
 function TeacherAssignment({
 	rooms = [],
 	roomTeachers = {},
-	setRoomTeachers = () => {},
+	setRoomTeachers = () => { },
 	dateTime = { date: new Date(), timeCode: "AN" },
 }) {
 	const [departments, setDepartments] = useState([]);
@@ -16,9 +16,8 @@ function TeacherAssignment({
 	const [failedAssignments, setFailedAssignments] = useState([]);
 	const [visibleDownloadButton, setVisibleDownloadButton] = useState(false);
 
-	const pdfFileName = `${dateTime.date.toISOString().split("T")[0]}-${
-		dateTime.timeCode
-	}.pdf`;
+	const pdfFileName = `${dateTime.date.toISOString().split("T")[0]}-${dateTime.timeCode
+		}.pdf`;
 
 	const loadDepartments = async () => {
 		try {
@@ -110,16 +109,18 @@ function TeacherAssignment({
 			<h2 className="text-xl font-bold mb-4">Teacher Assignment</h2>
 			<Collapse accordion collapsible="icon" items={Items} />
 			<Divider />
-			<Button
-				type="primary"
-				onClick={handleAssign}
-				loading={isSubmitting}
-			>
-				Assign
-			</Button>
-			{visibleDownloadButton ? (
-				<DownloadButton fileName={pdfFileName} />
-			) : null}
+			<div className="flex gap-3">
+				<Button
+					type="primary"
+					onClick={handleAssign}
+					loading={isSubmitting}
+				>
+					Assign
+				</Button>
+				{visibleDownloadButton ? (
+					<DownloadButton fileName={pdfFileName} />
+				) : null}
+			</div>
 		</div>
 	);
 }

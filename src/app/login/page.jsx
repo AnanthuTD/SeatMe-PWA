@@ -1,44 +1,12 @@
 "use client";
 import axios from "@/lib/axiosPublic";
-import {setAuthorizationToken} from "@/lib/axiosPrivate";
+import { setAuthorizationToken } from "@/lib/axiosPrivate";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, Form, Input, message } from "antd";
 import { useAccount } from "@/context/accountContext";
 import { useRouter } from "next/navigation";
 
-const onFinish = async (values, setUser, router) => {
-	// console.log('Success:', values);
-	try {
-		const response = await axios.post("api/auth/login/", values);
-		const { user, accessToken } = response.data;
-
-		localStorage.setItem("user", JSON.stringify(user));
-
-		setAuthorizationToken(accessToken);
-
-		console.log("user: ", response.data);
-
-		setUser(user);
-
-		if (user.isAdmin) {
-			router.push("/admin"); // Redirect to the admin page
-		} else {
-			router.push("/staff"); // Redirect to the staff page
-		}
-	} catch (error) {
-		if (error.response) {
-			if (error.response.status === 401) {
-				message.error(
-					"Unauthorized user. Please check your credentials.",
-				);
-			}
-		} else {
-			console.error("An error occurred:", error);
-			message.error("An error occurred!");
-		}
-	}
-};
 const onFinishFailed = (errorInfo) => {
 	console.log("Failed:", errorInfo);
 };
@@ -46,6 +14,41 @@ const onFinishFailed = (errorInfo) => {
 const Login = () => {
 	const { setUser } = useAccount();
 	const router = useRouter();
+	const [loading, setLoading] = useState(false)
+
+	const onFinish = async (values, setUser, router) => {
+		setLoading(true);
+		try {
+			const response = await axios.post("api/auth/login/", values);
+			const { user, accessToken } = response.data;
+
+			localStorage.setItem("user", JSON.stringify(user));
+
+			setAuthorizationToken(accessToken);
+
+			console.log("user: ", response.data);
+
+			setUser(user);
+
+			if (user.isAdmin) {
+				router.push("/admin"); // Redirect to the admin page
+			} else {
+				router.push("/staff"); // Redirect to the staff page
+			}
+		} catch (error) {
+			if (error.response) {
+				if (error.response.status === 401) {
+					message.error(
+						"Unauthorized user. Please check your credentials.",
+					);
+				}
+			} else {
+				console.error("An error occurred:", error);
+				message.error("An error occurred!");
+			}
+		}
+		setLoading(false);
+	};
 
 	return (
 		<>
@@ -114,7 +117,7 @@ const Login = () => {
 								span: 16,
 							}}
 						>
-							<Button type="primary" htmlType="submit">
+							<Button type="primary" htmlType="submit" loading={loading}>
 								Login
 							</Button>
 						</Form.Item>

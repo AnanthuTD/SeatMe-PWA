@@ -7,31 +7,29 @@ import {
 	Table,
 	Space,
 	Popconfirm,
-	Modal,
-	FloatButton,
 	message,
+	Tag
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import Highlighter from "react-highlight-words";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
+import PasswordUpdateModal from "./passwordUpdateModel";
 
 const EditableTable = ({
 	dataSource,
-	setDataSource = () => {},
+	setDataSource = () => { },
 	loading = false,
-	setSorterField = () => {},
-	setSorterOrder = () => {},
+	setSorterField = () => { },
+	setSorterOrder = () => { },
 	searchedColumn = [""],
-	setSearchedColumn = () => {},
+	setSearchedColumn = () => { },
 	searchText = [""],
-	setSearchText = () => {},
-	handleReset = () => {},
+	setSearchText = () => { },
+	handleReset = () => { },
 }) => {
 	const searchInput = useRef(null);
-	const [editedData, setEditedData] = useState([]);
-	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
 		setSearchText([selectedKeys[0]]);
@@ -46,10 +44,6 @@ const EditableTable = ({
 			let order = sorter.order === "descend" ? "desc" : "asc";
 			setSorterOrder(order);
 		}
-	};
-
-	const textColumnSorter = (a, b) => {
-		return a.localeCompare(b);
 	};
 
 	const getColumnSearchProps = (dataIndex) => ({
@@ -110,19 +104,6 @@ const EditableTable = ({
 					>
 						Reset
 					</Button>
-					{/* <Button
-						type="link"
-						size="small"
-						onClick={() => {
-							confirm({
-								closeDropdown: false,
-							});
-							setSearchText([selectedKeys[0]]);
-							setSearchedColumn([dataIndex]);
-						}}
-					>
-						Filter
-					</Button> */}
 					<Button
 						type="link"
 						size="small"
@@ -171,22 +152,19 @@ const EditableTable = ({
 	});
 
 	const handleDelete = async (id) => {
-		let studentId = undefined;
+		let staffId = undefined;
 		const newData = dataSource.filter((item) => {
 			if (item.id !== id) return true;
-			console.log(item);
-			studentId = item.id;
+			staffId = item.id;
 		});
 
 		try {
-			const response = await axios.delete("/api/admin/student", {
-				params: { studentId: studentId },
-			});
+			await axios.delete(`/api/admin/staff/${id}`);
 			setDataSource(newData);
-			message.success(response.data.message); // Assuming your response has a "message" field
+			message.success('Deleted successfully!');
 		} catch (error) {
 			console.error(error);
-			message.error(error.response.data.error);
+			message.error("Deletion failed!");
 		}
 	};
 
@@ -197,6 +175,7 @@ const EditableTable = ({
 			key: "id",
 			...getColumnSearchProps("id"),
 			sorter: true,
+			fixed: 'left',
 		},
 		{
 			title: "Name",
@@ -208,11 +187,17 @@ const EditableTable = ({
 		},
 		{
 			title: "Department",
-			dataIndex: "departmentName",
+			dataIndex: "departmentId",
 			key: "departmentId",
 			...getColumnSearchProps("departmentId"),
 			editable: true,
 			sorter: true,
+			render: (_, record) =>
+				dataSource.length >= 1 ? (
+					<span className="flex gap-1">
+						{record.departmentName}
+					</span>
+				) : null,
 		},
 		{
 			title: "Designation",
@@ -226,7 +211,6 @@ const EditableTable = ({
 			title: "Aided/Unaided",
 			dataIndex: "aided/unaided",
 			key: "aided/unaided",
-			editable: true,
 			sorter: (a, b) => a["aided/unaided"] - b["aided/unaided"],
 		},
 		{
@@ -244,19 +228,28 @@ const EditableTable = ({
 			...getColumnSearchProps("phone"),
 		},
 		{
-			title: "operation",
+			title: "Operation",
 			dataIndex: "operation",
+			fixed: 'right',
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
-					<Popconfirm
-						title="Sure to delete?"
-						onConfirm={() => handleDelete(record.id)}
-					>
-						<a>Delete</a>
-					</Popconfirm>
+					<span className="flex gap-1">
+						{dataSource.length >= 1 && (
+							<Tag color="red" className="cursor-pointer">
+								<Popconfirm
+									title="Sure to delete?"
+									onConfirm={() => handleDelete(record.id)}
+								>
+									Delete
+								</Popconfirm>
+							</Tag>
+						)}
+						<Tag color="gold" className="cursor-pointer" onClick={() => showPasswordUpdateModal(record.id)}>Password</Tag>
+					</span>
 				) : null,
 		},
 	];
+
 	const components = {
 		body: {
 			row: EditableRow,
@@ -280,84 +273,62 @@ const EditableTable = ({
 		};
 	});
 
-	const handleSave = (row) => {
-		console.log(row);
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.id === item.id);
-
-		if (index > -1) {
-			const item = newData[index];
-			newData.splice(index, 1, {
-				...item,
-				...row,
-			});
-
-			// Check if row is not already in editedData
-			if (!editedData.some((editedRow) => editedRow.id === row.id)) {
-				setEditedData([...editedData, row]);
-			} else {
-				// If the row is already in editedData, update it instead of adding a duplicate
-				const updatedEditedData = editedData.map((editedRow) =>
-					editedRow.id === row.id
-						? { ...editedRow, ...row }
-						: editedRow,
-				);
-				setEditedData(updatedEditedData);
-			}
-		}
-
-		setDataSource(newData);
-	};
-
-	const showModal = () => {
-		setIsModalVisible(true);
-	};
-
-	const handleCancel = () => {
-		setIsModalVisible(false);
-	};
-
-	const handleUpdate = async () => {
+	const handleSave = async (row) => {
 		try {
-			const response = await axios.patch("/api/admin/staff", editedData);
-			setEditedData(response.data);
-			if (response.data.length > 0) {
-				message.warning("unable to update some records");
-			} else {
-				handleCancel();
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => row.id === item.id);
+
+			if (index > -1) {
+				const item = newData[index];
+				newData.splice(index, 1, {
+					...item,
+					...row,
+				});
+				await axios.patch(`/api/admin/staff/${row.id}`, row);
 				message.success("Updated successfully");
+				setDataSource(newData);
 			}
 		} catch (error) {
-			message.error(error.response.data.error);
+			if (error.response && error.response.status === 404) {
+				message.error('Staff not found!');
+			} else {
+				console.error('Error updating staff:', error);
+				message.error('Something went wrong! Unable to update.');
+			}
 		}
 	};
 
-	const EditedRowsModal = () => {
-		return (
-			<Modal
-				title="Edited Rows"
-				open={isModalVisible}
-				onOk={handleUpdate}
-				onCancel={handleCancel}
-				style={{ maxHeight: "80vh" }}
-				width={1000}
-			>
-				<Table
-					dataSource={editedData}
-					columns={defaultColumns}
-					pagination={false}
-					rowKey={(record) => record.key}
-					style={{
-						overflowY: "auto",
-						maxHeight: "calc(80vh - 100px)",
-					}}
-				/>
-			</Modal>
-		);
+	const [passwordUpdateModalVisible, setPasswordUpdateModalVisible] = useState(false);
+	const [selectedStaffId, setSelectedStaffId] = useState(null);
+
+	const showPasswordUpdateModal = (staffId) => {
+		setSelectedStaffId(staffId);
+		setPasswordUpdateModalVisible(true);
+	};
+
+	const hidePasswordUpdateModal = () => {
+		setSelectedStaffId(null);
+		setPasswordUpdateModalVisible(false);
+	};
+
+	const handlePasswordUpdate = async (newPassword) => {
+		try {
+			const response = await axios.patch(`/api/admin/staff/update-password`, {
+				staffId: selectedStaffId,
+				newPassword: newPassword,
+			});
+
+			if (response.status === 200)
+				message.success(response.data.message)
+			else message.warning(response.data.message);
+		} catch (error) {
+			console.error('Error:', error);
+			message.error(error.response.data.message || 'Something went wrong!');
+		}
 	};
 
 	return (
-		<div>
+		<>
 			<Table
 				components={components}
 				rowClassName={() => "editable-row"}
@@ -368,10 +339,12 @@ const EditableTable = ({
 				onChange={handleTableChange}
 				rowKey={(record) => record.id}
 			/>
-			<FloatButton onClick={showModal}>Show Edited Rows</FloatButton>
-
-			{isModalVisible && <EditedRowsModal />}
-		</div>
+			<PasswordUpdateModal
+				visible={passwordUpdateModalVisible}
+				onCancel={hidePasswordUpdateModal}
+				onOk={handlePasswordUpdate}
+			/>
+		</>
 	);
 };
 

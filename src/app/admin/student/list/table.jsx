@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	Button,
 	Input,
 	Table,
 	Space,
 	Popconfirm,
-	Modal,
-	FloatButton,
 	message,
+	Tag
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
@@ -19,19 +18,17 @@ import Highlighter from "react-highlight-words";
 
 const EditableTable = ({
 	dataSource,
-	setDataSource = () => {},
+	setDataSource = () => { },
 	loading = false,
-	setSorterField = () => {},
-	setSorterOrder = () => {},
+	setSorterField = () => { },
+	setSorterOrder = () => { },
 	searchedColumn = [""],
-	setSearchedColumn = () => {},
+	setSearchedColumn = () => { },
 	searchText = [""],
-	setSearchText = () => {},
-	handleReset = () => {},
+	setSearchText = () => { },
+	handleReset = () => { },
 }) => {
 	const searchInput = useRef(null);
-	const [editedData, setEditedData] = useState([]);
-	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
 		setSearchText([selectedKeys[0]]);
@@ -172,7 +169,6 @@ const EditableTable = ({
 		let studentId = undefined;
 		const newData = dataSource.filter((item) => {
 			if (item.id !== id) return true;
-			console.log(item);
 			studentId = item.id;
 		});
 
@@ -181,10 +177,10 @@ const EditableTable = ({
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
-			message.success(response.data.message); // Assuming your response has a "message" field
+			message.success(response.data.message || 'Deleted successfully!'); // Assuming your response has a "message" field
 		} catch (error) {
 			console.error(error);
-			message.error(error.response.data.error);
+			message.error(error.response.data.error || "Deletion failed!");
 		}
 	};
 
@@ -196,6 +192,7 @@ const EditableTable = ({
 			width: "10%",
 			sorter: (a, b) => a.id - b.id,
 			...getColumnSearchProps("id"),
+			fixed: 'left',
 		},
 		{
 			title: "Name",
@@ -225,11 +222,16 @@ const EditableTable = ({
 		},
 		{
 			title: "Program",
-			dataIndex: "programName",
-			key: "programName",
+			dataIndex: "programId",
+			key: "programId",
 			width: "20%",
 			editable: true,
-			sorter: (a, b) => a.programName - b.programName,
+			sorter: (a, b) => a.programId - b.programId,
+			render: (_, record) => (
+				<span>
+					{record.programName}
+				</span>
+			)
 		},
 		{
 			title: "aided",
@@ -240,7 +242,7 @@ const EditableTable = ({
 			title: "Open Course",
 			dataIndex: "openCourseId",
 			key: "openCourseId",
-			width: "20%",
+			width: "25%",
 			editable: true,
 			type: "select",
 		},
@@ -261,17 +263,36 @@ const EditableTable = ({
 		{
 			title: "operation",
 			dataIndex: "operation",
+			fixed: 'right',
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
-					<Popconfirm
-						title="Sure to delete?"
-						onConfirm={() => handleDelete(record.id)}
-					>
-						<a>Delete</a>
-					</Popconfirm>
+					<Tag color="red" className="cursor-pointer">
+						<Popconfirm
+							title="Sure to delete?"
+							onConfirm={() => handleDelete(record.id)}
+						>
+							Delete
+						</Popconfirm>
+					</Tag>
 				) : null,
 		},
 	];
+
+	const [programs, setPrograms] = useState([])
+
+	const loadPrograms = async () => {
+		try {
+			const result = await axios.get("/api/admin/programs");
+			setPrograms(result.data);
+		} catch (error) {
+			console.error("Error fetching programs: ", error);
+		}
+	};
+
+	useEffect(() => {
+		loadPrograms();
+	}, [])
+
 
 	const components = {
 		body: {
@@ -292,105 +313,48 @@ const EditableTable = ({
 				dataIndex: col.dataIndex,
 				title: col.title,
 				handleSave,
+				programs: programs
 			}),
 		};
 	});
 
-	const handleSave = (row) => {
-		console.log(row);
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.id === item.id);
-
-		if (index > -1) {
-			const item = newData[index];
-			newData.splice(index, 1, {
-				...item,
-				...row,
-			});
-
-			// Check if row is not already in editedData
-			if (!editedData.some((editedRow) => editedRow.id === row.id)) {
-				setEditedData([...editedData, row]);
-			} else {
-				// If the row is already in editedData, update it instead of adding a duplicate
-				const updatedEditedData = editedData.map((editedRow) =>
-					editedRow.id === row.id
-						? { ...editedRow, ...row }
-						: editedRow,
-				);
-				setEditedData(updatedEditedData);
-			}
-		}
-
-		setDataSource(newData);
-	};
-
-	const showModal = () => {
-		setIsModalVisible(true);
-	};
-
-	const handleCancel = () => {
-		setIsModalVisible(false);
-	};
-
-	const handleUpdate = async () => {
+	const handleSave = async (row) => {
 		try {
-			const response = await axios.patch(
-				"/api/admin/student",
-				editedData,
-			);
-			setEditedData(response.data);
-			if (response.data.length > 0) {
-				message.warning("unable to update some records");
-			} else {
-				handleCancel();
+
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => row.id === item.id);
+
+			if (index > -1) {
+				const item = newData[index];
+				newData.splice(index, 1, {
+					...item,
+					...row,
+				});
+				await axios.patch("/api/admin/student", row);
 				message.success("Updated successfully");
+				setDataSource(newData);
 			}
 		} catch (error) {
-			message.error(error.response.data.error);
+			if (error.response && error.response.status === 404) {
+				message.error('Student not found!');
+			} else {
+				console.error('Error updating student:', error);
+				message.error('Something went wrong! Unable to update.');
+			}
 		}
-	};
-
-	const EditedRowsModal = () => {
-		return (
-			<Modal
-				title="Edited Rows"
-				open={isModalVisible}
-				onOk={handleUpdate}
-				onCancel={handleCancel}
-				style={{ maxHeight: "80vh" }}
-				width={1000}
-			>
-				<Table
-					dataSource={editedData}
-					columns={defaultColumns}
-					pagination={false}
-					rowKey={(record) => record.key}
-					style={{
-						overflowY: "auto",
-						maxHeight: "calc(80vh - 100px)",
-					}}
-				/>
-			</Modal>
-		);
 	};
 
 	return (
-		<div>
-			<Table
-				components={components}
-				rowClassName={() => "editable-row"}
-				dataSource={dataSource}
-				columns={columns}
-				pagination={false}
-				loading={loading}
-				onChange={handleTableChange}
-				rowKey={(record) => record.id}
-			/>
-			<FloatButton onClick={showModal}>Show Edited Rows</FloatButton>
-
-			{isModalVisible && <EditedRowsModal />}
-		</div>
+		<Table
+			components={components}
+			rowClassName={() => "editable-row"}
+			dataSource={dataSource}
+			columns={columns}
+			pagination={false}
+			loading={loading}
+			onChange={handleTableChange}
+			rowKey={(record) => record.id}
+		/>
 	);
 };
 
