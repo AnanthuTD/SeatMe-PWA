@@ -11,14 +11,13 @@ import {
 	Divider,
 	Card,
 	message,
-	FloatButton
+	FloatButton,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 import Select from "../../components/select";
 import { FileExcelOutlined } from "@ant-design/icons";
 import Link from "next/link";
-
 
 const DynamicStudentForm = () => {
 	const [form] = Form.useForm();
@@ -49,16 +48,19 @@ const DynamicStudentForm = () => {
 			const result = await axios.post("/api/admin/staff", {
 				staffs: staffs,
 			});
-			if (result.status === 200) {
-				message.success(result.message);
+
+			const { data } = result;
+
+			if (result.status >= 200 && result.status < 300) {
+				message.success(data.message);
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			if (error.response.status === 400) {
 				message.error(
-					`Record with register number '${error.response.data.value}' already exists`,
+					`Record with register number '${data.value}' already exists`,
 				);
-			} else message.error("Something went wrong");
+			} else message.error(data.message || "Something went wrong");
 		}
 	};
 
@@ -85,7 +87,7 @@ const DynamicStudentForm = () => {
 
 	return (
 		<div className="p-3">
-			<Link href={"/admin/student/insert/import"}>
+			<Link href={"/admin/staffs/insert/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -150,17 +152,14 @@ const DynamicStudentForm = () => {
 												label="Registration No"
 												rules={[
 													{
-														type: "number",
+														type: "string",
 														required: true,
 														message:
 															"Please enter a valid register number",
-														/* max: 999999999999,
-														min: 100000000000, */
 													},
 												]}
 											>
-												<InputNumber
-													placeholder="Input a number"
+												<Input
 													controls={false}
 													style={{
 														width: "100%",
@@ -189,6 +188,14 @@ const DynamicStudentForm = () => {
 												label="Email"
 											>
 												<Input type="email" />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
+												name={[field.name, "password"]}
+												label="Password"
+											>
+												<Input type="password" />
 											</Form.Item>
 										</Col>
 										<Col>

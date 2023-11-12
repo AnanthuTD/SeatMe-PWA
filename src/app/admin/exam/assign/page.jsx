@@ -1,17 +1,30 @@
 "use client";
-
 import React, { useState } from "react";
 import RoomAssignmentForm from "./roomAssignmentForm";
-import View from "./view";
+import TeacherAssignment from "./teacherAssignment";
 
 function Page() {
-	const [isSubmit, setIsSubmit] = useState(false);
+	const [dateTime, setDateTime] = useState(undefined);
+	const [selectedRooms, setSelectedRooms] = useState([]);
+	const [roomTeachers, setRoomTeachers] = useState({});
+	const [assignTeachers, setAssignTeachers] = useState(false);
+
 	return (
 		<div>
-			{isSubmit ? (
-				<View classes={isSubmit}/>
+			{/* date is set when students are assigned seats successfully. */}
+			{assignTeachers ? (
+				<TeacherAssignment
+					rooms={selectedRooms}
+					roomTeachers={roomTeachers}
+					setRoomTeachers={setRoomTeachers}
+					date={dateTime}
+				/>
 			) : (
-				<RoomAssignmentForm setIsSubmit={setIsSubmit} />
+				<RoomAssignmentForm
+					setDateTime={setDateTime}
+					setSelectedRooms={setSelectedRooms}
+					setAssignTeachers={setAssignTeachers}
+				/>
 			)}
 		</div>
 	);

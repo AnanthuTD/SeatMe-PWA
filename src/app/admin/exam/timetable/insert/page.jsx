@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Select from "./select";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
 import { Row, Col, Divider, FloatButton, message } from "antd";
@@ -156,7 +156,7 @@ function Page() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/timetable", formData);
+			const result = await axios.post("/api/admin/exams/timetable", formData);
 			if (result.status >= 200 && result.status < 300) {
 				message.success(result.data)
 				return true;

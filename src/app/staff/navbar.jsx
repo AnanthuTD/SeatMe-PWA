@@ -16,8 +16,6 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
 
-
-
 const pages = ["Shedulde", "Attendence"];
 const settings = ["Profile", "Logout"];
 
@@ -100,20 +98,24 @@ function Navbar() {
 							}}
 						>
 							{pages.map((page) => (
-  											<MenuItem
-                                               key={page}
-                                           onClick={handleCloseNavMenu}
-                                             >
-        <Link
-		 href={page === "Shedulde" ? "/staff" : "/staff/attendance"} 
-		 style={{ textDecoration: "none" }}>
-            <Typography textAlign="center">
-                {page}
-            </Typography>
-        </Link>
-    </MenuItem>
-))}
-
+								<MenuItem
+									key={page}
+									onClick={handleCloseNavMenu}
+								>
+									<Link
+										href={
+											page === "Shedulde"
+												? "/staff"
+												: "/staff/attendance"
+										}
+										style={{ textDecoration: "none" }}
+									>
+										<Typography textAlign="center">
+											{page}
+										</Typography>
+									</Link>
+								</MenuItem>
+							))}
 						</Menu>
 					</Box>
 					<AdbIcon
@@ -144,14 +146,22 @@ function Navbar() {
 						}}
 					>
 						{pages.map((page) => (
-							    <Link
+							<Link
 								key={page}
-								href={page === "Shedulde" ? "/staff" : "/staff/attendance"}
+								href={
+									page === "Shedulde"
+										? "/staff"
+										: "/staff/attendance"
+								}
 								style={{ textDecoration: "none" }}
 							>
 								<Button
 									onClick={handleCloseNavMenu}
-									sx={{ my: 2, color: "white", display: "block" }}
+									sx={{
+										my: 2,
+										color: "white",
+										display: "block",
+									}}
 								>
 									{page}
 								</Button>

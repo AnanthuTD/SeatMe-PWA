@@ -1,18 +1,77 @@
 import { SearchOutlined } from "@ant-design/icons";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
-import { Button, Input, Space, Table } from "antd";
+import {
+	Button,
+	Input,
+	Space,
+	Table,
+	Form,
+	Popconfirm,
+	Typography,
+	DatePicker,
+	Select,
+	message,
+	Tag
+} from "antd";
+import "./table.css";
+import dayjs from "dayjs";
+import Link from "next/link";
+import axios from "@/lib/axiosPrivate";
+
+const EditableCell = ({
+	editing,
+	dataIndex,
+	title,
+	inputType,
+	record,
+	index,
+	children,
+	...restProps
+}) => {
+	if (!record) return <td {...restProps}>{children}</td>;
+
+	const inputNode =
+		inputType === "date" ? <DatePicker format="YYYY-MM-DD" /> : <Select style={{ width: 120 }}>
+			<Select.Option value="AN">AN</Select.Option>
+			<Select.Option value="FN">FN</Select.Option>
+		</Select>;
+
+	return (
+		<td {...restProps}>
+			{editing ? (
+				<Form.Item
+					name={dataIndex}
+					style={{
+						margin: 0,
+					}}
+					rules={[
+						{
+							required: true,
+							message: `Please Input ${title}!`,
+						},
+					]}
+				>
+					{inputNode}
+				</Form.Item>
+			) : (
+				children
+			)}
+		</td>
+	);
+};
 
 const App = ({
 	dataSource,
+	setData = () => { },
 	loading = false,
-	setSorterField = "",
-	setSorterOrder = "",
+	setSorterField = () => { },
+	setSorterOrder = () => { },
 	searchedColumn = "",
-	setSearchedColumn = "",
+	setSearchedColumn = () => { },
 	searchText = "",
-	setSearchText = "",
-	handleReset = () => {},
+	setSearchText = () => { },
+	handleReset = () => { },
 }) => {
 	const searchInput = useRef(null);
 
@@ -97,19 +156,6 @@ const App = ({
 						type="link"
 						size="small"
 						onClick={() => {
-							confirm({
-								closeDropdown: false,
-							});
-							setSearchText(selectedKeys[0]);
-							setSearchedColumn(dataIndex);
-						}}
-					>
-						Filter
-					</Button>
-					<Button
-						type="link"
-						size="small"
-						onClick={() => {
 							close();
 						}}
 					>
@@ -151,36 +197,123 @@ const App = ({
 			),
 	});
 
+	const [form] = Form.useForm();
+	const [editingKey, setEditingKey] = useState("");
+
+	const handleDelete = async (id) => {
+		try {
+			const response = await axios.delete(`/api/admin/exams/${id}`); // Adjust the endpoint as per your server API
+
+			if (response.status === 200) {
+				const newData = [...dataSource];
+				const index = newData.findIndex((item) => id === item.id);
+				if (index > -1) {
+					newData.splice(index, 1);
+					setData(newData);
+				}
+				message.success('Record deleted successfully!');
+			} else {
+				message.error(response.data.error || 'Failed to delete record.');
+			}
+		} catch (error) {
+			message.error('Error deleting record!');
+			console.error('Error deleting record:', error);
+		}
+	};
+
+
+	const isEditing = (record) => record.id === editingKey;
+
+	const edit = (record) => {
+		record.date = dayjs(record.date);
+
+		form.setFieldsValue({
+			...record,
+		});
+		setEditingKey(record.id);
+	};
+
+	const cancel = (record) => {
+		try {
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => record.id === item.id);
+			if (index > -1) {
+				const item = newData[index];
+				record.date = dayjs(record.date).format('YYYY-MM-DD');
+				newData.splice(index, 1, {
+					...item,
+					...record,
+				});
+				setData(newData);
+				setEditingKey("");
+			}
+		} catch (error) {
+			console.error('try refreshing', error);
+		}
+	};
+
+	const save = async (id) => {
+		try {
+			const row = await form.validateFields();
+			const newData = [...dataSource];
+			const index = newData.findIndex((item) => id === item.id);
+
+			if (index > -1) {
+				const item = newData[index];
+				row.date = dayjs(row.date).format('YYYY-MM-DD');
+				newData.splice(index, 1, {
+					...item,
+					...row,
+				});
+
+				console.log(JSON.stringify(newData));
+
+				await axios.put(`/api/admin/exams/${id}`, row);
+
+				setData(newData);
+				setEditingKey("");
+
+				message.success('Data updated successfully!');
+			}
+		} catch (errInfo) {
+			message.error("Validate Failed!")
+			console.log("Validate Failed:", errInfo);
+		}
+	};
+
 	const columns = [
 		{
 			title: "ID",
-			dataIndex: "id",
-			key: "id",
-			...getColumnSearchProps("id"),
-			sorter: true, // Example sorting for numeric column
+			dataIndex: "course.id",
+			key: "course.id",
+			...getColumnSearchProps("course.id"),
+			sorter: true,
 		},
 		{
 			title: "Course",
-			dataIndex: "name",
-			key: "name",
-			...getColumnSearchProps("name"),
-			sorter: (a, b) => textColumnSorter(a.name, b.name),
+			dataIndex: "course.name",
+			key: "course.name",
+			...getColumnSearchProps("course.name"),
+			sorter: (a, b) =>
+				textColumnSorter(a["course.name"], b["course.name"]),
 		},
 		{
 			title: "Semester",
-			dataIndex: "semester",
-			key: "semester",
-			sorter: (a, b) => a.semester - b.semester,
+			dataIndex: "course.semester",
+			key: "course.semester",
+			sorter: (a, b) => a["course.semester"] - b["course.semester"],
 		},
 		{
 			title: "Date",
-			dataIndex: "dateTimes.date",
+			dataIndex: "date",
 			key: "date",
+			...getColumnSearchProps("date"),
 			sorter: (a, b) => a.programName - b.programName,
+			editable: true,
 		},
 		{
 			title: "Time Code",
-			dataIndex: "dateTimes.timeCode",
+			dataIndex: "timeCode",
 			key: "timeCode",
 			sorter: (a, b) => a.programName - b.programName,
 			filters: [
@@ -193,18 +326,83 @@ const App = ({
 					value: "FN",
 				},
 			],
+			editable: true,
+		},
+		{
+			title: "operation",
+			dataIndex: "operation",
+			render: (_, record) => {
+				const editable = isEditing(record);
+				return editable ? (
+					<span>
+						<Typography.Link
+							onClick={() => save(record.id)}
+							style={{
+								marginRight: 8,
+							}}
+						>
+							Save
+						</Typography.Link>
+						<Popconfirm title="Sure to cancel?" onConfirm={() => cancel(record)}>
+							<a>Cancel</a>
+						</Popconfirm>
+					</span>
+				) : (
+					<span className="gap-2 flex">
+						<Link href={`/admin/exam/timetable/view/${record.id}`}><Tag color="green">Attendance</Tag></Link>
+						<Tag color="orange" className="cursor-pointer" disabled={editingKey !== ""}
+							onClick={() => edit(record)}>
+							Edit
+						</Tag>
+						<Tag color="red" className="cursor-pointer">
+							<Popconfirm
+								title="Sure to delete?"
+								onConfirm={() => handleDelete(record.id)}
+							>
+								Delete
+							</Popconfirm>
+						</Tag>
+					</span>
+				);
+			},
 		},
 	];
 
+	const mergedColumns = columns.map((col) => {
+		if (!col.editable) {
+			return col;
+		}
+		return {
+			...col,
+			onCell: (record) => ({
+				record,
+				inputType: col.dataIndex === "date" ? "date" : "text",
+				dataIndex: col.dataIndex,
+				title: col.title,
+				editing: isEditing(record),
+			}),
+		};
+	});
+
 	return (
-		<Table
-			columns={columns}
-			dataSource={dataSource}
-			pagination={false}
-			loading={loading}
-			onChange={handleTableChange}
-			rowKey={(record) => record.id}
-		/>
+		<Form form={form} component={false}>
+			<Table
+				components={{
+					body: {
+						cell: EditableCell,
+					},
+				}}
+				bordered
+				dataSource={dataSource}
+				columns={mergedColumns}
+				rowClassName="editable-row"
+				loading={loading}
+				pagination={false}
+				onChange={handleTableChange}
+				rowKey={(record) => record.id}
+			/>
+		</Form>
 	);
 };
+
 export default App;

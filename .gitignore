@@ -36,3 +36,14 @@ next-env.d.ts
 
 # vscode
 .vscode
+
+/analyze
+
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+/public/manifest.json
+/public/precache-manifest-*
+/public/cache-storage/
+/public/static/

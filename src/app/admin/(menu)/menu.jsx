@@ -12,7 +12,7 @@ import {
 	FormOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-import { useMenuContext } from "./menuContext";
+// import { useMenuContext } from "./menuContext";
 import { useRouter, usePathname } from "next/navigation";
 
 function getItem(label, key, icon, children, type) {
@@ -64,7 +64,8 @@ const items = [
 const App = () => {
 	const router = useRouter();
 	const pathname = usePathname();
-	const { activeMenu, setMenu } = useMenuContext();
+	// const { activeMenu, setMenu } = useMenuContext();
+	const [ activeMenu, setMenu ] = useState(null);
 	const [parentPath, setParentPath] = useState(getParentPaths(pathname));
 
 	function getParentPaths(path) {

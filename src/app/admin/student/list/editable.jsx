@@ -1,24 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 import "./table.css";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 
-async function fetchOpenCourses(programId, isAided) {
-	console.log(programId, isAided);
+async function fetchOpenCourses(programId) {
 	const apiUrl = "/api/admin/open-courses";
 
 	let openCourses = [];
 	try {
 		const response = await axios.get(apiUrl, {
-			params: { programId, isAided },
+			params: { programId },
 		});
 		openCourses = response.data;
 		console.log(JSON.stringify(openCourses, null, 2));
 	} catch (err) {
-
+		console.error("Error fetching open courses: ", err);
 	}
 
-	return openCourses;
+	return openCourses || [];
 }
 
 const EditableContext = React.createContext(null);
@@ -41,6 +40,7 @@ const EditableCell = ({
 	dataIndex,
 	record,
 	handleSave,
+	programs,
 	...restProps
 }) => {
 	const [editing, setEditing] = useState(false);
@@ -59,14 +59,12 @@ const EditableCell = ({
 	useEffect(() => {
 		if (dataIndex === "openCourseId") {
 			const fun = async () => {
-				const openCourses = await fetchOpenCourses(
-					record.programId,
-					record["program.isAided"],
-				);
+				const openCourses = await fetchOpenCourses(record.programId);
 				setOpenCourses(openCourses);
 			};
 			fun();
 		}
+
 	}, []);
 
 	const toggleEdit = () => {
@@ -105,12 +103,12 @@ const EditableCell = ({
 					},
 				]}
 			>
-				{dataIndex === "openCourseId" ? (
+				{dataIndex === "openCourseId" || dataIndex === "programId" ? (
 					<Select
-						options={openCourses}
+						options={dataIndex === "openCourseId" ? openCourses : programs}
 						ref={inputRef}
 						onSelect={save}
-						fieldNames={{label:'name', value:'id'}}
+						fieldNames={{ label: 'name', value: 'id' }}
 					/>
 				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />

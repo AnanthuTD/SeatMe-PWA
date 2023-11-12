@@ -5,10 +5,11 @@ import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, Skeleton } from "antd";
 import Table from "./table";
-import axios from "@/axiosInstance";
+import axios from "@/lib/axiosPrivate";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
+	const [initialLoad, setInitialLoading] = useState(true);
 	const [data, setData] = useState([]);
 	const [startIndex, setStartIndex] = useState(0);
 	const [totalDataCount, setTotalDataCount] = useState(1);
@@ -28,7 +29,7 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		const resultsPerPage = 50;
+		const resultsPerPage = 30;
 		setLoading(true);
 		axios
 			.get(`/api/admin/exams/`, {
@@ -54,6 +55,7 @@ const App = () => {
 					setStartIndex(startIndex + newData.length);
 				}
 				setLoading(false);
+				setInitialLoading(false);
 				return true;
 			})
 			.catch((error) => {
@@ -69,16 +71,16 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		loadMoreData({ search: true });
+		if (!initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, searchText, searchedColumn, sorterField]);
 
 	useEffect(() => {
-		setStartIndex(0)
-		loadMoreData({ search: true });
+		setStartIndex(0);
+		if (initialLoad) loadMoreData({ search: true });
 	}, [sorterOrder, sorterField]);
 
 	useEffect(() => {
-		if (addedDataLength < 50) {
+		if (addedDataLength < 30) {
 			setHasMoreData(false);
 		} else {
 			setHasMoreData(data.length < totalDataCount);
@@ -91,11 +93,8 @@ const App = () => {
 		setSorterField("");
 		setSorterOrder("");
 		setSearchedColumn("");
-		// setData([]);
-		// loadMoreData({ reset: true });
 	};
 
-	
 	return (
 		<InfiniteScroll
 			dataLength={data.length}
@@ -112,9 +111,11 @@ const App = () => {
 			}
 			endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
 			scrollableTarget="scrollableDiv"
+			className="mt-3"
 		>
 			<Table
 				dataSource={data}
+				setData={setData}
 				loading={loading}
 				setSorterField={setSorterField}
 				setSorterOrder={setSorterOrder}
