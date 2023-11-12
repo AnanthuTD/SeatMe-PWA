@@ -6,11 +6,11 @@ import Calendar from "./calender";
 import RoomDetails from "./roomDetails";
 import Offduty from "./offduty";
 import axios from "@/lib/axiosPrivate";
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 
 function page() {
-	
-	const [onDuty, setOnDuty] = useState(false);
+	const [onDuty, setOnDuty] = useState();
+	const [examdetails, setExamDetails] = useState();
 
 	useEffect(() => {
 		axios
@@ -18,9 +18,9 @@ function page() {
 			.then((response) => {
 				let tchr = response.data;
 				console.log(tchr);
+				setExamDetails(tchr.examDetails);
 				const onDutyValue = tchr.onDuty;
 				setOnDuty(onDutyValue);
-				localStorage.setItem('variableonDuty',onDuty);
 			})
 			.catch((error) => {
 				if (error.response) {
@@ -34,6 +34,8 @@ function page() {
 				}
 			});
 	}, []);
+	localStorage.setItem("variableonDuty", onDuty);
+	localStorage.setItem("examdetails", JSON.stringify(examdetails));
 
 	return (
 		<div>
@@ -41,8 +43,8 @@ function page() {
 
 			{onDuty ? (
 				<div className="lg:flex flex-row gap-3 justify-center align-middle">
-					<Calendar />
-					<RoomDetails />
+					<Calendar examdetails={examdetails} />
+					<RoomDetails examdetails={examdetails} />
 				</div>
 			) : (
 				<Offduty />

@@ -9,18 +9,22 @@ import Link from "next/link";
 import axios from "@/lib/axiosPrivate";
 
 import Stdlist from "./stdlist";
-const onDuty = localStorage.getItem('variableonDuty');
+const onDuty = localStorage.getItem("variableonDuty");
+const examinfo = localStorage.getItem("examdetails");
 
 function page() {
 	const [isAbsent, setIsAbsent] = useState(false);
 	const [data, setData] = useState([]);
 	const [conform, setConform] = useState(false);
-	console.log(onDuty);
+	const examdetails = JSON.parse(examinfo);
+	console.log(examdetails);
 
-	const roomid = "4";
+	const roomid = examdetails[0].roomId;
+	const dateid = examdetails[0].dateTime.id;
+	console.log(roomid, dateid);
 	useEffect(() => {
 		axios
-			.get(`/api/staff/attendance/${roomid}`)
+			.get(`/api/staff/attendance/${roomid}/${dateid}`)
 			.then((response) => {
 				let std = response.data;
 				console.log(std);
@@ -62,7 +66,7 @@ function page() {
 				<>
 					<Stdlist data={data} setData={setData} />
 					<button
-						className=" ml-36 mt-5 mb-4  px-4 py-3 bg-blue-600  rounded-3xl border-4 "
+						className=" ml-36 mt-5 mb-4  px-4 py-3 bg-blue-600 border-blue-600  rounded-3xl border-4 "
 						onClick={() => confirmpage()}
 					>
 						<p className="text-lg  text-white  "> Submit</p>

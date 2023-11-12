@@ -2,7 +2,7 @@
 
 import React from "react";
 
-function calender(props) {
+function calender({ examdetails }) {
 	const monthNames = [
 		"January",
 		"February",
@@ -32,7 +32,9 @@ function calender(props) {
 					{" "}
 					{monthNames[d.getMonth()]}-{d.getFullYear()}{" "}
 				</p>
-				<p className="  text-lg ">Time:AfterNoon</p>
+				<p className="  text-lg ">
+					Time:{examdetails[0].dateTime.timeCode}
+				</p>
 			</div>
 		</div>
 	);
