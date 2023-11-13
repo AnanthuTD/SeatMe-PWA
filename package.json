@@ -27,12 +27,8 @@
 		"js-cookie": "^3.0.5",
 		"mem": "^9.0.2",
 		"next": "^13.5.6",
-<<<<<<< HEAD
 		"postcss": "^8.4.31",
-=======
 		"next-pwa": "^5.6.0",
-		"postcss": "8.4.29",
->>>>>>> e8e83e5735ecb75d980c312962a73386aee46c9a
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-highlight-words": "^0.20.0",
