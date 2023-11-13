@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { message } from "antd";
 import axios from "@/lib/axiosPrivate";
@@ -24,23 +26,23 @@ function absentstds({ data, conform, setConform }) {
 
 	useEffect(() => {
 		try {
-			const submitted = localStorage.getItem("Submitted") || false;
-			setSubmitted(submitted);
+			if (typeof window !== 'undefined') {
+				const submitted = localStorage.getItem("Submitted") || false;
+				setSubmitted(submitted);
+			}
 		} catch (error) {
 			setSubmitted(false);
 		}
-	}, [])
-
-
-
+	}, []);
 
 	const finished = async (absentstd) => {
 		try {
 			const result = await axios.post("/api/staff/attendance", absentstd);
 			if (result.status === 200 || result.status === 201 || result.status === 204) {
 				success();
-				localStorage.setItem("Submitted", true);
-
+				if (typeof window !== 'undefined') {
+					localStorage.setItem("Submitted", true);
+				}
 			} else {
 				message.error("Failed Updation ")
 				return false;
@@ -50,8 +52,6 @@ function absentstds({ data, conform, setConform }) {
 		}
 		return false;
 	};
-
-
 
 	return (
 		<>
