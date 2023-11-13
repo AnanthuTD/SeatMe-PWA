@@ -106,7 +106,7 @@ function page() {
 export default page; */
 	console.log(onDuty);
 
-	if (onDuty) {
+	if (onDuty == 'true'  ) {
 		if (conform) {
 			return (
 				<>
