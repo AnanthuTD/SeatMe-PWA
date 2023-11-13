@@ -13,6 +13,9 @@ function page() {
 	const [examdetails, setExamDetails] = useState();
 
 	useEffect(() => {
+		localStorage.setItem("variableonDuty", onDuty);
+		localStorage.setItem("examdetails", JSON.stringify(examdetails));
+
 		axios
 			.get("/api/staff")
 			.then((response) => {
@@ -34,8 +37,6 @@ function page() {
 				}
 			});
 	}, []);
-	localStorage.setItem("variableonDuty", onDuty);
-	localStorage.setItem("examdetails", JSON.stringify(examdetails));
 
 	return (
 		<div>
