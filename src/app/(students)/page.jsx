@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Form, InputNumber, Checkbox, Row, Space, Col } from "antd";
+import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
 import axios from "@/lib/axiosPublic";
 
@@ -45,63 +45,92 @@ const App = () => {
 		return examsData;
 	};
 
-	const onFinish = async (values) => {
-		const studentId = values.studentId.toString();
+	const storeStudentIdInLocalStorage = (studentId) => {
 		localStorage.setItem('rememberedRegisterId', studentId);
+	};
 
+	const fetchSeatingInfo = async (studentId) => {
 		try {
 			const response = await axios.get("api/", {
-				params: { studentId: values.studentId },
+				params: { studentId },
 			});
 
 			const { data } = response;
 			const { seatingInfo } = data;
 
+			return seatingInfo;
+		} catch (error) {
+			console.error('Error fetching seating info:', error);
+			throw error; // Rethrow the error to handle it later if needed
+		}
+	};
+
+	const fetchUpcomingExams = async (programId, semester, openCourseId) => {
+		if (!programId || !semester) throw new Error('ProgramId and semester not found! Try fetching exams by studentId.');
+		try {
+			console.log(programId, semester, openCourseId);
+			const examsResponse = await axios.get("api/exams", {
+				params: { programId, semester, openCourseId },
+			});
+
+			const examsData = examsResponse.data;
+			const sortedExams = examsData.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+			return sortedExams;
+		} catch (error) {
+			console.error('Error fetching upcoming exams:', error);
+			throw error;
+		}
+	};
+
+	const fetchExamsByStudentId = async (studentId) => {
+		try {
+			const response = await axios.get(`api/exams/${studentId}`);
+			const { data } = response;
+			const sortedExams = data.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+			return sortedExams;
+		} catch (error) {
+			console.error('Error fetching exams by student ID:', error);
+			throw error;
+		}
+	};
+
+	const onFinish = async (values) => {
+		const studentId = values.studentId.toString();
+		storeStudentIdInLocalStorage(studentId);
+		try {
+			const seatingInfo = await fetchSeatingInfo(studentId);
 			setSeatingInfo(seatingInfo);
 
-			const { programId, semester, openCourseId } = seatingInfo || {};
+			const { programId, semester, openCourseId } = seatingInfo.student || {};
+
 			const userObject = { programId, semester, openCourseId, studentId };
 			localStorage.setItem('user', JSON.stringify(userObject));
 
-			const cachedExams = getUpcomingExamsFromLocalStorage();
-			if (cachedExams) {
-				const examsResponse = await axios.get("api/exams", {
-					params: { programId, semester, openCourseId },
-				});
-
-				const examsData = examsResponse.data;
-				console.log(examsData);
+			if (!upcomingExams.length) {
+				const examsData = await fetchUpcomingExams(programId, semester, openCourseId);
 				setUpcomingExams(examsData);
 			}
 		} catch (error) {
 			setSeatingInfo(undefined);
+
 			const storedUser = localStorage.getItem('user');
 			const userObject = JSON.parse(storedUser);
-			if (userObject) {
-				const { programId, semester, openCourseId, studentId: existingStudentId } = userObject
-				if (studentId === existingStudentId) {
-					if (!upcomingExams.length) {
-						const examsResponse = await axios.get("api/exams", {
-							params: { programId, semester, openCourseId },
-						});
 
-						const examsData = examsResponse.data;
-						console.log(examsData);
-						setUpcomingExams(examsData);
-					}
-					return;
+			if (userObject && studentId === userObject.studentId) {
+				if (!upcomingExams.length) {
+					const examsData = await fetchUpcomingExams(userObject.programId, userObject.semester, userObject.openCourseId);
+					setUpcomingExams(examsData);
 				}
+				return;
 			}
-			axios.get(`api/exams/${values.studentId}`).then((response) => {
-				const { data } = response;
-				console.log(data);
-				setUpcomingExams(data);
-			});
+
+			const examsData = await fetchExamsByStudentId(studentId);
+			setUpcomingExams(examsData);
 		}
-	}
+	};
 
 	useEffect(() => {
-		if (upcomingExams) {
+		if (upcomingExams.length) {
 			storeUpcomingExamsInLocalStorage(upcomingExams);
 		}
 	}, [upcomingExams]);
@@ -131,7 +160,10 @@ const App = () => {
 		localStorage.removeItem('user');
 		localStorage.removeItem('upcomingExams');
 		form.resetFields();
+		setSeatingInfo(undefined);
+		setUpcomingExams([]);
 	};
+
 	return (
 		<div className="flex h-screen flex-col w-full p-5 overflow-hidden">
 			<section className="h-[40%] flex justify-center items-center w-full">
