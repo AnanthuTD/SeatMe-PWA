@@ -3,10 +3,10 @@
 import React from "react";
 import { message } from "antd";
 import axios from "@/lib/axiosPrivate";
-import { useEffect } from "react";
+import { useEffect , useState } from "react";
 
 function absentstds({ data, conform, setConform }) {
-	const [submitted, setSubmitted] = useState(second)
+	const [submitted, setSubmitted] = useState(null)
 	const absentees = data.filter((std) => !std.isPresent);
 	const confirmpage = () => {
 		setConform(!conform);
