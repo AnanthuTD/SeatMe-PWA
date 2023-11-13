@@ -147,14 +147,25 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
-		const userObject = JSON.parse(storedUser);
-		const { studentId } = userObject;
-
-		if (studentId) {
-			form.setFieldsValue({ studentId: parseInt(studentId) });
+		try {
+			// Check if localStorage is available
+			if (typeof localStorage !== 'undefined') {
+				const storedUser = localStorage.getItem('user');
+	
+				if (storedUser) {
+					const userObject = JSON.parse(storedUser);
+					const { studentId } = userObject;
+	
+					if (studentId) {
+						form.setFieldsValue({ studentId: parseInt(studentId) });
+					}
+				}
+			}
+		} catch (error) {
+			console.error('Error in useEffect:', error.message);
 		}
 	}, [form]);
+	
 
 	const onReset = () => {
 		localStorage.removeItem('user');
