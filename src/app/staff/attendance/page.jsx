@@ -65,8 +65,8 @@ function page() {
 
 			{ onDuty ? 
 
-            conform ? (
-	             <>
+			conform ? (
+				 <>
 					<h1 className="text-center text-2xl text-gray-700  mt-5 ">
 					Check and click{" "}
 					<span className="text-blue-500">finish</span>
@@ -89,7 +89,7 @@ function page() {
 					</>
 					) : (
 						<>
-						  	<Offduty />
+								<Offduty />
 
 						</>
 					)
