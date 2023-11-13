@@ -11,8 +11,11 @@ import {
 	Card,
 	message,
 	Alert,
-	FloatButton,
-	Checkbox,
+
+	Select,
+    FloatButton,
+	Table,
+	Checkbox
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -42,7 +45,7 @@ const DynamicCourseForm = () => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/courses", {
+			const result = await axios.post("/api/admin/courseentry/course", {
 				courses: values.courses,
 			});
 			if (result.status === 200) {
@@ -70,11 +73,37 @@ const DynamicCourseForm = () => {
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
+	const [courses, setCourses] = useState([]);
+	const [semesterOptions, setSemesterOptions] = useState([]);
+	const loadSemesterOptions = async () => {
+		try {
+		  const result = await axios.get("/api/admin/semesters");
+		  setSemesterOptions(result.data);
+		} catch (error) {
+		  console.error("Error fetching semesters: ", error);
+		}
+	  };
+
+	const loadCourses = async (programId, semester) => {
+		try {
+			const result = await axios.get("/api/admin/courses", {
+				params: { programId, semester },
+			});
+			setCourses(result.data);
+		} catch (error) {
+			console.error("Error fetching courses: ", error);
+		}
+	};
+	useEffect(() => {
+		// Load departments when the component mounts
+		loadCourses();
+		loadSemesterOptions();
+	  }, []);
 
 	useEffect(() => {
 		form.setFieldsValue({ courses: [{}] });
 	}, [form]);
-
+	
 	return (
 		<div className="p-3">
 			<Link href={"/admin/forms/course/import"}>
@@ -222,6 +251,54 @@ const DynamicCourseForm = () => {
 					</Col>
 				</Row>
 			</Form>
+			<Card size="small" title="Courses" style={{ marginTop: 16 }}>
+			<Select
+				style={{ width: 200, marginBottom: 16 }}
+				placeholder="Select Semester"
+				onChange={(value) => setSelectedSemester(value)}
+			>
+				<Select.Option value={null}>All Semesters</Select.Option>
+				{semesterOptions.map((semester) => (
+				<Select.Option key={semester} value={semester}>
+					{semester}
+				</Select.Option>
+				))}
+			</Select>
+				<Table
+				dataSource={courses}
+				columns={[
+					{
+					title: 'ID',
+					dataIndex: 'id',
+					key: 'id',
+					},
+					{
+					title: 'Name',
+					dataIndex: 'name',
+					key: 'name',
+					},
+					{
+					title: 'Semester',
+					dataIndex: 'semester',
+					key: 'semester',
+					},
+					{
+						title: "Is Open Course",
+						dataIndex: "isOpenCourse",
+						key: "isOpenCourse",
+						
+						render: (text, record) => (
+						  <span style={{ color: text === 1 ? 'green' : 'inherit' }}>
+							{text === 1 ? 'Yes' : 'No'}
+						  </span>
+						),
+					  },
+
+				]}
+				pagination={false}
+				style={{ width: '100%' }}
+				/>
+			</Card>
 		</div>
 	);
 };
