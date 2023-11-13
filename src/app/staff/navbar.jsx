@@ -13,8 +13,11 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
+import { message } from "antd";
+import { setAuthorizationToken } from "@/lib/axiosPrivate";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const pages = ["Shedulde", "Attendence"];
 const settings = ["Profile", "Logout"];
@@ -22,6 +25,8 @@ const settings = ["Profile", "Logout"];
 function Navbar() {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
+	const [visible, setVisible] = React.useState(false);
+	const router = useRouter();
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -37,14 +42,23 @@ function Navbar() {
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
 	};
+	const handleLogout = async () => {
+		try {
+			await axios.delete("/api/auth/logout");
+			setVisible(false);
+			setAuthorizationToken();
+			localStorage.removeItem("user");
+			router.push("/login");
+		} catch (e) {
+			console.error(e);
+			message.error("Logout failed!");
+		}
+	};
 
 	return (
-		<AppBar position="static">
+		<AppBar position="static" sx={{ backgroundColor: "#004AAD" }}>
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
-					<AdbIcon
-						sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-					/>
 					<Typography
 						variant="h6"
 						noWrap
@@ -118,9 +132,7 @@ function Navbar() {
 							))}
 						</Menu>
 					</Box>
-					<AdbIcon
-						sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-					/>
+
 					<Typography
 						variant="h5"
 						noWrap
@@ -197,7 +209,12 @@ function Navbar() {
 							{settings.map((setting) => (
 								<MenuItem
 									key={setting}
-									onClick={handleCloseUserMenu}
+									onClick={() => {
+										handleCloseUserMenu();
+										if (setting === "Logout") {
+											handleLogout();
+										}
+									}}
 								>
 									<Typography textAlign="center">
 										{setting}

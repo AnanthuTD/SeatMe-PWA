@@ -40,9 +40,9 @@ const Switch = dynamic(() =>
 );
 
 const RoomAssignmentForm = ({
-	setDateTime = () => {},
-	setSelectedRooms = () => {},
-	setAssignTeachers = () => {},
+	setDateTime = () => { },
+	setSelectedRooms = () => { },
+	setAssignTeachers = () => { },
 }) => {
 	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -53,14 +53,19 @@ const RoomAssignmentForm = ({
 	const [fileName, setFileName] = useState("");
 	const [date, setDate] = useState(new Date());
 
-	const loadRooms = async () => {
-		const result = await axios.get("/api/admin/rooms");
+	const loadRooms = async (examType = 'internal') => {
+		const result = await axios.get(`/api/admin/rooms/${examType}`);
 		setRooms(result.data);
 	};
 
 	useEffect(() => {
 		loadRooms();
 	}, []);
+
+	const handleExamTypeChange = (e) => {
+		const examType = e.target.value;
+		loadRooms(examType);
+	};
 
 	const getExaminesCount = async () => {
 		const result = await axios.get("/api/admin/examines-count", {
@@ -101,9 +106,6 @@ const RoomAssignmentForm = ({
 
 	useEffect(() => {
 		calculateTotalSeats();
-		/* setFilteredOptions(
-			rooms.filter((o) => !selectedRoomIds.includes(o.id)),
-		); */
 	}, [selectedRoomIds]);
 
 	const filteredOptions = rooms.filter(
@@ -112,7 +114,7 @@ const RoomAssignmentForm = ({
 
 	const onFinish = async (values) => {
 		try {
-			const response = await axios.patch("/api/admin/rooms", {
+			const response = await axios.patch(`/api/admin/rooms`, {
 				roomIds: selectedRoomIds,
 			});
 
@@ -182,7 +184,7 @@ const RoomAssignmentForm = ({
 						onFinish={onFinish}
 					>
 						<Row gutter={16}>
-							<Col sm={20}>
+							<Col sm={10}>
 								<Form.Item
 									name="selectedDate"
 									initialValue={dayjs(date)}
@@ -203,9 +205,23 @@ const RoomAssignmentForm = ({
 									/>
 								</Form.Item>
 							</Col>
+							<Col sm={10}>
+								<Form.Item
+									name="examType"
+									label="Exam Type"
+									required={true}
+									initialValue={"internal"}
+								>
+									<Radio.Group onChange={handleExamTypeChange}>
+										<Radio value="internal">Internal</Radio>
+										<Radio value="modal">Modal</Radio>
+										<Radio value="final">Final</Radio>
+									</Radio.Group>
+								</Form.Item>
+							</Col>
 							<Col sm={4}>
-								<Form.Item name="optimize" initialValue={true}>
-									<Switch defaultChecked={true} />
+								<Form.Item name="optimize" initialValue={false}>
+									{/* <Switch /> */}
 								</Form.Item>
 							</Col>
 						</Row>
@@ -245,43 +261,43 @@ const RoomAssignmentForm = ({
 									>
 										{filteredOptions.length
 											? filteredOptions.map((room) => {
-													return (
-														<Select.Option
-															key={room.id}
-															value={room.id}
-															label={`r${room.id} f${room.floor} b${room.blockId}`}
+												return (
+													<Select.Option
+														key={room.id}
+														value={room.id}
+														label={`r${room.id} f${room.floor} b${room.blockId}`}
+													>
+														<div
+															className="flex items-center justify-between"
+															style={{
+																padding:
+																	"8px",
+															}}
 														>
-															<div
-																className="flex items-center justify-between"
-																style={{
-																	padding:
-																		"8px",
-																}}
-															>
-																<div className="flex-1">
-																	<span className="text-md font-bold">
-																		{
-																			room.id
-																		}{" "}
-																		- Floor{" "}
-																		{
-																			room.floor
-																		}
-																		, Block{" "}
-																		{
-																			room.blockId
-																		}
-																	</span>
-																	<br />
-																</div>
-																<div className="text-blue-500">
-																	{room.seats}{" "}
-																	Seats
-																</div>
+															<div className="flex-1">
+																<span className="text-md font-bold">
+																	{
+																		room.id
+																	}{" "}
+																	- Floor{" "}
+																	{
+																		room.floor
+																	}
+																	, Block{" "}
+																	{
+																		room.blockId
+																	}
+																</span>
+																<br />
 															</div>
-														</Select.Option>
-													);
-											  })
+															<div className="text-blue-500">
+																{room.seats}{" "}
+																Seats
+															</div>
+														</div>
+													</Select.Option>
+												);
+											})
 											: null}
 									</Select>
 								</Form.Item>
@@ -337,20 +353,6 @@ const RoomAssignmentForm = ({
 								</Form.Item>
 							</Col>
 							<Col sm={24}>
-								<Form.Item
-									name="examType"
-									label="Exam Type"
-									required={true}
-									initialValue={"Internal"}
-								>
-									<Radio.Group>
-										<Radio value="Internal">Internal</Radio>
-										<Radio value="Modal">Modal</Radio>
-										<Radio value="Final">Final</Radio>
-									</Radio.Group>
-								</Form.Item>
-							</Col>
-							<Col sm={24}>
 								<Form.Item>
 									<Space>
 										<Button
@@ -382,7 +384,7 @@ const RoomAssignmentForm = ({
 			{fileName ? (
 				<div className="flex gap-3">
 					<DownloadButton fileName={fileName} />
-					<Button type="primary" onClick={()=>setAssignTeachers(true)}>Assign Teachers</Button>
+					<Button type="primary" onClick={() => setAssignTeachers(true)}>Assign Teachers</Button>
 				</div>
 			) : null}
 		</div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
 import axios from "@/lib/axiosPublic";
@@ -14,53 +14,154 @@ const tailLayout = {
 	wrapperCol: { offset: 8, span: 16 },
 };
 
-/**
- * @param {Object} props - The component's props.
- * @param {import('antd').FormInstance} props.form - The form instance to associate with the SubmitButton.
- * @returns {JSX.Element} - The rendered JSX element.
- * */
-const SubmitButton = ({ form }) => {
-	const [submittable, setSubmittable] = React.useState(false);
-
-	// Watch all values
-	const values = Form.useWatch([], form);
-
-	React.useEffect(() => {
-		form.validateFields({ validateOnly: true }).then(
-			() => {
-				setSubmittable(true);
-			},
-			() => {
-				setSubmittable(false);
-			},
-		);
-	}, [values]);
-
-	return (
-		<Button type="primary" htmlType="submit" disabled={!submittable}>
-			Submit
-		</Button>
-	);
-};
-
 const App = () => {
 	const [form] = Form.useForm();
-	const [data, setData] = useState([]);
+	const [seatingInfo, setSeatingInfo] = useState(undefined);
+	const [upcomingExams, setUpcomingExams] = useState([]);
+
+	const storeUpcomingExamsInLocalStorage = (examsData) => {
+		const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 1 day in milliseconds
+		const storageData = {
+			expirationTime,
+			examsData,
+		};
+
+		localStorage.setItem('upcomingExams', JSON.stringify(storageData));
+	};
+
+	const getUpcomingExamsFromLocalStorage = () => {
+		const storedData = localStorage.getItem('upcomingExams');
+		if (!storedData) {
+			return null;
+		}
+
+		const { expirationTime, examsData } = JSON.parse(storedData);
+
+		if (expirationTime && new Date().getTime() > expirationTime) {
+			localStorage.removeItem('upcomingExams');
+			return null;
+		}
+
+		return examsData;
+	};
+
+	const storeStudentIdInLocalStorage = (studentId) => {
+		localStorage.setItem('rememberedRegisterId', studentId);
+	};
+
+	const fetchSeatingInfo = async (studentId) => {
+		try {
+			const response = await axios.get("api/", {
+				params: { studentId },
+			});
+
+			const { data } = response;
+			const { seatingInfo } = data;
+
+			return seatingInfo;
+		} catch (error) {
+			console.error('Error fetching seating info:', error);
+			throw error; // Rethrow the error to handle it later if needed
+		}
+	};
+
+	const fetchUpcomingExams = async (programId, semester, openCourseId) => {
+		if (!programId || !semester) throw new Error('ProgramId and semester not found! Try fetching exams by studentId.');
+		try {
+			console.log(programId, semester, openCourseId);
+			const examsResponse = await axios.get("api/exams", {
+				params: { programId, semester, openCourseId },
+			});
+
+			const examsData = examsResponse.data;
+			const sortedExams = examsData.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+			return sortedExams;
+		} catch (error) {
+			console.error('Error fetching upcoming exams:', error);
+			throw error;
+		}
+	};
+
+	const fetchExamsByStudentId = async (studentId) => {
+		try {
+			const response = await axios.get(`api/exams/${studentId}`);
+			const { data } = response;
+			const sortedExams = data.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+			return sortedExams;
+		} catch (error) {
+			console.error('Error fetching exams by student ID:', error);
+			throw error;
+		}
+	};
 
 	const onFinish = async (values) => {
-		const result = await axios.get("api/", {
-			params: { studentId: values.studentId },
-		});
-		
-		setData(result.data);
+		const studentId = values.studentId.toString();
+		storeStudentIdInLocalStorage(studentId);
+		try {
+			const seatingInfo = await fetchSeatingInfo(studentId);
+			setSeatingInfo(seatingInfo);
+
+			const { programId, semester, openCourseId } = seatingInfo.student || {};
+
+			const userObject = { programId, semester, openCourseId, studentId };
+			localStorage.setItem('user', JSON.stringify(userObject));
+
+			if (!upcomingExams.length) {
+				const examsData = await fetchUpcomingExams(programId, semester, openCourseId);
+				setUpcomingExams(examsData);
+			}
+		} catch (error) {
+			setSeatingInfo(undefined);
+
+			const storedUser = localStorage.getItem('user');
+			const userObject = JSON.parse(storedUser);
+
+			if (userObject && studentId === userObject.studentId) {
+				if (!upcomingExams.length) {
+					const examsData = await fetchUpcomingExams(userObject.programId, userObject.semester, userObject.openCourseId);
+					setUpcomingExams(examsData);
+				}
+				return;
+			}
+
+			const examsData = await fetchExamsByStudentId(studentId);
+			setUpcomingExams(examsData);
+		}
 	};
+
+	useEffect(() => {
+		if (upcomingExams.length) {
+			storeUpcomingExamsInLocalStorage(upcomingExams);
+		}
+	}, [upcomingExams]);
+
+	useEffect(() => {
+		try {
+			const cachedExams = getUpcomingExamsFromLocalStorage();
+			if (cachedExams) {
+				setUpcomingExams(cachedExams);
+			}
+		} catch (error) {
+			console.error('Error retrieving cached exams from localStorage:', error);
+		}
+	}, []);
+
+	useEffect(() => {
+		const storedUser = localStorage.getItem('user');
+		const userObject = JSON.parse(storedUser);
+		const { studentId } = userObject;
+
+		if (studentId) {
+			form.setFieldsValue({ studentId: parseInt(studentId) });
+		}
+	}, [form]);
 
 	const onReset = () => {
+		localStorage.removeItem('user');
+		localStorage.removeItem('upcomingExams');
 		form.resetFields();
-	};
-
-	const onChange = (key) => {
-		console.log(key);
+		setSeatingInfo(undefined);
+		setUpcomingExams([]);
 	};
 
 	return (
@@ -81,8 +182,8 @@ const App = () => {
 								{
 									required: true,
 									type: "number",
-									// min: 10000000000,
-									// max: 300000,
+									min: 100000000000,
+									max: 999999999999,
 									message: "Invalid Register number",
 								},
 							]}
@@ -90,7 +191,9 @@ const App = () => {
 							<InputNumber style={{ width: "100%" }} />
 						</Form.Item>
 						<Form.Item {...tailLayout}>
-							<SubmitButton form={form} />
+							<Button type="primary" htmlType="submit">
+								Submit
+							</Button>
 							<Button
 								htmlType="button"
 								onClick={onReset}
@@ -99,15 +202,16 @@ const App = () => {
 								Reset
 							</Button>
 						</Form.Item>
+
 					</Form>
 				</div>
-			</section>
+			</section >
 			<section className="w-full h-[60%]">
 				<div className="mx-auto w-full h-full">
-					<Segment data={data} />
+					<Segment seatingInfo={seatingInfo} upcomingExams={upcomingExams} />
 				</div>
 			</section>
-		</div>
+		</div >
 	);
 };
 

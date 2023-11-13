@@ -1,28 +1,48 @@
 import React from "react";
 import { message } from "antd";
 import axios from "@/lib/axiosPrivate";
+import { useState } from "react";
 
 function absentstds({ data, conform, setConform }) {
 	const absentees = data.filter((std) => !std.isPresent);
 	const confirmpage = () => {
 		setConform(!conform);
 	};
+	
+	const success = () => {
+		message.loading({
+		  content: 'Action in progress..',
+		  duration: 2.5,
+		});
+	  
+		setTimeout(() => {
+		  message.success('Loading finished', 2.5);
+		  message.info('Attendance Updated', 2.5);
+		}, 2500);
+	  };
+	  localStorage.setItem("Submitted",false);
+
+	  
 
 	const finished = async (absentstd) => {
 		try {
 			const result = await axios.post("/api/staff/attendance", absentstd);
-			if (result.status == 200) {
-				//	message.success(result.data);
-				return true;
+			if (result.status === 200 || result.status === 201  || result.status === 204  )  {
+		           success();
+				localStorage.setItem("Submitted",true);
+				
 			} else {
-				//	message.error(result.data)
+				message.error("Failed Updation ")
 				return false;
 			}
 		} catch (error) {
-			//message.error("Error while making the request:", error.message);
+			message.error("Error while making the request:", error.message);
 		}
 		return false;
 	};
+
+	const submitted = localStorage.getItem("Submitted");
+
 
 	return (
 		<>
@@ -60,11 +80,27 @@ function absentstds({ data, conform, setConform }) {
 					</div>
 				)}
 			</div>
-
-			<div className="flex flex-row justify-between m-8 ">
+        
+	   {
+		   submitted ?  ( <>
+		        <h1  className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
+				
+		   
+		   
+		   </>) : (
+		   
+		   <>
+		   <div className="flex flex-row justify-between m-8 ">
 				<button onClick={() => confirmpage()}> back</button>
 				<button onClick={() => finished(absentees)}> Finish </button>
 			</div>
+		   
+		   </>)
+	   }
+	   
+	 
+	 
+			
 		</>
 	);
 }

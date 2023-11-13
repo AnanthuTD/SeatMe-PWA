@@ -46,6 +46,7 @@ const SettingsButton = () => {
 			await axios.delete("/api/auth/logout");
 			setVisible(false);
 			setAuthorizationToken();
+			localStorage.removeItem("user");
 			router.push("/login");
 		} catch (e) {
 			console.error(e);
