@@ -101,26 +101,46 @@ function Page() {
 	};
 
 	const handleDepartmentChange = (departmentId) => {
-		setSelectedDepartment(departmentId);
-		setSelectedProgram(null);
-		setSelectedSemester(null);
-		setSelectedCourse([]);
+		try {
+			setSelectedDepartment(departmentId);
+			setSelectedProgram(null);
+			setSelectedSemester(null);
+			setSelectedCourse([]);
+		} catch (error) {
+			console.error(error);
+			handleReset();
+		}
 	};
 
 	const handleProgramChange = (programId, option) => {
-		setSelectedProgram(programId);
-		loadSemesters(programId, option);
-		setSelectedSemester(null);
-		setSelectedCourse([]);
+		try {
+			setSelectedProgram(programId);
+			loadSemesters(programId, option);
+			setSelectedSemester(null);
+			setSelectedCourse([]);
+		} catch (error) {
+			console.error(error);
+			handleReset();
+		}
 	};
 
 	const handleSemesterChange = (semester) => {
-		setSelectedSemester(semester);
-		setSelectedCourse([]);
+		try{
+			setSelectedSemester(semester);
+			setSelectedCourse([]);
+		} catch (error) {
+			console.error(error);
+			handleReset();
+		}
 	};
 
 	const handleCourseChange = (courseId) => {
-		setSelectedCourse([...selectedCourse, courseId]);
+		try{
+			setSelectedCourse([...selectedCourse, courseId]);
+		} catch (error) {
+			console.error(error);
+			handleReset();
+		}
 	};
 
 	const handleProgramClick = () => {
