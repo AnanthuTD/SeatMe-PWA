@@ -48,6 +48,8 @@ function Navbar() {
 			setVisible(false);
 			setAuthorizationToken();
 			localStorage.removeItem("user");
+			localStorage.removeItem("onDuty");
+			localStorage.removeItem("examdetails");
 			router.push("/login");
 		} catch (e) {
 			console.error(e);
