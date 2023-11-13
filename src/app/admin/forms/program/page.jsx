@@ -260,52 +260,64 @@ const DynamicProgramForm = () => {
 				</Row>
 			</Form>
 			<div>
-					<Title level={4} style={{ color: 'black',fontWeight: 'bold',marginTop: '20px' }}>
-						Programs
-					</Title>
-					<Table
-					dataSource={programs}
-					columns={[
-						{
-						title: "ID",
-						dataIndex: "id",
-						key: "id",
-						},
-						{
-						title: "Name",
-						dataIndex: "name",
-						key: "name",
-						},
-						{
-						title: "Duration",
-						dataIndex: "duration",
-						key: "duration",
-						},
-						{
-						title: "Level",
-						dataIndex: "level",
-						key: "level",
-						},
-						{
-						title: "Department ID",
-						dataIndex: "departmentId",
-						key: "departmentId",
-						},
-						{
-							title: "Is Aided",
-							dataIndex: "isAided",
-							key: "isAided",
-							render: (text, record) => (
-							  <span style={{ color: text === 1 ? 'green' : 'inherit' }}>
-								{text === 1 ? 'Yes' : 'No'}
-							  </span>
-							),
-						  },
-						// Add more columns as needed
-					]}
-					pagination={false}
-					/>
-			</div>
+			<Title level={4} style={{ color: "black", fontWeight: "bold", marginTop: "20px" }}>
+          Programs
+        </Title>
+        <Select
+          style={{ width: 200, marginBottom: 16 }}
+          placeholder="Select Department"
+          onChange={(value) => setDepartmentId(value)}
+        >
+          <Select.Option value={null}>All Departments</Select.Option>
+          {departments.map((dept) => (
+            <Select.Option key={dept.id} value={dept.id}>
+              {dept.name}
+            </Select.Option>
+          ))}
+        </Select>
+        <Table
+          dataSource={programs}
+		  					columns={[
+		  						{
+		  						title: "ID",
+		  						dataIndex: "id",
+		  						key: "id",
+		  						},
+		  						{
+		  						title: "Name",
+		  						dataIndex: "name",
+		  						key: "name",
+		  						},
+		  						{
+		  						title: "Duration",
+		  						dataIndex: "duration",
+		  						key: "duration",
+		  						},
+		  						{
+		  						title: "Level",
+		  						dataIndex: "level",
+		  						key: "level",
+		  						},
+		  						{
+		  						title: "Department ID",
+		  						dataIndex: "departmentId",
+		  						key: "departmentId",
+		  						},
+            {
+              title: "Is Aided",
+              dataIndex: "isAided",
+              key: "isAided",
+            //   render: (text) => (
+            //     <span style={{ color: text === 1 ? "green" : "red" }}>
+            //       {text === 1 ? "Yes" : "No"}
+            //     </span>
+            //   ),
+            },
+            // Add more columns as needed
+          ]}
+          pagination={false}
+        />
+      </div>
 		</div>
 	);
 };
