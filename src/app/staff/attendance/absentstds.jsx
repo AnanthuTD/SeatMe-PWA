@@ -1,36 +1,48 @@
+'use client'
+
 import React from "react";
 import { message } from "antd";
 import axios from "@/lib/axiosPrivate";
-import { useState } from "react";
+import { useEffect } from "react";
 
 function absentstds({ data, conform, setConform }) {
+	const [submitted, setSubmitted] = useState(second)
 	const absentees = data.filter((std) => !std.isPresent);
 	const confirmpage = () => {
 		setConform(!conform);
 	};
-	
+
 	const success = () => {
 		message.loading({
-		  content: 'Action in progress..',
-		  duration: 2.5,
+			content: 'Action in progress..',
+			duration: 2.5,
 		});
-	  
-		setTimeout(() => {
-		  message.success('Loading finished', 2.5);
-		  message.info('Attendance Updated', 2.5);
-		}, 2500);
-	  };
-	  localStorage.setItem("Submitted",false);
 
-	  
+		setTimeout(() => {
+			message.success('Loading finished', 2.5);
+			message.info('Attendance Updated', 2.5);
+		}, 2500);
+	};
+
+	useEffect(() => {
+		try {
+			if (typeof window !== 'undefined') {
+				const submitted = localStorage.getItem("Submitted") || false;
+				setSubmitted(submitted);
+			}
+		} catch (error) {
+			setSubmitted(false);
+		}
+	}, []);
 
 	const finished = async (absentstd) => {
 		try {
 			const result = await axios.post("/api/staff/attendance", absentstd);
-			if (result.status === 200 || result.status === 201  || result.status === 204  )  {
-		           success();
-				localStorage.setItem("Submitted",true);
-				
+			if (result.status === 200 || result.status === 201 || result.status === 204) {
+				success();
+				if (typeof window !== 'undefined') {
+					localStorage.setItem("Submitted", true);
+				}
 			} else {
 				message.error("Failed Updation ")
 				return false;
@@ -41,20 +53,16 @@ function absentstds({ data, conform, setConform }) {
 		return false;
 	};
 
-	const submitted = localStorage.getItem("Submitted");
-
-
 	return (
 		<>
 			<div>
 				{absentees.length ? (
 					absentees.map((student, index) => (
 						<div
-							className={` m-4 p-2 rounded-lg ${
-								student.isPresent
-									? "bg-green-800"
-									: "bg-red-800"
-							}`}
+							className={` m-4 p-2 rounded-lg ${student.isPresent
+								? "bg-green-800"
+								: "bg-red-800"
+								}`}
 							key={index}
 						>
 							<div className="text-white font-serif ">
@@ -80,27 +88,27 @@ function absentstds({ data, conform, setConform }) {
 					</div>
 				)}
 			</div>
-        
-	   {
-		   submitted ?  ( <>
-		        <h1  className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
-				
-		   
-		   
-		   </>) : (
-		   
-		   <>
-		   <div className="flex flex-row justify-between m-8 ">
-				<button onClick={() => confirmpage()}> back</button>
-				<button onClick={() => finished(absentees)}> Finish </button>
-			</div>
-		   
-		   </>)
-	   }
-	   
-	 
-	 
-			
+
+			{
+				submitted ? (<>
+					<h1 className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
+
+
+
+				</>) : (
+
+					<>
+						<div className="flex flex-row justify-between m-8 ">
+							<button onClick={() => confirmpage()}> back</button>
+							<button onClick={() => finished(absentees)}> Finish </button>
+						</div>
+
+					</>)
+			}
+
+
+
+
 		</>
 	);
 }
