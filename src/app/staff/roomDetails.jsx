@@ -13,15 +13,13 @@ function createData(name, calories) {
 	return { name, calories };
 }
 
-const rows = [
-	createData("Exam Name :", "UG internal"),
-	createData("Building", "South Block"),
-	createData("Floor Number", "First Floor"),
-	createData("Room Number", 704),
-	createData("No of students", 24),
-];
+export default function BasicTable({ examdetails }) {
+	const rows = [
+		createData("Room Number", examdetails[0].roomId),
+		createData("Building", examdetails[0].room.block.name),
+		createData("Floor Number", examdetails[0].room.floor),
+	];
 
-export default function BasicTable() {
 	return (
 		<TableContainer component={Paper} className="mt-10">
 			<Table sx={{ minWidth: 400 }} aria-label="simple table">
