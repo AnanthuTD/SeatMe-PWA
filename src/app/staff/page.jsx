@@ -4,25 +4,22 @@ import React from "react";
 import Navbar from "./navbar";
 import Calendar from "./calender";
 import RoomDetails from "./roomDetails";
-import Offduty from "./offduty";
+import OffDuty from "./offDuty";
 import axios from "@/lib/axiosPrivate";
 import { useState, useEffect } from "react";
 
 function page() {
 	const [onDuty, setOnDuty] = useState();
-	const [examdetails, setExamDetails] = useState();
+	const [examDetails, setExamDetails] = useState(undefined);
 
 	useEffect(() => {
-		localStorage.setItem("variableonDuty", onDuty);
-		localStorage.setItem("examdetails", JSON.stringify(examdetails));
-
 		axios
 			.get("/api/staff")
 			.then((response) => {
-				let tchr = response.data;
-				console.log(tchr);
-				setExamDetails(tchr.examDetails);
-				const onDutyValue = tchr.onDuty;
+				let staff = response.data;
+				console.log(staff);
+				setExamDetails(staff.examDetails[0]);
+				const onDutyValue = staff.onDuty;
 				setOnDuty(onDutyValue);
 			})
 			.catch((error) => {
@@ -38,17 +35,27 @@ function page() {
 			});
 	}, []);
 
+	useEffect(() => {
+		localStorage.setItem("onDuty", onDuty);
+	}, [onDuty]);
+
+	useEffect(() => {
+		console.log(examDetails);
+		localStorage.setItem(examDetails, JSON.stringify(examDetails));
+	}, [examDetails]);
+
+
 	return (
 		<div>
-			<Navbar />
+			<Navbar examinees={onDuty}/>
 
 			{onDuty ? (
 				<div className="lg:flex flex-row gap-3 justify-center align-middle">
-					<Calendar examdetails={examdetails} />
-					<RoomDetails examdetails={examdetails} />
+					<Calendar examDetails={examDetails} />
+					<RoomDetails examDetails={examDetails} />
 				</div>
 			) : (
-				<Offduty />
+				<OffDuty />
 			)}
 		</div>
 	);

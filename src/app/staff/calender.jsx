@@ -2,7 +2,7 @@
 
 import React from "react";
 
-function calender({ examdetails }) {
+function calender({ examDetails }) {
 	const monthNames = [
 		"January",
 		"February",
@@ -25,7 +25,7 @@ function calender({ examdetails }) {
 		<div className=" lg:mt-20 w-80   p-5 sm:m-5 lg:ml-52 ">
 			<div className="flex flex-col  content-center ml-5  gap-3">
 				<h1 className="font-bold text-red-800 text-3xl   ">
-					Duty Shedulded{" "}
+					Duty Scheduled{" "}
 				</h1>
 				<span className="      text-8xl ">{d.getDate()}</span>
 				<p className="  text-lg  ">
@@ -33,7 +33,7 @@ function calender({ examdetails }) {
 					{monthNames[d.getMonth()]}-{d.getFullYear()}{" "}
 				</p>
 				<p className="  text-lg ">
-					Time:{examdetails[0].dateTime.timeCode}
+					Time:{examDetails.dateTime.timeCode}
 				</p>
 			</div>
 		</div>

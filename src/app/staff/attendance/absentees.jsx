@@ -1,56 +1,49 @@
 'use client'
 
 import React from "react";
-import { message } from "antd";
+import { message, Button } from "antd";
 import axios from "@/lib/axiosPrivate";
-import { useEffect , useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-function absentstds({ data, conform, setConform }) {
-	const [submitted, setSubmitted] = useState(null)
+function Absentees({ data, conform, setConform, teacherSeatId }) {
 	const absentees = data.filter((std) => !std.isPresent);
-	const confirmpage = () => {
+	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+
+	const handleConfirm = () => {
 		setConform(!conform);
-	};
-
-	const success = () => {
-		message.loading({
-			content: 'Action in progress..',
-			duration: 2.5,
-		});
-
-		setTimeout(() => {
-			message.success('Loading finished', 2.5);
-			message.info('Attendance Updated', 2.5);
-		}, 2500);
 	};
 
 	useEffect(() => {
 		try {
 			if (typeof window !== 'undefined') {
 				const submitted = localStorage.getItem("Submitted") || false;
-				setSubmitted(submitted);
+				console.log(submitted);
 			}
 		} catch (error) {
-			setSubmitted(false);
 		}
 	}, []);
 
-	const finished = async (absentstd) => {
+	const finished = async (absentees) => {
+		setLoading(true);
 		try {
-			const result = await axios.post("/api/staff/attendance", absentstd);
+			const result = await axios.post(`/api/staff/attendance/${teacherSeatId}`, absentees);
+			
 			if (result.status === 200 || result.status === 201 || result.status === 204) {
-				success();
 				if (typeof window !== 'undefined') {
 					localStorage.setItem("Submitted", true);
 				}
+				setLoading(false);
+				message.success('Attendance submitted successfully!');
+				router.replace('/staff/');
 			} else {
-				message.error("Failed Updation ")
-				return false;
+				message.error('Failed Updation');
 			}
 		} catch (error) {
-			message.error("Error while making the request:", error.message);
+			message.error(`Error while making the request: ${error.message}`);
 		}
-		return false;
+		setLoading(false);
 	};
 
 	return (
@@ -89,28 +82,18 @@ function absentstds({ data, conform, setConform }) {
 				)}
 			</div>
 
-			{
-				submitted ? (<>
-					<h1 className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
-
-
-
-				</>) : (
-
-					<>
-						<div className="flex flex-row justify-between m-8 ">
-							<button onClick={() => confirmpage()}> back</button>
-							<button onClick={() => finished(absentees)}> Finish </button>
-						</div>
-
-					</>)
+			{false ? (<>
+				<h1 className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
+			</>) : (
+				<>
+					<div className="flex flex-row justify-between m-8 ">
+						<Button onClick={() => handleConfirm()}> back</Button>
+						<Button loading={loading} onClick={() => finished(absentees)}> Finish </Button>
+					</div>
+				</>)
 			}
-
-
-
-
 		</>
 	);
 }
 
-export default absentstds;
+export default Absentees;

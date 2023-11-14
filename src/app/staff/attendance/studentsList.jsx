@@ -1,7 +1,6 @@
 import React from "react";
-import { Button } from "antd";
 
-function stdlist({ data, setData }) {
+function StudentsList({ data, setData, submitted = true }) {
 	const absent = (index) => {
 		data[index].isPresent = !data[index].isPresent;
 		setData([...data]);
@@ -12,9 +11,8 @@ function stdlist({ data, setData }) {
 			<div className="flex lg:flex-row gap-4  sm:flex-col lg:mt-14 flex-wrap sm:mt-8">
 				{data.map((student, index) => (
 					<div
-						className={` m-4 p-2 rounded-lg ${
-							student.isPresent ? "bg-green-800" : "bg-red-800"
-						}`}
+						className={` m-4 p-2 rounded-lg ${student.isPresent ? "bg-green-800" : "bg-red-800"
+							}`}
 						key={index}
 					>
 						<div className="flex flex-row items-center  justify-between">
@@ -32,21 +30,23 @@ function stdlist({ data, setData }) {
 								</p>
 								<p> Course: {student.exam.course.name} </p>
 							</div>
-							{student.isPresent ? (
-								<button
-									className="bg-white text-green-600 py-1.5  px-2  rounded "
-									onClick={() => absent(index)}
-								>
-									Absent
-								</button>
-							) : (
-								<button
-									className="bg-white text-red-600 py-1.5  px-2  rounded "
-									onClick={() => absent(index)}
-								>
-									present
-								</button>
-							)}
+							{!submitted ?
+								student.isPresent ? (
+									<button
+										className="bg-white text-green-600 py-1.5  px-2  rounded "
+										onClick={() => absent(index)}
+									>
+										Absent
+									</button>
+								) : (
+									<button
+										className="bg-white text-red-600 py-1.5  px-2  rounded "
+										onClick={() => absent(index)}
+									>
+										present
+									</button>
+								)
+								: null}
 						</div>
 					</div>
 				))}
@@ -56,4 +56,4 @@ function stdlist({ data, setData }) {
 	);
 }
 
-export default stdlist;
+export default StudentsList;

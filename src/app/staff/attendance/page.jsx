@@ -3,33 +3,46 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "../navbar";
-import Absentstds from "./absentstds";
+import Absentees from "./absentees";
 import axios from "@/lib/axiosPrivate";
-import Offduty from "../offduty";
-import Stdlist from "./stdlist";
+import OffDuty from "../offDuty";
+import StudentsList from "./studentsList";
 
-const onDuty = typeof window !== "undefined" ? localStorage.getItem("variableonDuty") : null;
-const examinfo = typeof window !== "undefined" ? localStorage.getItem("examdetails") : null;
-let roomid, dateid;
 
-if (examinfo && examinfo.length > 0) {
-	const examdetails = JSON.parse(examinfo);
-
-	if (examdetails && examdetails[0]) {
-		roomid = examdetails[0].roomId;
-		dateid = examdetails[0].dateTime.id;
-	}
-}
 
 function Page() {
-	const [isAbsent, setIsAbsent] = useState(false);
 	const [data, setData] = useState([]);
+	const [teacherSeatId, setTeacherSeatId] = useState(undefined);
 	const [conform, setConform] = useState(false);
+	const [examDetails, setExamDetails] = useState(undefined);
 
 	useEffect(() => {
-		if (onDuty) {
+		const onDuty = typeof window !== "undefined" ? localStorage.getItem("onDuty") : null;
+		const examInfo = typeof window !== "undefined" ? localStorage.getItem(examDetails) : null;
+		console.log(onDuty, examInfo);
+
+		
+		if (!onDuty || !examInfo || !examInfo.length) return;
+		
+		let roomId, dateId, teacher;
+		
+		try {
+			const examDetails = JSON.parse(examInfo);
+			setExamDetails(examDetails);
+
+			if (examDetails) {
+				roomId = examDetails.roomId;
+				dateId = examDetails.dateTime.id;
+				setTeacherSeatId(examDetails?.id);
+			}
+		} catch (error) {
+			console.error("Error parsing JSON:", error);
+			return;
+		}
+
+		try {
 			axios
-				.get(`/api/staff/attendance/${roomid}/${dateid}`)
+				.get(`/api/staff/attendance/${roomId}/${dateId}`)
 				.then((response) => {
 					let std = response.data;
 					setData(std);
@@ -42,32 +55,35 @@ function Page() {
 						console.error("Request failed:", error.message);
 					}
 				});
-		}
-	}, [onDuty]);
 
-	const confirmpage = () => {
+		} catch (error) {
+			console.error('Something went wrong!', error);
+		}
+	}, [])
+
+	const confirmPage = () => {
 		setConform(!conform);
 	};
 
-	if (onDuty) {
+	if (data.length) {
 		if (conform) {
 			return (
 				<>
-					<Navbar />
+					<Navbar attendance={!examDetails?.attendanceSubmitted} />
 					<h1 className="text-center text-2xl text-gray-700 mt-5 ">
 						Check and click <span className="text-blue-500">finish</span>
 					</h1>
-					<Absentstds data={data} conform={conform} setConform={setConform} />
+					<Absentees data={data} conform={conform} setConform={setConform} teacherSeatId={teacherSeatId} />
 				</>
 			);
 		} else {
 			return (
 				<>
-					<Navbar />
-					<Stdlist data={data} setData={setData} />
+					<Navbar attendance={!examDetails?.attendanceSubmitted} />
+					<StudentsList data={data} setData={setData} submitted={examDetails.attendanceSubmitted}/>
 					<button
 						className="ml-36 mt-5 mb-4 px-4 py-3 bg-blue-600 border-blue-600 rounded-3xl border-4"
-						onClick={() => confirmpage()}
+						onClick={() => confirmPage()}
 					>
 						<p className="text-lg text-white">Submit</p>
 					</button>
@@ -77,8 +93,8 @@ function Page() {
 	} else {
 		return (
 			<>
-				<Navbar />
-				<Offduty />
+				<Navbar attendance={!examDetails?.attendanceSubmitted} />
+				<OffDuty />
 			</>
 		);
 	}
