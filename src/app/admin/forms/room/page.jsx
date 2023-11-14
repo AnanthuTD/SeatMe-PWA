@@ -19,34 +19,34 @@ import {
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
-import SelectProgram from "../../components/select";
+import SelectBlock from "../../components/select";
 import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 
-const DynamicCourseForm = () => {
+const DynamicRoomForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
-	const [programs, setPrograms] = useState([]); // State to store program data
+	const [blocks, setBlocks] = useState([]); // State to store program data
 
-	const loadPrograms = async () => {
+	const loadBlocks = async () => {
 		try {
-			const result = await axios.get("/api/admin/programs");
-			setPrograms(result.data);
+			const result = await axios.get("/api/admin/blocks");
+			setBlocks(result.data);
 		} catch (error) {
-			console.error("Error fetching programs: ", error);
+			console.error("Error fetching blocks: ", error);
 		}
 	};
 
 	useEffect(() => {
-		loadPrograms();
+		loadBlocks();
 	}, []);
 
 	const handleSubmission = async (values) => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/courseentry/course", {
-				courses: values.courses,
+			const result = await axios.post("/api/admin/roomentry/room", {
+				rooms: values.rooms,
 			});
 			if (result.status === 200) {
 				message.success(result.message);
@@ -56,7 +56,7 @@ const DynamicCourseForm = () => {
 			console.log(error);
 			if (error.response.status === 400) {
 				message.error(
-					`Course with ID '${error.response.data.value}' already exists`,
+					`Room with ID '${error.response.data.value}' already exists`,
 				);
 			} else {
 				setError("Something went wrong. Please try again."); // Set the error message
@@ -73,53 +73,75 @@ const DynamicCourseForm = () => {
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
-	const [courses, setCourses] = useState([]);
-	// let [semesterOptions, setSemesterOptions] = useState([]);
-	const [selectedSemester, setSelectedSemester] = useState(null);
-	const [semesterOptions, setSemesterOptions] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
-	const loadSemesterOptions = async () => {
+	const [rooms, setRooms] = useState([]);
+	const loadRooms = async () => {
 		try {
-		  const result = await axios.get("/api/admin/courses");
-		  //setSemesterOptions(result.data.map(course => course.semester));
-		} catch (error) {
-		  console.error("Error fetching semesters: ", error);
-		}
-	  };
-
-	const loadCourses = async (programId, semester) => {
-		try {
-			const result = await axios.get("/api/admin/courses", {
-				params: { programId, semester },
+			const result = await axios.get("/api/admin/rooms", {
+				params: {  },
 			});
-			setCourses(result.data);
+			setRooms(result.data);
 		} catch (error) {
-			console.error("Error fetching courses: ", error);
+			console.error("Error fetching rooms: ", error);
 		}
 	};
-	// useEffect(() => {
-	// 	// Load departments when the component mounts
-	// 	loadSemesterOptions();
-	// 	loadCourses(null,semesterOptions);	
-	//   }, [semesterOptions]);
 
 	useEffect(() => {
-		form.setFieldsValue({ courses: [{}] });
+		form.setFieldsValue({ rooms: [{}] });
 	}, [form]);
-	useEffect(() => {
-		loadSemesterOptions();
+	  useEffect(() => {
+		loadRooms(); // Load rooms initially with a null programId
 	  }, []);
-	  useEffect(() => {
-		loadCourses(null, semesterOptions); // Load courses initially with a null programId
-	  }, [semesterOptions]);
 	  
 	  useEffect(() => {
-		console.log("Semester Options:", semesterOptions);
-	  }, [semesterOptions]);
-	  
+		console.log("Semester Options:", );
+	  }, []);
+	  const columns = [
+					{
+					title: 'ID',
+					dataIndex: 'id',
+					key: 'id',
+					},
+					{
+					title: 'Rows',
+					dataIndex: 'rows',
+					key: 'rows',
+					},
+					{
+					title: 'Column',
+					dataIndex: 'cols',
+					key: 'cols',
+					},
+					{
+					title: 'Floor',
+					dataIndex: 'floor',
+					key: 'floor',
+					},
+					{
+					title: 'Block',
+					dataIndex: 'blockId',
+					key: 'blockId',
+					render: (text, record) => {
+						const block = blocks.find((b) => b.id === text);
+						return block ? block.name : text;
+					  },
+					
+					},
+					{
+					title: "Available",
+					dataIndex: "isAvailable",
+					key: "isAvailable",
+					render: (text, record) => (
+						<Checkbox checked={text} 
+							disabled 
+							style={{ color: text ? 'blue' : 'red' }}/>
+					),
+					},
+		// ... (other columns)
+	  ];
 	
 	return (
 		<div className="p-3">
-			<Link href={"/admin/forms/course/import"}>
+			<Link href={"/admin/forms/room/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -141,11 +163,11 @@ const DynamicCourseForm = () => {
 				onFinish={handleSubmission}
 				form={form}
 				initialValues={{
-					courses: [{}],
+					rooms: [{}],
 				}}
 				onFinishFailed={onFinishFailed}
 			>
-				<Form.List name="courses">
+				<Form.List name="rooms">
 					{(fields, { add, remove }) => (
 						<div
 							style={{
@@ -157,7 +179,7 @@ const DynamicCourseForm = () => {
 							{fields.map((field) => (
 								<Card
 									size="small"
-									title={`Course ${field.name + 1}`}
+									title={`Room ${field.name + 1}`}
 									key={field.key}
 									extra={
 										<CloseOutlined
@@ -171,7 +193,7 @@ const DynamicCourseForm = () => {
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[field.name, "id"]}
-												label="Course ID"
+												label="Room ID"
 												rules={[
 													{
 														required: true,
@@ -185,13 +207,28 @@ const DynamicCourseForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
-												name={[field.name, "name"]}
-												label="Course Name"
+												name={[field.name, "cols"]}
+												label="Columns"
 												rules={[
 													{
 														required: true,
 														message:
-															"Please enter the course name",
+															"Please enter number of columns",
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={10} xxl={10}>
+											<Form.Item
+												name={[field.name, "rows"]}
+												label="Rows"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please enter number of rows",
 													},
 												]}
 											>
@@ -200,49 +237,50 @@ const DynamicCourseForm = () => {
 										</Col>
 									</Row>
 									<Row gutter={16}>
-										<Col xs={24} md={24} lg={7} xxl={7}>
-											<Form.Item
-												name={[field.name, "semester"]}
-												label="Semester"
-												rules={[
-													{
-														required: true,
-														message:
-															"Please enter the semester",
-													},
-												]}
-											>
-												<Input />
-											</Form.Item>
-										</Col>
+										
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[
 													field.name,
-													"isOpenCourse",
+													"isAvailable",
 												]}
-												label="Is Open Course"
+												label="Is Available"
 												initialValue={false}
 												valuePropName="checked"
 											>
 												<Checkbox defaultChecked={false}/>
 											</Form.Item>
 										</Col>
-										<Col xs={24} md={24} lg={10} xxl={10}>
+										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
-												name={[field.name, "program"]}
-												label="Program"
+												name={[field.name, "floor"]}
+												label="Floor"
 												rules={[
 													{
 														required: true,
 														message:
-															"Please select the program",
+															"Please enter the Floor",
 													},
 												]}
 											>
-												<SelectProgram
-													options={programs}
-													placeholder="Select Program"
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={10} xxl={10}>
+											<Form.Item
+												name={[field.name, "block"]}
+												label="Block"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please select the block",
+													},
+												]}
+											>
+												<SelectBlock
+													options={blocks}
+													placeholder="Select Block"
 												/>
 											</Form.Item>
 										</Col>
@@ -250,7 +288,7 @@ const DynamicCourseForm = () => {
 								</Card>
 							))}
 							<Button type="dashed" onClick={() => add()} block>
-								+ Add Course
+								+ Add Room
 							</Button>
 						</div>
 					)}
@@ -264,56 +302,11 @@ const DynamicCourseForm = () => {
 					</Col>
 				</Row>
 			</Form>
-			<Card size="small" title="Courses" style={{ marginTop: 16 }}>
-			{semesterOptions ? (
-			<Select
-				style={{ width: 200, marginBottom: 16 }}
-				placeholder="Select Semester"
-				onChange={(value) => setSelectedSemester(value)}
-				value={selectedSemester}
-			>
-				<Select.Option value={null}>All Semesters</Select.Option>
-				{semesterOptions.map((semester) => (
-				<Select.Option key={semester} value={semester}>
-					{semester}
-				</Select.Option>
-				))}
-			</Select>
-			) : (
-			<span>Loading semesters...</span>
-			)}
+			<Card size="small" title="Rooms" style={{ marginTop: 16 }}>
 
 				<Table
-				dataSource={courses}
-				columns={[
-					{
-					title: 'ID',
-					dataIndex: 'id',
-					key: 'id',
-					},
-					{
-					title: 'Name',
-					dataIndex: 'name',
-					key: 'name',
-					},
-					{
-					title: 'Semester',
-					dataIndex: 'semester',
-					key: 'semester',
-					},
-					{
-						title: "Is Open Course",
-						dataIndex: "isOpenCourse",
-						key: "isOpenCourse",
-						
-						render: (text, record) => (
-						  <span style={{ color: text  ? 'green' : 'red' }}>
-							{text  ? 'Yes' : 'No'}
-						  </span>
-						),
-					  },
-
-				]}
+				dataSource={rooms}
+				columns={columns}
 				pagination={false}
 				style={{ width: '100%' }}
 				/>
@@ -322,4 +315,4 @@ const DynamicCourseForm = () => {
 	);
 };
 
-export default DynamicCourseForm;
+export default DynamicRoomForm;

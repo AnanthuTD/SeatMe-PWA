@@ -93,6 +93,47 @@ const DynamicProgramForm = () => {
 	useEffect(() => {
 		form.setFieldsValue({ programs: [{}] });
 	}, [form]);
+	const columns = [
+		{
+			title: "ID",
+			dataIndex: "id",
+			key: "id",
+			},
+			{
+			title: "Name",
+			dataIndex: "name",
+			key: "name",
+			},
+			{
+			title: "Duration",
+			dataIndex: "duration",
+			key: "duration",
+			},
+			{
+			title: "Level",
+			dataIndex: "level",
+			key: "level",
+			},
+			{
+			title: "Department ID",
+			dataIndex: "departmentId",
+			key: "departmentId",
+			render: (text, record) => {
+				const dept = departments.find((b) => b.id === text);
+				return dept ? dept.name : text;
+			  },
+			},
+			{
+			title: "Is Aided",
+			dataIndex: "isAided",
+			key: "isAided",
+			render: (text) => (
+			<span style={{ color: text  ? "green" : "red" }}>
+			{text  ? "Yes" : "No"}
+			</span>
+			),
+			},
+	];
 
 	return (
 		<div className="p-3">
@@ -277,44 +318,46 @@ const DynamicProgramForm = () => {
         </Select>
         <Table
           dataSource={programs}
-		  					columns={[
-		  						{
-		  						title: "ID",
-		  						dataIndex: "id",
-		  						key: "id",
-		  						},
-		  						{
-		  						title: "Name",
-		  						dataIndex: "name",
-		  						key: "name",
-		  						},
-		  						{
-		  						title: "Duration",
-		  						dataIndex: "duration",
-		  						key: "duration",
-		  						},
-		  						{
-		  						title: "Level",
-		  						dataIndex: "level",
-		  						key: "level",
-		  						},
-		  						{
-		  						title: "Department ID",
-		  						dataIndex: "departmentId",
-		  						key: "departmentId",
-		  						},
-            {
-              title: "Is Aided",
-              dataIndex: "isAided",
-              key: "isAided",
-            //   render: (text) => (
-            //     <span style={{ color: text === 1 ? "green" : "red" }}>
-            //       {text === 1 ? "Yes" : "No"}
-            //     </span>
-            //   ),
-            },
-            // Add more columns as needed
-          ]}
+		  columns={columns}
+		//   					columns={[
+		//   						{
+		//   						title: "ID",
+		//   						dataIndex: "id",
+		//   						key: "id",
+		//   						},
+		//   						{
+		//   						title: "Name",
+		//   						dataIndex: "name",
+		//   						key: "name",
+		//   						},
+		//   						{
+		//   						title: "Duration",
+		//   						dataIndex: "duration",
+		//   						key: "duration",
+		//   						},
+		//   						{
+		//   						title: "Level",
+		//   						dataIndex: "level",
+		//   						key: "level",
+		//   						},
+		//   						{
+		//   						title: "Department ID",
+		//   						dataIndex: "departmentId",
+		//   						key: "departmentId",
+								
+		//   						},
+        //     {
+        //       title: "Is Aided",
+        //       dataIndex: "isAided",
+        //       key: "isAided",
+        //       render: (text) => (
+        //         <span style={{ color: text  ? "green" : "red" }}>
+        //           {text  ? "Yes" : "No"}
+        //         </span>
+        //       ),
+        //     },
+        //     // Add more columns as needed
+        //   ]}
           pagination={false}
         />
       </div>
