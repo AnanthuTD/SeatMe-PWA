@@ -1,7 +1,8 @@
 import React from "react";
+import InfiniteScroll from "./infiniteScroll";
 
 function page() {
-	return <div>students</div>;
+	return <InfiniteScroll />;
 }
 
 export default page;

@@ -1,5 +1,3 @@
-// 'use client'
-
 import React, { useEffect, useState } from "react";
 import {
 	HomeOutlined,
@@ -7,7 +5,6 @@ import {
 	UnorderedListOutlined,
 	IdcardOutlined,
 	CalendarOutlined,
-	ScheduleOutlined,
 	FileAddOutlined,
 	FormOutlined,
 } from "@ant-design/icons";
@@ -28,26 +25,24 @@ function getItem(label, key, icon, children, type) {
 const items = [
 	getItem("Home", "/admin", <HomeOutlined />),
 	getItem("Staff", "/admin/staffs", <UsergroupAddOutlined />, [
-		getItem("Staffs List", "/admin/staffs/list", <UnorderedListOutlined />),
+		getItem("Staffs List", "/admin/staffs", <UnorderedListOutlined />),
 		getItem("Insert", "/admin/staffs/insert", <FileAddOutlined />),
 	]),
 	getItem("Student", "/admin/student", <IdcardOutlined />, [
 		getItem(
 			"Student List",
-			"/admin/student/list",
+			"/admin/student",
 			<UnorderedListOutlined />,
 		),
 		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
 	]),
 	getItem("Exam", "/admin/exam", <CalendarOutlined />, [
-		getItem("Time Table", "/admin/exam/timetable", <ScheduleOutlined />, [
-			getItem(
-				"Insert",
-				"/admin/exam/timetable/insert",
-				<FileAddOutlined />,
-			),
-			getItem("View", "/admin/exam/timetable/view", <CalendarOutlined />),
-		]),
+		getItem(
+			"Insert",
+			"/admin/exam/insert",
+			<FileAddOutlined />,
+		),
+		getItem("View", "/admin/exam", <CalendarOutlined />),
 		getItem("Assign", "/admin/exam/assign", <UnorderedListOutlined />),
 	]),
 	getItem("Forms", "/admin/forms", <FormOutlined />, [
@@ -64,16 +59,20 @@ const items = [
 const App = () => {
 	const router = useRouter();
 	const pathname = usePathname();
+	
 	// const { activeMenu, setMenu } = useMenuContext();
-	const [ activeMenu, setMenu ] = useState(null);
-	const [parentPath, setParentPath] = useState(getParentPaths(pathname));
+	const [activeMenu, setMenu] = useState(null);
+	// const [parentPath, setParentPath] = useState(getParentPaths(pathname));
 
-	function getParentPaths(path) {
-		const parts = path.split("/").filter((part) => part.length > 0);
-
-		const parentPath = "/" + parts.slice(0, parts.length - 1).join("/");
-
-		return parentPath;
+	function getSelectedKey(){
+		if(["/admin/staffs", "/admin/staffs/insert"].includes(pathname))
+		return "/admin/staffs";
+		if(["/admin/student", "/admin/student/insert"].includes(pathname))
+		return "/admin/student";
+		if(["/admin/exam/insert", "/admin/exam", "/admin/exam/assign"].includes(pathname))
+		return "/admin/exam";
+		if(["/admin/forms/department", "/admin/forms/program", "/admin/forms/course"].includes(pathname))
+		return "/admin/forms";
 	}
 
 	const handleMenuItemClick = (key) => {
@@ -82,12 +81,12 @@ const App = () => {
 
 	const routeMapping = {
 		"/admin": "/admin",
-		"/admin/staffs/list": "/admin/staffs/list",
+		"/admin/staffs": "/admin/staffs",
 		"/admin/staffs/insert": "/admin/staffs/insert",
-		"/admin/student/list": "/admin/student/list",
+		"/admin/student": "/admin/student",
 		"/admin/student/insert": "/admin/student/insert",
-		"/admin/exam/timetable/insert": "/admin/exam/timetable/insert",
-		"/admin/exam/timetable/view": "/admin/exam/timetable/view",
+		"/admin/exam/insert": "/admin/exam/insert",
+		"/admin/exam": "/admin/exam",
 		"/admin/exam/assign": "/admin/exam/assign",
 		"/admin/forms/department": "/admin/forms/department",
 		"/admin/forms/program": "/admin/forms/program",
@@ -96,7 +95,6 @@ const App = () => {
 
 	useEffect(() => {
 		if (activeMenu && routeMapping[activeMenu]) {
-			console.log("active menu ", activeMenu);
 			router.push(routeMapping[activeMenu]);
 		}
 	}, [activeMenu]);
@@ -104,7 +102,7 @@ const App = () => {
 	return (
 		<Menu
 			defaultSelectedKeys={[pathname]}
-			defaultOpenKeys={[parentPath]}
+			defaultOpenKeys={[getSelectedKey()]}
 			mode="inline"
 			items={items}
 			className="flex-grow"

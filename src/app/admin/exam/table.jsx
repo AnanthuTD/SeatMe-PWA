@@ -349,7 +349,7 @@ const App = ({
 					</span>
 				) : (
 					<span className="gap-2 flex">
-						<Link href={`/admin/exam/timetable/view/${record.id}`}><Tag color="green">Attendance</Tag></Link>
+						<Link href={`/admin/exam/${record.id}`}><Tag color="green">Attendance</Tag></Link>
 						<Tag color="orange" className="cursor-pointer" disabled={editingKey !== ""}
 							onClick={() => edit(record)}>
 							Edit
