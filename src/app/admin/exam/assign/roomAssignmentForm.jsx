@@ -39,6 +39,8 @@ const Switch = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Switch })),
 );
 
+const timeOptions = ['AN', 'FN'];
+
 const RoomAssignmentForm = ({
 	setDateTime = () => { },
 	setSelectedRooms = () => { },
@@ -52,6 +54,7 @@ const RoomAssignmentForm = ({
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
 	const [date, setDate] = useState(new Date());
+	const [timeCode, setTimeCode] = useState('AN');
 
 	const loadRooms = async (examType = 'internal') => {
 		const result = await axios.get(`/api/admin/rooms/${examType}`);
@@ -71,6 +74,7 @@ const RoomAssignmentForm = ({
 		const result = await axios.get("/api/admin/examines-count", {
 			params: {
 				date,
+				timeCode
 			},
 		});
 		if (result.data === 0)
@@ -81,7 +85,7 @@ const RoomAssignmentForm = ({
 	useEffect(() => {
 		getExaminesCount();
 		setFileName("");
-	}, [date]);
+	}, [date, timeCode]);
 
 	useEffect(() => {
 		const selectedRoomIds = rooms
@@ -139,13 +143,14 @@ const RoomAssignmentForm = ({
 		console.log(values);
 		try {
 			setLoading(true);
-			const { orderBy, selectedDate, examType, optimize } = values;
+			const { orderBy, selectedDate, examType, optimize, timeCode } = values;
 			const result = await axios.get("/api/admin/exams/assign", {
 				params: {
 					orderBy,
 					date: selectedDate,
 					examType,
 					optimize,
+					timeCode
 				},
 			});
 			if (result.status === 201) {
@@ -153,7 +158,7 @@ const RoomAssignmentForm = ({
 					message.success("Assignments successfully");
 					setWarningMessage("");
 					setFileName(result.data.fileName);
-					setDateTime({ date: selectedDate, timeCode: "AN" });
+					setDateTime({ date: selectedDate, timeCode });
 				}
 			} else if (result.status === 200) {
 				setWarningMessage(result.data.message);
@@ -184,8 +189,9 @@ const RoomAssignmentForm = ({
 						onFinish={onFinish}
 					>
 						<Row gutter={16}>
-							<Col sm={10}>
+							<Col sm={7}>
 								<Form.Item
+									label="Date"
 									name="selectedDate"
 									initialValue={dayjs(date)}
 									rules={[
@@ -205,6 +211,22 @@ const RoomAssignmentForm = ({
 									/>
 								</Form.Item>
 							</Col>
+							<Col span={7}>
+								<Form.Item
+									label="Time Code"
+									name="timeCode"
+									rules={[{ required: true, message: 'Please select AN or FN' }]}
+									initialValue={'AN'}
+								>
+									<Select placeholder="Select AN or FN" onSelect={setTimeCode}>
+										{timeOptions.map((option) => (
+											<Select.Option key={option} value={option}>
+												{option}
+											</Select.Option>
+										))}
+									</Select>
+								</Form.Item>
+							</Col>
 							<Col sm={10}>
 								<Form.Item
 									name="examType"
@@ -219,11 +241,11 @@ const RoomAssignmentForm = ({
 									</Radio.Group>
 								</Form.Item>
 							</Col>
-							<Col sm={4}>
+							{/* <Col sm={4}>
 								<Form.Item name="optimize" initialValue={false}>
-									{/* <Switch /> */}
+									<Switch />
 								</Form.Item>
-							</Col>
+							</Col> */}
 						</Row>
 						<Row gutter={16}>
 							<Col lg={19} md={24}>
