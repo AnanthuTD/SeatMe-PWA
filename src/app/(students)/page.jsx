@@ -52,21 +52,21 @@ const App = () => {
 				params: { studentId },
 			});
 
+			if(response.status === 204) return undefined;
+
 			const { data } = response;
 			const { seatingInfo } = data;
 
 			return seatingInfo;
 		} catch (error) {
 			console.error('Error fetching seating info:', error);
-			throw error;
+			return undefined;
 		}
 	};
 
 	const fetchUpcomingExams = async () => {
 		try {
 			const examsResponse = await axios.get("api/exams");
-
-			console.log(examsResponse.data);
 
 			const examsData = examsResponse.data;
 			const sortedExams = examsData.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -122,6 +122,7 @@ const App = () => {
 
 			if (studentId) {
 				form.setFieldsValue({ studentId: parseInt(studentId) });
+				form.submit();
 			}
 
 		} catch (error) {
