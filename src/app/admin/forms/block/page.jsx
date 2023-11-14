@@ -18,7 +18,7 @@ import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
 import Link from "next/link";
 
-const DynamicDepartmentForm = () => {
+const DynamicBlockForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 
@@ -26,8 +26,8 @@ const DynamicDepartmentForm = () => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/departmententry/department", {
-				departments: values.departments,
+			const result = await axios.post("/api/admin/blockentry/block", {
+				blocks: values.blocks,
 			});
 			if (result.status === 200) {
 				message.success(result.message);
@@ -37,7 +37,7 @@ const DynamicDepartmentForm = () => {
 			console.log(error);
 			if (error.response.status === 400) {
 				message.error(
-					`Department with ID '${error.response.data.value}' already exists`,
+					`Block with ID '${error.response.data.value}' already exists`,
 				);
 			} else {
 				setError("Something went wrong. Please try again."); // Set the error message
@@ -46,34 +46,34 @@ const DynamicDepartmentForm = () => {
 	};
 
 	const onFinishFailed = (errorInfo) => {
-		message.warning("Department Name and ID are required");
+		message.warning("Block Name and ID are required");
 	};
 
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
-	const [departments, setDepartments] = useState([]);
+	const [blocks, setBlocks] = useState([]);
 
-	const loadDepartments = async () => {
+	const loadBlocks = async () => {
 		try {
-		const result = await axios.get("/api/admin/departments");
-		setDepartments(result.data);
+		const result = await axios.get("/api/admin/blocks");
+		setBlocks(result.data);
 		} catch (error) {
-		console.error("Error fetching departments: ", error);
+		console.error("Error fetching blocks: ", error);
 		}
 	};
 	useEffect(() => {
-		// Load departments when the component mounts
-		loadDepartments();
+		// Load blocks when the component mounts
+		loadBlocks();
 	  }, []);
 	useEffect(() => {
-		form.setFieldsValue({ departments: [{}] });
+		form.setFieldsValue({ blocks: [{}] });
 	}, [form]);
 
 
 	return (
 		<div className="p-3">
-            <Link href={"/admin/forms/department/import"}>
+            <Link href={"/admin/forms/block/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -95,11 +95,11 @@ const DynamicDepartmentForm = () => {
 				onFinish={handleSubmission}
 				form={form}
 				initialValues={{
-					departments: [{}],
+					blocks: [{}],
 				}}
 				onFinishFailed={onFinishFailed}
 			>
-				<Form.List name="departments">
+				<Form.List name="blocks">
 					{(fields, { add, remove }) => (
 						<div
 							style={{
@@ -111,7 +111,7 @@ const DynamicDepartmentForm = () => {
 							{fields.map((field) => (
 								<Card
 									size="small"
-									title={`Department ${field.name + 1}`}
+									title={`Block ${field.name + 1}`}
 									key={field.key}
 									extra={
 										<CloseOutlined
@@ -125,12 +125,12 @@ const DynamicDepartmentForm = () => {
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[field.name, "id"]}
-												label="Department ID"
+												label="Block ID"
 												rules={[
 													{
 														required: true,
 														message:
-															"Please enter the department ID",
+															"Please enter the Block ID",
 													},
 												]}
 											>
@@ -140,12 +140,12 @@ const DynamicDepartmentForm = () => {
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
 												name={[field.name, "name"]}
-												label="Department Name"
+												label="Block Name"
 												rules={[
 													{
 														required: true,
 														message:
-															"Please enter the department name",
+															"Please enter the Block name",
 													},
 												]}
 											>
@@ -156,7 +156,7 @@ const DynamicDepartmentForm = () => {
 								</Card>
 							))}
 							<Button type="dashed" onClick={() => add()} block>
-								+ Add Department
+								+ Add Block
 							</Button>
 						</div>
 					)}
@@ -170,9 +170,9 @@ const DynamicDepartmentForm = () => {
 					</Col>
 				</Row>
 			</Form>
-			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
+			<Card size="small" title="Blocks" style={{ marginTop: 16 }}>
 				<Table
-				dataSource={departments}
+				dataSource={blocks}
 				columns={[
 					{
 					title: 'ID',
@@ -195,6 +195,4 @@ const DynamicDepartmentForm = () => {
 	);
 };
 
-export default DynamicDepartmentForm;
-
-
+export default DynamicBlockForm;

@@ -58,6 +58,8 @@ const items = [
 		),
 		getItem("Program", "/admin/forms/program", <UnorderedListOutlined />),
 		getItem("Course", "/admin/forms/course", <UnorderedListOutlined />),
+		getItem("Block", "/admin/forms/block", <UnorderedListOutlined />),
+		getItem("Room", "/admin/forms/room", <UnorderedListOutlined />),
 	]),
 ];
 
@@ -92,6 +94,8 @@ const App = () => {
 		"/admin/forms/department": "/admin/forms/department",
 		"/admin/forms/program": "/admin/forms/program",
 		"/admin/forms/course": "/admin/forms/course",
+		"/admin/forms/block": "/admin/forms/block",
+		"/admin/forms/room": "/admin/forms/room",
 	};
 
 	useEffect(() => {
