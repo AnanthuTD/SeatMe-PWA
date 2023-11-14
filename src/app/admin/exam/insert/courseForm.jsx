@@ -160,8 +160,6 @@ const CourseForm = ({
 							>
 								{submitStatus === "idle"
 									? "Submit"
-									: submitStatus === "success"
-									? "Update"
 									: "Re-Submit"}
 							</Button>
 						</Col>

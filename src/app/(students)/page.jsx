@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
 import axios from "@/lib/axiosPublic";
+import { deleteCookie, getCookie } from "cookies-next";
 
 const layout = {
 	labelCol: { span: 8 },
@@ -20,7 +21,7 @@ const App = () => {
 	const [upcomingExams, setUpcomingExams] = useState([]);
 
 	const storeUpcomingExamsInLocalStorage = (examsData) => {
-		const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 1 day in milliseconds
+		const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000;
 		const storageData = {
 			expirationTime,
 			examsData,
@@ -45,15 +46,13 @@ const App = () => {
 		return examsData;
 	};
 
-	const storeStudentIdInLocalStorage = (studentId) => {
-		localStorage.setItem('rememberedRegisterId', studentId);
-	};
-
 	const fetchSeatingInfo = async (studentId) => {
 		try {
 			const response = await axios.get("api/", {
 				params: { studentId },
 			});
+
+			if(response.status === 204) return undefined;
 
 			const { data } = response;
 			const { seatingInfo } = data;
@@ -61,70 +60,41 @@ const App = () => {
 			return seatingInfo;
 		} catch (error) {
 			console.error('Error fetching seating info:', error);
-			throw error; // Rethrow the error to handle it later if needed
+			return undefined;
 		}
 	};
 
-	const fetchUpcomingExams = async (programId, semester, openCourseId) => {
-		if (!programId || !semester) throw new Error('ProgramId and semester not found! Try fetching exams by studentId.');
+	const fetchUpcomingExams = async () => {
 		try {
-			console.log(programId, semester, openCourseId);
-			const examsResponse = await axios.get("api/exams", {
-				params: { programId, semester, openCourseId },
-			});
+			const examsResponse = await axios.get("api/exams");
 
 			const examsData = examsResponse.data;
 			const sortedExams = examsData.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
 			return sortedExams;
 		} catch (error) {
 			console.error('Error fetching upcoming exams:', error);
-			throw error;
-		}
-	};
-
-	const fetchExamsByStudentId = async (studentId) => {
-		try {
-			const response = await axios.get(`api/exams/${studentId}`);
-			const { data } = response;
-			const sortedExams = data.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-			return sortedExams;
-		} catch (error) {
-			console.error('Error fetching exams by student ID:', error);
-			throw error;
+			return [];
 		}
 	};
 
 	const onFinish = async (values) => {
-		const studentId = values.studentId.toString();
-		storeStudentIdInLocalStorage(studentId);
+		const studentId = values.studentId;
+		const existingStudentId = parseInt(getCookie('studentId'));
+
+		if (studentId !== existingStudentId) {
+			localStorage.removeItem('upcomingExams');
+			setUpcomingExams([])
+		}
+
 		try {
 			const seatingInfo = await fetchSeatingInfo(studentId);
 			setSeatingInfo(seatingInfo);
-
-			const { programId, semester, openCourseId } = seatingInfo.student || {};
-
-			const userObject = { programId, semester, openCourseId, studentId };
-			localStorage.setItem('user', JSON.stringify(userObject));
-
-			if (!upcomingExams.length) {
-				const examsData = await fetchUpcomingExams(programId, semester, openCourseId);
-				setUpcomingExams(examsData);
-			}
 		} catch (error) {
 			setSeatingInfo(undefined);
+		}
 
-			const storedUser = localStorage.getItem('user');
-			const userObject = JSON.parse(storedUser);
-
-			if (userObject && studentId === userObject.studentId) {
-				if (!upcomingExams.length) {
-					const examsData = await fetchUpcomingExams(userObject.programId, userObject.semester, userObject.openCourseId);
-					setUpcomingExams(examsData);
-				}
-				return;
-			}
-
-			const examsData = await fetchExamsByStudentId(studentId);
+		if (!upcomingExams.length) {
+			const examsData = await fetchUpcomingExams();
 			setUpcomingExams(examsData);
 		}
 	};
@@ -147,17 +117,22 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
-		const userObject = JSON.parse(storedUser);
-		const { studentId } = userObject;
+		try {
+			const studentId = getCookie('studentId');
 
-		if (studentId) {
-			form.setFieldsValue({ studentId: parseInt(studentId) });
+			if (studentId) {
+				form.setFieldsValue({ studentId: parseInt(studentId) });
+				form.submit();
+			}
+
+		} catch (error) {
+			console.error('Error in useEffect:', error.message);
 		}
 	}, [form]);
 
+
 	const onReset = () => {
-		localStorage.removeItem('user');
+		deleteCookie('studentId');
 		localStorage.removeItem('upcomingExams');
 		form.resetFields();
 		setSeatingInfo(undefined);

@@ -19,14 +19,17 @@ import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-const pages = ["Shedulde", "Attendence"];
-const settings = ["Profile", "Logout"];
 
-function Navbar() {
+function Navbar({ examinees = false }) {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 	const [visible, setVisible] = React.useState(false);
 	const router = useRouter();
+
+	let pages = ["Schedule", "Examinees"];
+	if (!examinees) pages = ["Schedule"]
+
+	const settings = ["Profile", "Logout"];
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -48,6 +51,8 @@ function Navbar() {
 			setVisible(false);
 			setAuthorizationToken();
 			localStorage.removeItem("user");
+			localStorage.removeItem("onDuty");
+			localStorage.removeItem(examDetails);
 			router.push("/login");
 		} catch (e) {
 			console.error(e);
@@ -118,7 +123,7 @@ function Navbar() {
 								>
 									<Link
 										href={
-											page === "Shedulde"
+											page === "Schedule"
 												? "/staff"
 												: "/staff/attendance"
 										}
@@ -161,7 +166,7 @@ function Navbar() {
 							<Link
 								key={page}
 								href={
-									page === "Shedulde"
+									page === "Schedule"
 										? "/staff"
 										: "/staff/attendance"
 								}
@@ -229,26 +234,3 @@ function Navbar() {
 	);
 }
 export default Navbar;
-
-/*import React from 'react'
-
-
-
-function Navbar () {
-  return (
-	<>
-	     <div  className='lg:block sm:hidden bg-red-700 ' >
-		 
-
-		 </div>
-		 <div className='lg:hidden sm:block '   >
-			helloooo
-		 </div>
-
-     
-
-	</>
-  )
-}
-
-export default  Navbar;*/

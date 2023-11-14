@@ -2,7 +2,7 @@
 
 import React from "react";
 
-function offduty() {
+function offDuty() {
 	return (
 		<div className=" border-dashed border-black border-2 p-36 m-44 sm:m-10 sm:p-10 ">
 			<h1 className="lg: text-green-800 text-6xl font-bold  sm:text-2xl ">
@@ -15,4 +15,4 @@ function offduty() {
 	);
 }
 
-export default offduty;
+export default offDuty;
