@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input } from "antd";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
-import SelectDepartment from "../../components/select";
+import SelectDepartment from "../components/select";
 
 const loadDepartments = async () => {
 	try {
