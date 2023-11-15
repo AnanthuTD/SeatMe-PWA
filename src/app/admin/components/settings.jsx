@@ -5,12 +5,11 @@ import {
 	Anchor,
 	Form,
 	Input,
-	Switch,
 	Row,
 	Col,
 	message,
 	Descriptions,
-	Menu,
+	Divider,
 } from "antd";
 import {
 	UserOutlined,
@@ -22,6 +21,8 @@ import axios from "axios";
 import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import { useRouter } from "next/navigation";
 import { useAccount } from "@/context/accountContext";
+import ScheduleSeatingAvailabilityForm from "./seatingAvailableTimeConfig";
+import Title from "antd/es/typography/Title";
 
 const SettingsButton = () => {
 	const [visible, setVisible] = useState(false);
@@ -54,7 +55,7 @@ const SettingsButton = () => {
 		}
 	};
 
-	const onFinish = (values) => {};
+	const onFinish = (values) => { };
 
 	const items = [
 		{
@@ -74,6 +75,11 @@ const SettingsButton = () => {
 			href: "#editProfile",
 			title: "Edit Profile",
 			// label: "Edit Profile",
+		},
+		{
+			key: "seatingAvailableTimeConfig",
+			href: "#seatingAvailableTimeConfig",
+			title: "Schedule Seating Availability",
 		},
 	];
 
@@ -138,7 +144,7 @@ const SettingsButton = () => {
 				onCancel={handleCancel}
 				footer={null}
 				centered
-				
+				width={1000}
 			>
 				<Row
 					gutter={16}
@@ -148,19 +154,19 @@ const SettingsButton = () => {
 						<Anchor
 							affix={false}
 							items={items}
-							
+
 							replace={true}
 						/>
-						{/* <Menu items={items} /> */}
 					</Col>
 					<Col
 						span={18}
 						style={{ maxHeight: "400px", overflowY: "auto" }}
 						className="scrollbar-none"
 					>
+							<Title level={4}>User Profile</Title>
 						<Descriptions
 							id="viewProfile"
-							title="User Profile"
+							// title="User Profile"
 							// bordered
 							layout="vertical"
 							items={descriptionItems}
@@ -192,6 +198,13 @@ const SettingsButton = () => {
 								</Button>
 							</Form.Item>
 						</Form>
+
+						<Divider />
+
+						<div id="seatingAvailableTimeConfig">
+							<Title level={4}>Schedule Seating Availability</Title>
+							<ScheduleSeatingAvailabilityForm />
+						</div>
 					</Col>
 				</Row>
 
