@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Button,
 	Modal,
@@ -12,9 +12,7 @@ import {
 	Divider,
 } from "antd";
 import {
-	UserOutlined,
 	LogoutOutlined,
-	NotificationOutlined,
 	SettingFilled,
 } from "@ant-design/icons";
 import axios from "axios";
@@ -27,6 +25,8 @@ import ViewSchedules from "./viewSchedules";
 
 const SettingsButton = () => {
 	const [visible, setVisible] = useState(false);
+	const [descriptionItems, setDescriptionItems] = useState([]);
+	const { user, setUser } = useAccount();
 
 	const router = useRouter();
 
@@ -36,11 +36,6 @@ const SettingsButton = () => {
 
 	const handleCancel = () => {
 		setVisible(false);
-	};
-
-	const handleProfileFormSubmit = (values) => {
-		// Handle form submission for profile settings
-		console.log("Profile Settings:", values);
 	};
 
 	const handleLogout = async () => {
@@ -56,7 +51,17 @@ const SettingsButton = () => {
 		}
 	};
 
-	const onFinish = (values) => { };
+	const onFinish = async (values) => {
+		try {
+			const response = await axios.patch('/api/admin/profile', values);
+			const { user } = response.data;
+			setUser(user);
+			message.success('Profile updated successfully')
+		} catch (error) {
+			message.error('Profile update failed');
+		}
+
+	};
 
 	const items = [
 		{
@@ -84,38 +89,36 @@ const SettingsButton = () => {
 		},
 	];
 
-	const { user } = useAccount();
-
-	console.log(user);
-
-	const descriptionItems = [
-		{
-			key: "6",
-			label: "Id",
-			children: user?.id,
-		},
-		{
-			key: "1",
-			label: "UserName",
-			children: user?.name,
-		},
-		{
-			key: "5",
-			label: "Designation",
-			children: user?.designation || "Empty",
-		},
-		{
-			key: "2",
-			label: "Telephone",
-			children: user?.phone || "Empty",
-		},
-		{
-			key: "4",
-			label: "Address",
-			span: 2,
-			children: user?.address,
-		},
-	];
+	useEffect(() => {
+		const descriptionItems = [
+			{
+				key: "1",
+				label: "Id",
+				children: user?.id,
+			},
+			{
+				key: "2",
+				label: "UserName",
+				children: user?.name,
+			},
+			{
+				key: "3",
+				label: "Email",
+				children: user?.email,
+			},
+			{
+				key: "4",
+				label: "Designation",
+				children: user?.designation || "Empty",
+			},
+			{
+				key: "5",
+				label: "Phone",
+				children: user?.phone || "Empty",
+			},
+		];
+		setDescriptionItems(descriptionItems)
+	}, [user])
 
 	return (
 		<>
@@ -184,14 +187,45 @@ const SettingsButton = () => {
 							<Form.Item
 								label="Name"
 								name="name"
-								initialValue="John Doe"
+								initialValue={user.name}
+								required
 							>
 								<Input />
 							</Form.Item>
 							<Form.Item
 								label="Email"
 								name="email"
-								initialValue="johndoe@example.com"
+								initialValue={user.email}
+								required
+							>
+								<Input />
+							</Form.Item>
+							<Form.Item
+								label="Password"
+								name="password"
+								required
+								rules={[
+									{
+										validator: async (_, value) => {
+											if (!value) {
+												throw new Error('Please provide Password');
+											}
+										},
+									},
+								]}
+							>
+								<Input.Password />
+							</Form.Item>
+							<Form.Item
+								label="New Password"
+								name="newPassword"
+							>
+								<Input.Password />
+							</Form.Item>
+							<Form.Item
+								label="Phone"
+								name="phone"
+								initialValue={user.phone}
 							>
 								<Input />
 							</Form.Item>
