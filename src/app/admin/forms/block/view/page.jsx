@@ -1,22 +1,7 @@
-
 'use client'
-
 import React, { useState, useEffect } from "react";
-import {
-	Input,
-	Button,
-	Row,
-	Col,
-	Form,
-	Divider,
-	Card,
-	message,
-	Alert,
-    FloatButton
-} from "antd";
-import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
-import axios from "@/axiosInstance";
-import Link from "next/link";
+import axios from "@/lib/axiosPrivate";
+
 const YourComponent = () => {
   const [departments, setDepartments] = useState([]);
 
