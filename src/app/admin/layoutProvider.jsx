@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, theme } from "antd";
 import Menu from "./(menu)/menu";
-import SettingsButton from "./components/settings";
+import SettingsButton from "./components/settings/settings";
 const { Header, Sider, Content } = Layout;
 
 const App = ({ children }) => {

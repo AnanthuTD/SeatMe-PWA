@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useAccount } from "@/context/accountContext";
 import ScheduleSeatingAvailabilityForm from "./seatingAvailableTimeConfig";
 import Title from "antd/es/typography/Title";
+import ViewSchedules from "./viewSchedules";
 
 const SettingsButton = () => {
 	const [visible, setVisible] = useState(false);
@@ -163,7 +164,7 @@ const SettingsButton = () => {
 						style={{ maxHeight: "400px", overflowY: "auto" }}
 						className="scrollbar-none"
 					>
-							<Title level={4}>User Profile</Title>
+						<Title level={4}>User Profile</Title>
 						<Descriptions
 							id="viewProfile"
 							// title="User Profile"
@@ -172,6 +173,8 @@ const SettingsButton = () => {
 							items={descriptionItems}
 							column={2}
 						/>
+
+						<Title level={4}>Edit Profile</Title>
 
 						<Form
 							id="editProfile"
@@ -204,6 +207,7 @@ const SettingsButton = () => {
 						<div id="seatingAvailableTimeConfig">
 							<Title level={4}>Schedule Seating Availability</Title>
 							<ScheduleSeatingAvailabilityForm />
+							<ViewSchedules />
 						</div>
 					</Col>
 				</Row>
