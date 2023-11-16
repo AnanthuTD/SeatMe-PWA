@@ -18,13 +18,13 @@ function Page() {
 
 	useEffect(() => {
 		const onDuty = typeof window !== "undefined" ? localStorage.getItem("onDuty") : null;
-		const examInfo = typeof window !== "undefined" ? localStorage.getItem(examDetails) : null;
+		const examInfo = typeof window !== "undefined" ? localStorage.getItem('examDetails') : null;
 		console.log(onDuty, examInfo);
 
 		
 		if (!onDuty || !examInfo || !examInfo.length) return;
 		
-		let roomId, dateId, teacher;
+		let roomId, dateId;
 		
 		try {
 			const examDetails = JSON.parse(examInfo);

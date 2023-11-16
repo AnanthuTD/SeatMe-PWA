@@ -40,8 +40,7 @@ function page() {
 	}, [onDuty]);
 
 	useEffect(() => {
-		console.log(examDetails);
-		localStorage.setItem(examDetails, JSON.stringify(examDetails));
+		localStorage.setItem('examDetails', JSON.stringify(examDetails));
 	}, [examDetails]);
 
 
