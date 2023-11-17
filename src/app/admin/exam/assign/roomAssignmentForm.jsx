@@ -227,7 +227,7 @@ const RoomAssignmentForm = ({
 									</Select>
 								</Form.Item>
 							</Col>
-							<Col sm={10}>
+							<Col sm={7}>
 								<Form.Item
 									name="examType"
 									label="Exam Type"
@@ -241,11 +241,12 @@ const RoomAssignmentForm = ({
 									</Radio.Group>
 								</Form.Item>
 							</Col>
-							{/* <Col sm={4}>
-								<Form.Item name="optimize" initialValue={false}>
-									<Switch />
+							<Col sm={3}>
+								<Form.Item name="optimize" label="Optimize" initialValue={true}>
+									<Switch defaultChecked={true
+									} />
 								</Form.Item>
-							</Col> */}
+							</Col>
 						</Row>
 						<Row gutter={16}>
 							<Col lg={19} md={24}>
