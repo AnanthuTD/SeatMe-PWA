@@ -52,7 +52,7 @@ function Navbar({ examinees = false }) {
 			setAuthorizationToken();
 			localStorage.removeItem("user");
 			localStorage.removeItem("onDuty");
-			localStorage.removeItem(examDetails);
+			localStorage.removeItem("examDetails");
 			router.push("/login");
 		} catch (e) {
 			console.error(e);
