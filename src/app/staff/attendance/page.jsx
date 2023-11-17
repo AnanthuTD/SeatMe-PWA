@@ -73,7 +73,7 @@ function Page() {
 					<h1 className="text-center text-2xl text-gray-700 mt-5 ">
 						Check and click <span className="text-blue-500">finish</span>
 					</h1>
-					<Absentees data={data} conform={conform} setConform={setConform} teacherSeatId={teacherSeatId} />
+					<Absentees data={data} conform={conform} setConform={setConform} teacherSeatId={teacherSeatId}  submitted={examDetails.attendanceSubmitted} />
 				</>
 			);
 		} else {

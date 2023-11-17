@@ -49,7 +49,7 @@ function Navbar({ examinees = false }) {
 		try {
 			await axios.delete("/api/auth/logout");
 			setVisible(false);
-			setAuthorizationToken();
+			setAuthorizationToken(); 
 			localStorage.removeItem("user");
 			localStorage.removeItem("onDuty");
 			localStorage.removeItem("examDetails");
