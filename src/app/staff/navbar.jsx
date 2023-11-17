@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useState , useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,10 +15,26 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
-import { message } from "antd";
+import Title from "antd/es/typography/Title";
+
+
+import {
+	
+	Modal,
+	Anchor,
+	Form,
+	Input,
+	Row,
+	Col,
+	message,
+	Descriptions,
+	Divider,
+} from "antd";
 import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAccount } from "@/context/accountContext";
+
 
 
 function Navbar({ examinees = false }) {
@@ -58,9 +75,75 @@ function Navbar({ examinees = false }) {
 			console.error(e);
 			message.error("Logout failed!");
 		}
-	};
+	  };
+  
+	  const [visibleprofile, setVisibleprofile] = useState(false);
+	  const [descriptionItems, setDescriptionItems] = useState([]);
+	  const { user, setUser } = useAccount();
+  
+	 
+  
+	  const handleSettingsClick = () => {
+		  setVisibleprofile(true);
+	  };
+  
+	  const handleCancel = () => {
+		  setVisibleprofile(false);
+	  };
+  
+	/*  const items = [
+		  {
+			  key: "viewProfile",
+			  href: "#viewProfile",
+			  title: "Profile",
+			  // label: "Profile",
+		  },
+		  {
+			  key: "Updatepassword",
+			  href: "#editProfile",
+			  title: "UpdatePassword",
+			  // label: "Notifications",
+		  },
+	  ]; */
+  
+	  useEffect(() => {
+		  const descriptionItems = [
+			  {
+				  key: "1",
+				  label: "Id",
+				  children: user?.id,
+			  },
+			  {
+				  key: "2",
+				  label: "UserName",
+				  children: user?.name,
+			  },
+			  {
+				  key: "3",
+				  label: "Email",
+				  children: user?.email,
+			  },
+			  {
+				  key: "4",
+				  label: "Designation",
+				  children: user?.designation || "Empty",
+			  },
+		  ];
+		  setDescriptionItems(descriptionItems)
+	  }, [user])
+  
+	  
+			 
+  
+	 
+
+
+
+
+
 
 	return (
+		<>
 		<AppBar position="static" sx={{ backgroundColor: "#004AAD" }}>
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
@@ -219,6 +302,9 @@ function Navbar({ examinees = false }) {
 										if (setting === "Logout") {
 											handleLogout();
 										}
+										else {
+											handleSettingsClick();
+										}
 									}}
 								>
 									<Typography textAlign="center">
@@ -231,6 +317,83 @@ function Navbar({ examinees = false }) {
 				</Toolbar>
 			</Container>
 		</AppBar>
+        
+		<Modal
+				  title="Settings"
+				  open={visibleprofile}
+				  onCancel={handleCancel}
+				  footer={null}
+				  centered
+				  width={1000}
+			  >
+				  <Row
+					  gutter={16}
+					  style={{ maxHeight: "400px", overflowY: "auto" }}
+				  >
+					  <Col
+						  span={18}
+						  style={{ maxHeight: "400px", overflowY: "auto" }}
+						  className="scrollbar-none"
+					  >
+						  <Title level={3}>User Profile</Title>
+						  <Descriptions
+							  id="viewProfile"
+							  // title="User Profile"
+							  // bordered
+							  layout="vertical"
+							  items={descriptionItems}
+							  column={2}
+						  />
+  
+						  <Title level={4}>update Password</Title>
+  
+						  <Form
+							  id="editProfile"
+							  layout="vertical"
+							 /* onFinish={onFinish} */
+						  >
+							
+							 
+							  <Form.Item
+								  label="Current Password"
+								  name="password"
+								  required
+								  rules={[
+									  {
+										  validator: async (_, value) => {
+											  if (!value) {
+												  throw new Error('Please provide Password');
+											  }
+										  },
+									  },
+								  ]}
+							  >
+								  <Input.Password />
+							  </Form.Item>
+							  <Form.Item
+								  label="New Password"
+								  name="newPassword"
+							  >
+								  <Input.Password />
+							  </Form.Item>
+							
+							  <Form.Item>
+								  <Button type="primary" htmlType="submit">
+									  Update
+								  </Button>
+							  </Form.Item>
+						  </Form>
+						  </Col>
+						  </Row>
+		</Modal>
+
+
+
+
+
+
+
+		</>
 	);
 }
 export default Navbar;
