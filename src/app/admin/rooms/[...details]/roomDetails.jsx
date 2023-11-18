@@ -4,6 +4,7 @@ import { Form, Input, InputNumber, Popconfirm, Table, Typography, Button, Space,
 import axios from "@/lib/axiosPrivate";
 import { SearchOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import Highlighter from 'react-highlight-words';
 
 const EditableCell = ({
     editing,
@@ -40,7 +41,7 @@ const EditableCell = ({
     );
 };
 
-const RoomDetail = ({ data, examinesCount }) => {
+const RoomDetail = ({ data, setData, examinesCount, examType }) => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [totalSeats, setTotalSeats] = useState(0);
@@ -103,19 +104,6 @@ const RoomDetail = ({ data, examinesCount }) => {
                         type="link"
                         size="small"
                         onClick={() => {
-                            confirm({
-                                closeDropdown: false,
-                            });
-                            setSearchText(selectedKeys[0]);
-                            setSearchedColumn(dataIndex);
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
                             close();
                         }}
                     >
@@ -158,9 +146,6 @@ const RoomDetail = ({ data, examinesCount }) => {
 
     const edit = (record) => {
         form.setFieldsValue({
-            name: '',
-            age: '',
-            address: '',
             ...record,
         });
         setEditingKey(record.id);
@@ -181,12 +166,17 @@ const RoomDetail = ({ data, examinesCount }) => {
                     ...item,
                     ...row,
                 });
-                setData(newData);
-                setEditingKey('');
-            } else {
-                newData.push(row);
-                setData(newData);
-                setEditingKey('');
+
+                console.log({ ...row, id: item.id });
+                try {
+                    const res = await axios.patch(`/api/admin/rooms/${examType}`, { ...row, id: item.id })
+                    const { updateCount } = res.data;
+                    if (!updateCount) message.warning('Nothing to update!')
+                    cancel();
+                    setData(newData);
+                } catch (error) {
+                    message.error(error.response.data.error);
+                }
             }
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
@@ -264,10 +254,18 @@ const RoomDetail = ({ data, examinesCount }) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [submitting, setSubmitting] = useState(false);
 
+    useEffect(() => {
+        const availableRoomIds = data
+            .filter(room => room.isAvailable)
+            .map(room => room.id);
+        setSelectedRowKeys([...selectedRowKeys, ...availableRoomIds])
+    }, [])
+
     const onSelectChange = (newSelectedRowKeys) => {
         console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
+
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
@@ -300,7 +298,7 @@ const RoomDetail = ({ data, examinesCount }) => {
 
         setTotalSeats(newTotalSeats);
     };
-    
+
     useEffect(() => {
         calculateTotalSeats();
     }, [selectedRowKeys]);
@@ -310,13 +308,13 @@ const RoomDetail = ({ data, examinesCount }) => {
     const handleRoomSelection = async () => {
         setSubmitting(true);
         try {
-            const response = await axios.patch(`/api/admin/rooms`, {
+            const response = await axios.patch(`/api/admin/rooms-availability`, {
                 roomIds: selectedRowKeys,
             });
 
             if (response.status === 200) {
                 message.success("Room availability updated successfully");
-                router.back();
+                router.push('/admin/exam/assign');
             } else {
                 message.error(
                     "Failed to update room availability :",
@@ -389,10 +387,6 @@ const RoomDetail = ({ data, examinesCount }) => {
                         onChange: cancel, defaultPageSize: 7
                     }}
                     rowKey={(record) => record.id}
-                /* scroll={{
-                    x: 1500,
-                    y: 300,
-                  }} */
                 />
             </Form>
         </div>

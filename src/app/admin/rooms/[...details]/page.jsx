@@ -12,6 +12,9 @@ const Page = ({ params }) => {
     const loadRooms = async (examType) => {
         setLoading(true);
         const result = await axios.get(`/api/admin/rooms/${examType}`);
+        result.data.sort((room1, room2) => {
+            return room2.isAvailable - room1.isAvailable;
+        });
         setRooms(result.data);
         setLoading(false);
     };
@@ -25,7 +28,7 @@ const Page = ({ params }) => {
             {
                 loading
                     ? <Spin />
-                    : <RoomDetail data={rooms} examinesCount={examinesCount} />
+                    : <RoomDetail data={rooms} setData={setRooms} examinesCount={examinesCount} examType={examType} />
             }
         </>
     );
