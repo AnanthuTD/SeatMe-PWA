@@ -1,17 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Select, message, Radio, Form, Spin, Divider, Statistic } from "antd";
+import { Select, message, Radio, Form, Spin, Divider, Statistic, Modal } from "antd";
 import axios from "@/lib/axiosPrivate";
 import dayjs from "dayjs";
 import DownloadButton from "./download";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Rooms from "./rooms";
+import CustomDatePicker from "../../components/datePicker";
 
-const DatePicker = dynamic(() =>
-	import("antd").then((module) => ({ default: module.DatePicker })),
-);
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),
 );
@@ -37,7 +35,6 @@ const Switch = dynamic(() =>
 const timeOptions = ['AN', 'FN'];
 
 const RoomAssignmentForm = ({
-	setDateTime = () => { },
 	setAssignTeachers = () => { },
 }) => {
 	const [loading, setLoading] = useState(false);
@@ -50,6 +47,7 @@ const RoomAssignmentForm = ({
 	const [examType, setExamType] = useState("internal");
 	const [date, setDate] = useState(new Date());
 	const [timeCode, setTimeCode] = useState('AN');
+	const [visible, setVisible] = useState(false);
 
 	const handleExamTypeChange = (e) => {
 		const examType = e.target.value;
@@ -103,8 +101,9 @@ const RoomAssignmentForm = ({
 					message.success("Assignments successfully");
 					setWarningMessage("");
 					setFileName(result.data.fileName);
-					setDateTime({ date: selectedDate, timeCode });
+
 					setDate(selectedDate);
+					setVisible(true);
 				}
 			} else if (result.status === 200) {
 				setWarningMessage(result.data.message);
@@ -141,6 +140,9 @@ const RoomAssignmentForm = ({
 		if (selectedRooms.length) calculateTotalSeats();
 	}, [selectedRooms])
 
+	const handleModalClose = () => {
+		setVisible(false);
+	};
 
 	return (
 		<div style={{ padding: "20px" }}>
@@ -164,16 +166,9 @@ const RoomAssignmentForm = ({
 									},
 								]}
 							>
-								<DatePicker
-									style={{ width: 200 }}
-									format="YYYY-MM-DD"
-									className="date-picker"
-									onChange={(newDate) => {
-										setDateTime({ date: newDate.toDate() });
-										setDate(newDate.toDate())
-									}}
-									disabledDate={disabledDate}
-								/>
+								<CustomDatePicker defaultValue={date} onChange={(newDate) => {
+									setDate(newDate.toDate())
+								}} />
 							</Form.Item>
 						</Col>
 						<Col sm={24} md={12} lg={6} xl={5}>
@@ -271,9 +266,7 @@ const RoomAssignmentForm = ({
 							</Card>
 						</Col>
 						<Col sm={24} lg={10} md={10} xl={10} xs={24} className="flex items-center">
-							
-								{examinesCount ? <Link href={`/admin/rooms/${examType}/${examinesCount}`} ><Button type="primary">Select Rooms</Button></Link> : null}
-							
+							{examinesCount ? <Link href={`/admin/rooms/${examType}/${examinesCount}`} ><Button type="primary">Select Rooms</Button></Link> : null}
 						</Col>
 					</Row>
 					<Row>
@@ -292,6 +285,7 @@ const RoomAssignmentForm = ({
 										className="assign-button"
 										htmlType="submit"
 										loading={loading}
+										disabled={examinesCount > totalSeats}
 									>
 										Assign
 									</Button>
@@ -302,7 +296,7 @@ const RoomAssignmentForm = ({
 				</Form>
 			</>
 
-			{/* {warningMessage ? (
+			{warningMessage ? (
 				<Row>
 					<Alert
 						message={"Add more rooms"}
@@ -311,14 +305,33 @@ const RoomAssignmentForm = ({
 						showIcon
 					/>
 				</Row>
-			) : null} */}
-
-			{fileName ? (
-				<div className="flex gap-3">
-					<DownloadButton fileName={fileName} />
-					<Button type="primary" onClick={() => setAssignTeachers(true)}>Assign Teachers</Button>
-				</div>
 			) : null}
+
+			<Modal
+				open={visible}
+				onCancel={handleModalClose}
+				footer={null}
+				centered={true}
+				className="custom-modal" // Add a custom class for styling the modal
+			>
+				<Row gutter={[16, 16]}>
+					{/* Download Section */}
+					<Col span={22} >
+						<div className="flex items-center">
+							<label className="">Download Seating Arrangement for Students:</label>
+							<DownloadButton fileName={fileName} />
+						</div>
+					</Col>
+					{/* Assign Teachers Section */}
+					<Col span={24}>
+						<Link href={`/admin/exam/assign/staffs?date=${date}&timeCode=${timeCode}`}>
+							<Button type="primary">
+								Assign Teachers
+							</Button>
+						</Link>
+					</Col>
+				</Row>
+			</Modal>
 		</div>
 	);
 };

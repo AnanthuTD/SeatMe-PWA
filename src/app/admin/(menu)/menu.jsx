@@ -43,7 +43,8 @@ const items = [
 			<FileAddOutlined />,
 		),
 		getItem("View", "/admin/exam", <CalendarOutlined />),
-		getItem("Assign", "/admin/exam/assign", <UnorderedListOutlined />),
+		getItem("Assign Seats", "/admin/exam/assign", <UnorderedListOutlined />),
+		getItem("Assign Staffs", "/admin/exam/assign/staffs", <UnorderedListOutlined />),
 	]),
 	getItem("Forms", "/admin/forms", <FormOutlined />, [
 		getItem(
@@ -61,20 +62,20 @@ const items = [
 const App = () => {
 	const router = useRouter();
 	const pathname = usePathname();
-	
+
 	// const { activeMenu, setMenu } = useMenuContext();
 	const [activeMenu, setMenu] = useState(null);
 	// const [parentPath, setParentPath] = useState(getParentPaths(pathname));
 
-	function getSelectedKey(){
-		if(["/admin/staffs", "/admin/staffs/insert"].includes(pathname))
-		return "/admin/staffs";
-		if(["/admin/student", "/admin/student/insert"].includes(pathname))
-		return "/admin/student";
-		if(["/admin/exam/insert", "/admin/exam", "/admin/exam/assign"].includes(pathname))
-		return "/admin/exam";
-		if(["/admin/forms/department", "/admin/forms/program", "/admin/forms/course"].includes(pathname))
-		return "/admin/forms";
+	function getSelectedKey() {
+		if (["/admin/staffs", "/admin/staffs/insert"].includes(pathname))
+			return "/admin/staffs";
+		if (["/admin/student", "/admin/student/insert"].includes(pathname))
+			return "/admin/student";
+		if (["/admin/exam/insert", "/admin/exam", "/admin/exam/assign"].includes(pathname))
+			return "/admin/exam";
+		if (["/admin/forms/department", "/admin/forms/program", "/admin/forms/course"].includes(pathname))
+			return "/admin/forms";
 	}
 
 	const handleMenuItemClick = (key) => {
@@ -90,6 +91,7 @@ const App = () => {
 		"/admin/exam/insert": "/admin/exam/insert",
 		"/admin/exam": "/admin/exam",
 		"/admin/exam/assign": "/admin/exam/assign",
+		"/admin/exam/assign/staffs": "/admin/exam/assign/staffs",
 		"/admin/forms/department": "/admin/forms/department",
 		"/admin/forms/program": "/admin/forms/program",
 		"/admin/forms/course": "/admin/forms/course",
