@@ -32,6 +32,7 @@ const DynamicRoomForm = () => {
 		try {
 			const result = await axios.get("/api/admin/blocks");
 			setBlocks(result.data);
+			console.log(result.data);
 		} catch (error) {
 			console.error("Error fetching blocks: ", error);
 		}
@@ -42,12 +43,12 @@ const DynamicRoomForm = () => {
 	}, []);
 
 	const handleSubmission = async (values) => {
-		console.log("Submitted values:", values);
-
+			console.log("Handle submission",values.rooms);
 		try {
 			const result = await axios.post("/api/admin/roomentry/room", {
 				rooms: values.rooms,
 			});
+			console.log(values.rooms);
 			if (result.status === 200) {
 				message.success(result.message);
 				setError(null); // Clear any previous errors
@@ -207,8 +208,8 @@ const DynamicRoomForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
-												name={[field.name, "cols"]}
-												label="Columns"
+												name={[field.name, "internalCols"]}
+												label="Internal Columns"
 												rules={[
 													{
 														required: true,
@@ -222,8 +223,38 @@ const DynamicRoomForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
-												name={[field.name, "rows"]}
-												label="Rows"
+												name={[field.name, "internalRows"]}
+												label="Internal Rows"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please enter number of rows",
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={10} xxl={10}>
+											<Form.Item
+												name={[field.name, "finalCols"]}
+												label="Final Columns"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please enter number of columns",
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={10} xxl={10}>
+											<Form.Item
+												name={[field.name, "finalRows"]}
+												label="final Rows"
 												rules={[
 													{
 														required: true,

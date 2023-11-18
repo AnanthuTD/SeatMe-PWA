@@ -13,6 +13,7 @@ const requiredFields = [
 	{ key: "name", value: "Course Name" },
 	{ key: "semester", value: "Semester" },
 	{ key: "isOpenCourse", value: "Is Open Course" },
+	{ key: "program", value: "Program" },
 ];
 
 function CoursesPage() {
@@ -26,7 +27,8 @@ function CoursesPage() {
 				course.hasOwnProperty("id") &&
 				course.hasOwnProperty("name") &&
 				course.hasOwnProperty("semester") &&
-				course.hasOwnProperty("isOpenCourse")
+				course.hasOwnProperty("isOpenCourse")&&
+				course.hasOwnProperty("program")
 			);
 		});
 
@@ -38,7 +40,7 @@ function CoursesPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/courses", { courses });
+			const result = await axios.post("/api/admin/courseentry/course", { courses });
 			if (result.status === 200) {
 				message.success("Successfully submitted");
 				setData(result.data);
@@ -46,6 +48,11 @@ function CoursesPage() {
 		} catch (error) {
 			console.log(error);
 			if (error.response.status === 400) {
+				message.error(
+					`Record with Course ID '${error.response.data.value}' already exists`,
+				);
+			}
+			else if (error.response.status === 500) {
 				message.error(
 					`Record with Course ID '${error.response.data.value}' already exists`,
 				);

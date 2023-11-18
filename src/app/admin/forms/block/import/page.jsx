@@ -34,7 +34,7 @@ function BlockPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/block", {
+			const result = await axios.post("/api/admin/blockentry/block", {
 				blocks,
 			});
 			if (result.status === 200) {

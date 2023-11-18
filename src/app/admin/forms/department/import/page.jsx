@@ -34,7 +34,7 @@ function DepartmentPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/department", {
+			const result = await axios.post("/api/admin/departmententry/department", {
 				departments,
 			});
 			if (result.status === 200) {

@@ -16,7 +16,7 @@ const CoursesModel = ({ data, setData }) => {
 		setLoading(true);
 
 		try {
-			const result = await axios.patch("/api/admin/courses", data);
+			const result = await axios.patch("/api/admin/courseentry/courseupdate", data);
 			if (result.data.length) {
 				message.warning("Unable to update some records");
 				setData(result.data);
