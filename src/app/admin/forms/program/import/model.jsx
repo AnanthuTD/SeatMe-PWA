@@ -16,7 +16,7 @@ const ProgramModel = ({ data, setData }) => {
 		setLoading(true);
 
 		try {
-			const result = await axios.patch("/api/admin/program", data);
+			const result = await axios.patch("/api/admin/programentry/programupdate", data);
 			if (result.data.length) {
 				message.warning("Unable to update some records");
 				setData(result.data);

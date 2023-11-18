@@ -57,7 +57,13 @@ const DynamicCourseForm = () => {
 				message.error(
 					`Course with ID '${error.response.data.value}' already exists`,
 				);
-			} else {
+			} 
+			else if(error.response.status ===500) {
+				message.error(
+					`Course with ID '${error.response.data.value}' already exists`,
+				);
+
+			}else {
 				setError("Something went wrong. Please try again."); // Set the error message
 			}
 		}
