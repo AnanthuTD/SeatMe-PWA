@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Select, message, Radio, Form } from "antd";
+import { Select, message, Radio, Form, Spin, Divider, Statistic } from "antd";
 import axios from "@/lib/axiosPrivate";
 import dayjs from "dayjs";
 import DownloadButton from "./download";
-
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import Rooms from "./rooms";
 
-/* const Form = dynamic(() =>
-	import("antd").then((module) => ({ default: module.Form })),
-); */
 const DatePicker = dynamic(() =>
 	import("antd").then((module) => ({ default: module.DatePicker })),
 );
@@ -19,9 +17,6 @@ const Row = dynamic(() =>
 );
 const Col = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Col })),
-);
-const Statistic = dynamic(() =>
-	import("antd").then((module) => ({ default: module.Statistic })),
 );
 const Button = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Button })),
@@ -43,31 +38,22 @@ const timeOptions = ['AN', 'FN'];
 
 const RoomAssignmentForm = ({
 	setDateTime = () => { },
-	setSelectedRooms = () => { },
 	setAssignTeachers = () => { },
 }) => {
-	const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [totalSeats, setTotalSeats] = useState(0);
+	const [loadingRooms, setLoadingRooms] = useState(false);
+	const [selectedRooms, setSelectedRooms] = useState([]);
 	const [examinesCount, setExaminesCount] = useState(0);
-	const [rooms, setRooms] = useState([]);
+	const [totalSeats, setTotalSeats] = useState(0);
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
+	const [examType, setExamType] = useState("internal");
 	const [date, setDate] = useState(new Date());
 	const [timeCode, setTimeCode] = useState('AN');
 
-	const loadRooms = async (examType = 'internal') => {
-		const result = await axios.get(`/api/admin/rooms/${examType}`);
-		setRooms(result.data);
-	};
-
-	useEffect(() => {
-		loadRooms();
-	}, []);
-
 	const handleExamTypeChange = (e) => {
 		const examType = e.target.value;
-		loadRooms(examType);
+		setExamType(examType);
 	};
 
 	const getExaminesCount = async () => {
@@ -87,57 +73,16 @@ const RoomAssignmentForm = ({
 		setFileName("");
 	}, [date, timeCode]);
 
-	useEffect(() => {
-		const selectedRoomIds = rooms
-			.filter((room) => room.isAvailable)
-			.map((room) => room.id);
-
-		setSelectedRoomIds(selectedRoomIds);
-	}, [rooms]);
-
-	const calculateTotalSeats = () => {
-		const selectedRooms = rooms.filter((room) =>
-			selectedRoomIds.includes(room.id),
-		);
-
-		setSelectedRooms(selectedRooms);
-
-		const newTotalSeats = selectedRooms.reduce((total, room) => {
-			return total + room.seats;
-		}, 0);
-		setTotalSeats(newTotalSeats);
+	const loadSelectedRooms = async (examType) => {
+		setLoadingRooms(true);
+		const result = await axios.get(`/api/admin/rooms/${examType}`, { params: { availability: true } });
+		setSelectedRooms(result.data);
+		setLoadingRooms(false);
 	};
 
 	useEffect(() => {
-		calculateTotalSeats();
-	}, [selectedRoomIds]);
-
-	const filteredOptions = rooms.filter(
-		(o) => !selectedRoomIds.includes(o.id),
-	);
-
-	const onFinish = async (values) => {
-		try {
-			const response = await axios.patch(`/api/admin/rooms`, {
-				roomIds: selectedRoomIds,
-			});
-
-			if (response.status === 200) {
-				message.success("Room availability updated successfully");
-				assign(values);
-			} else {
-				message.error(
-					"PATCH request failed with status:",
-					response.status,
-				);
-			}
-		} catch (error) {
-			console.error("Error while sending PATCH request:", error);
-			message.error("Error while sending PATCH request");
-		} finally {
-			setLoading(false);
-		}
-	};
+		loadSelectedRooms(examType);
+	}, []);
 
 	const assign = async (values) => {
 		console.log(values);
@@ -159,6 +104,7 @@ const RoomAssignmentForm = ({
 					setWarningMessage("");
 					setFileName(result.data.fileName);
 					setDateTime({ date: selectedDate, timeCode });
+					setDate(selectedDate);
 				}
 			} else if (result.status === 200) {
 				setWarningMessage(result.data.message);
@@ -179,220 +125,184 @@ const RoomAssignmentForm = ({
 		}
 	};
 
+	const disabledDate = (current) => {
+		// Disable days before today
+		return current && current <= dayjs().startOf('day');
+	};
+
+	const calculateTotalSeats = () => {
+		const newTotalSeats = selectedRooms.reduce((total, room) => {
+			return total + room.seats;
+		}, 0);
+		setTotalSeats(newTotalSeats);
+	};
+
+	useEffect(() => {
+		if (selectedRooms.length) calculateTotalSeats();
+	}, [selectedRooms])
+
+
 	return (
 		<div style={{ padding: "20px" }}>
-			{filteredOptions.length > 0 ? (
-				<>
-					<Form
-						name="exam-assignment"
-						layout="vertical"
-						onFinish={onFinish}
-					>
-						<Row gutter={16}>
-							<Col sm={7}>
-								<Form.Item
-									label="Date"
-									name="selectedDate"
-									initialValue={dayjs(date)}
-									rules={[
-										{
-											required: true,
-											message: "Please select a date",
-										},
-									]}
+
+			<>
+				<Form
+					name="exam-assignment"
+					layout="vertical"
+					onFinish={assign}
+				>
+					<Row gutter={16}>
+						<Col sm={24} md={12} lg={6} xl={5}>
+							<Form.Item
+								label="Date"
+								name="selectedDate"
+								initialValue={dayjs(date)}
+								rules={[
+									{
+										required: true,
+										message: "Please select a date",
+									},
+								]}
+							>
+								<DatePicker
+									style={{ width: 200 }}
+									format="YYYY-MM-DD"
+									className="date-picker"
+									onChange={(newDate) => {
+										setDateTime({ date: newDate.toDate() });
+										setDate(newDate.toDate())
+									}}
+									disabledDate={disabledDate}
+								/>
+							</Form.Item>
+						</Col>
+						<Col sm={24} md={12} lg={6} xl={5}>
+							<Form.Item
+								label="Time Code"
+								name="timeCode"
+								rules={[{ required: true, message: 'Please select AN or FN' }]}
+								initialValue={'AN'}
+							>
+								<Select placeholder="Select AN or FN" onSelect={setTimeCode}>
+									{timeOptions.map((option) => (
+										<Select.Option key={option} value={option}>
+											{option}
+										</Select.Option>
+									))}
+								</Select>
+							</Form.Item>
+						</Col>
+						<Col sm={24} md={18} lg={9} xl={10} /* className="justify-center items-center flex" */>
+							<Form.Item
+								name="examType"
+								label="Exam Type"
+								required={true}
+								initialValue={"internal"}
+							>
+								<Radio.Group onChange={handleExamTypeChange}>
+									<Radio value="internal">Internal</Radio>
+									<Radio value="modal">Modal</Radio>
+									<Radio value="final">Final</Radio>
+								</Radio.Group>
+							</Form.Item>
+						</Col>
+						<Col sm={24} md={6} lg={3} xl={2}>
+							<Form.Item name="optimize" label="Optimize" initialValue={true}>
+								<Switch defaultChecked={true
+								} />
+							</Form.Item>
+						</Col>
+					</Row>
+					<Row gutter={16}>
+						<Col sm={24} lg={10} md={10} xl={10} xs={24}>
+							<Form.Item
+								name="orderBy"
+								initialValue="rollNumber"
+								label="Sort by"
+								required={true}
+							>
+								<Select
+									className="select-box"
 								>
-									<DatePicker
-										style={{ width: 200 }}
-										format="YYYY-MM-DD"
-										className="date-picker"
-										onChange={(newDate) => {
-											setDateTime(newDate.toDate()); // Update the date when it changes
-										}}
+									<Select.Option value="rollNumber">
+										Roll Number
+									</Select.Option>
+									<Select.Option value="id">
+										Registration Number
+									</Select.Option>
+								</Select>
+							</Form.Item>
+						</Col>
+
+					</Row>
+					<Row gutter={16}>
+						<Col>
+							<Card bordered={false}>
+								<Statistic
+									title="Total Examinees"
+									value={examinesCount}
+								/>
+							</Card>
+						</Col>
+						<Col>
+							<Card bordered={false}>
+								{examinesCount - totalSeats === 0 ? (
+									<Statistic
+										title="Correct number of seats"
+										value="0"
 									/>
-								</Form.Item>
-							</Col>
-							<Col span={7}>
-								<Form.Item
-									label="Time Code"
-									name="timeCode"
-									rules={[{ required: true, message: 'Please select AN or FN' }]}
-									initialValue={'AN'}
-								>
-									<Select placeholder="Select AN or FN" onSelect={setTimeCode}>
-										{timeOptions.map((option) => (
-											<Select.Option key={option} value={option}>
-												{option}
-											</Select.Option>
-										))}
-									</Select>
-								</Form.Item>
-							</Col>
-							<Col sm={10}>
-								<Form.Item
-									name="examType"
-									label="Exam Type"
-									required={true}
-									initialValue={"internal"}
-								>
-									<Radio.Group onChange={handleExamTypeChange}>
-										<Radio value="internal">Internal</Radio>
-										<Radio value="modal">Modal</Radio>
-										<Radio value="final">Final</Radio>
-									</Radio.Group>
-								</Form.Item>
-							</Col>
-							{/* <Col sm={4}>
-								<Form.Item name="optimize" initialValue={false}>
-									<Switch />
-								</Form.Item>
-							</Col> */}
-						</Row>
-						<Row gutter={16}>
-							<Col lg={19} md={24}>
-								<Form.Item
-									label="Select Rooms"
-									required={true}
-									help="Please select at least one room"
-								>
-									<Select
-										mode="multiple"
-										showSearch
-										filterOption={(input, option) =>
-											(option?.label ?? "").includes(
-												input,
-											)
-										}
-										filterSort={(optionA, optionB) =>
-											(optionA?.label ?? "")
-												.toLowerCase()
-												.localeCompare(
-													(
-														optionB?.label ?? ""
-													).toLowerCase(),
-												)
-										}
-										placeholder="Select rooms"
-										size="large"
-										onChange={setSelectedRoomIds}
-										style={{ width: "100%" }}
-										value={selectedRoomIds}
-										onSelect={(value) => console.log(value)}
-										allowClear={true}
-										listItemHeight={10}
-										listHeight={350}
-									>
-										{filteredOptions.length
-											? filteredOptions.map((room) => {
-												return (
-													<Select.Option
-														key={room.id}
-														value={room.id}
-														label={`r${room.id} f${room.floor} b${room.blockId}`}
-													>
-														<div
-															className="flex items-center justify-between"
-															style={{
-																padding:
-																	"8px",
-															}}
-														>
-															<div className="flex-1">
-																<span className="text-md font-bold">
-																	{
-																		room.id
-																	}{" "}
-																	- Floor{" "}
-																	{
-																		room.floor
-																	}
-																	, Block{" "}
-																	{
-																		room.blockId
-																	}
-																</span>
-																<br />
-															</div>
-															<div className="text-blue-500">
-																{room.seats}{" "}
-																Seats
-															</div>
-														</div>
-													</Select.Option>
-												);
-											})
-											: null}
-									</Select>
-								</Form.Item>
-							</Col>
-							<Col lg={5} md={24}>
-								<Form.Item>
-									<Card bordered={false}>
-										{examinesCount - totalSeats === 0 ? (
-											<Statistic
-												title="Correct number of seats"
-												value="0"
-											/>
-										) : examinesCount - totalSeats < 0 ? (
-											<Statistic
-												title="Extra seats"
-												value={Math.abs(
-													examinesCount - totalSeats,
-												)}
-												valueStyle={{ color: "green" }}
-											/>
-										) : (
-											<Statistic
-												title="More seats needed"
-												value={
-													examinesCount - totalSeats
-												}
-												valueStyle={{ color: "red" }}
-											/>
+								) : examinesCount - totalSeats < 0 ? (
+									<Statistic
+										title="Extra seats"
+										value={Math.abs(
+											examinesCount - totalSeats,
 										)}
-									</Card>
-								</Form.Item>
-							</Col>
-						</Row>
-						<Row gutter={16}>
-							<Col sm={24}>
-								<Form.Item
-									name="orderBy"
-									initialValue="rollNumber"
-									label="Sort by"
-									required={true}
-								>
-									<Select
-										style={{ width: 200 }}
-										className="select-box"
+										valueStyle={{ color: "green" }}
+									/>
+								) : (
+									<Statistic
+										title="More seats needed"
+										value={
+											examinesCount - totalSeats
+										}
+										valueStyle={{ color: "red" }}
+									/>
+								)}
+							</Card>
+						</Col>
+						<Col sm={24} lg={10} md={10} xl={10} xs={24} className="flex items-center">
+							
+								{examinesCount ? <Link href={`/admin/rooms/${examType}/${examinesCount}`} ><Button type="primary">Select Rooms</Button></Link> : null}
+							
+						</Col>
+					</Row>
+					<Row>
+						{loadingRooms
+							? <Spin />
+							: selectedRooms.length ? <Rooms data={selectedRooms} /> : null
+						}
+					</Row>
+					<Divider />
+					<Row>
+						<Col sm={24}>
+							<Form.Item>
+								<Space>
+									<Button
+										type="primary"
+										className="assign-button"
+										htmlType="submit"
+										loading={loading}
 									>
-										<Select.Option value="rollNumber">
-											Roll Number
-										</Select.Option>
-										<Select.Option value="id">
-											Registration Number
-										</Select.Option>
-									</Select>
-								</Form.Item>
-							</Col>
-							<Col sm={24}>
-								<Form.Item>
-									<Space>
-										<Button
-											type="primary"
-											className="assign-button"
-											htmlType="submit"
-											loading={loading}
-										>
-											Assign
-										</Button>
-									</Space>
-								</Form.Item>
-							</Col>
-						</Row>
-					</Form>
-				</>
-			) : null}
-			{warningMessage ? (
+										Assign
+									</Button>
+								</Space>
+							</Form.Item>
+						</Col>
+					</Row>
+				</Form>
+			</>
+
+			{/* {warningMessage ? (
 				<Row>
 					<Alert
 						message={"Add more rooms"}
@@ -401,7 +311,7 @@ const RoomAssignmentForm = ({
 						showIcon
 					/>
 				</Row>
-			) : null}
+			) : null} */}
 
 			{fileName ? (
 				<div className="flex gap-3">

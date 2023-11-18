@@ -18,13 +18,13 @@ function Page() {
 
 	useEffect(() => {
 		const onDuty = typeof window !== "undefined" ? localStorage.getItem("onDuty") : null;
-		const examInfo = typeof window !== "undefined" ? localStorage.getItem(examDetails) : null;
+		const examInfo = typeof window !== "undefined" ? localStorage.getItem('examDetails') : null;
 		console.log(onDuty, examInfo);
 
 		
 		if (!onDuty || !examInfo || !examInfo.length) return;
 		
-		let roomId, dateId, teacher;
+		let roomId, dateId;
 		
 		try {
 			const examDetails = JSON.parse(examInfo);
@@ -73,7 +73,7 @@ function Page() {
 					<h1 className="text-center text-2xl text-gray-700 mt-5 ">
 						Check and click <span className="text-blue-500">finish</span>
 					</h1>
-					<Absentees data={data} conform={conform} setConform={setConform} teacherSeatId={teacherSeatId} />
+					<Absentees data={data} conform={conform} setConform={setConform} teacherSeatId={teacherSeatId}  submitted={examDetails.attendanceSubmitted} />
 				</>
 			);
 		} else {

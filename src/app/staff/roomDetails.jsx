@@ -23,7 +23,7 @@ export default function BasicTable({ examDetails }) {
 
 	return (
 		<TableContainer component={Paper} className="mt-10">
-			<Table sx={{ minWidth: 400 }} aria-label="simple table">
+			<Table sx={{ minWidth: 350 }} aria-label="simple table">
 				<TableHead>
 					<TableRow>
 						<TableCell align="center">

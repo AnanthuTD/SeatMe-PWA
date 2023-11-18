@@ -6,7 +6,7 @@ import axios from "@/lib/axiosPrivate";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-function Absentees({ data, conform, setConform, teacherSeatId }) {
+function Absentees({ data, conform, setConform, teacherSeatId , submitted}) {
 	const absentees = data.filter((std) => !std.isPresent);
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
@@ -82,7 +82,7 @@ function Absentees({ data, conform, setConform, teacherSeatId }) {
 				)}
 			</div>
 
-			{false ? (<>
+			{submitted ? (<>
 				<h1 className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
 			</>) : (
 				<>

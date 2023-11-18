@@ -16,9 +16,9 @@ import axios from "@/lib/axiosPrivate";
 import "./style.css";
 
 const CourseForm = ({
-	onFinish = () => {},
+	onFinish = () => { },
 	formData = { courseId: "", courseName: "", timeCode: "AN", date: "" },
-	formUpdate = () => {},
+	formUpdate = () => { },
 }) => {
 	const [form] = Form.useForm();
 	const [submitStatus, setSubmitStatus] = useState("idle"); // idle, success, error
@@ -79,6 +79,11 @@ const CourseForm = ({
 		formUpdate(newFormData);
 	};
 
+	const disabledDate = (current) => {
+		// Disable days before today
+		return current && current <= dayjs().startOf('day');
+	};
+
 	return (
 		<div
 			className={[
@@ -120,6 +125,7 @@ const CourseForm = ({
 						format={"YYYY-MM-DD"}
 						className="w-full"
 						allowClear
+						disabledDate={disabledDate}
 					/>
 				</Form.Item>
 

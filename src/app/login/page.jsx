@@ -52,12 +52,12 @@ const Login = () => {
 
 	return (
 		<>
-		<div className="h-48 w-48 m-auto -mb-28 mt-8 "  >
+		
+			<div className="grid mt-24 place-items-center">	
+				<div className="border-3 border-black p-8 shadow-xl rounded-md">
+				<div className="h-36 w-36 m-auto  "  >
 			<img src="Admin-logo.png" alt=""  className="h-full w-full"  />
 		</div>
-			<div className="grid h-screen place-items-center">
-			
-				<div className="border-3 border-black p-10 shadow-xl rounded-md">
 					<Form
 						name="basic"
 						labelCol={{
