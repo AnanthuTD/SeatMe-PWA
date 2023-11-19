@@ -11,10 +11,7 @@ import {
 	Card,
 	message,
 	Alert,
-
-	Select,
-    FloatButton,
-	Table,
+	FloatButton,
 	Checkbox
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
@@ -43,7 +40,6 @@ const DynamicRoomForm = () => {
 	}, []);
 
 	const handleSubmission = async (values) => {
-			console.log("Handle submission",values.rooms);
 		try {
 			const result = await axios.post("/api/admin/roomentry/room", {
 				rooms: values.rooms,
@@ -77,9 +73,7 @@ const DynamicRoomForm = () => {
 	const [rooms, setRooms] = useState([]);
 	const loadRooms = async () => {
 		try {
-			const result = await axios.get("/api/admin/rooms", {
-				params: {  },
-			});
+			const result = await axios.get("/api/admin/rooms");
 			setRooms(result.data);
 		} catch (error) {
 			console.error("Error fetching rooms: ", error);
@@ -89,57 +83,11 @@ const DynamicRoomForm = () => {
 	useEffect(() => {
 		form.setFieldsValue({ rooms: [{}] });
 	}, [form]);
-	  useEffect(() => {
-		loadRooms(); // Load rooms initially with a null programId
-	  }, []);
-	  
-	  useEffect(() => {
-		console.log("Semester Options:", );
-	  }, []);
-	  const columns = [
-					{
-					title: 'ID',
-					dataIndex: 'id',
-					key: 'id',
-					},
-					{
-					title: 'Rows',
-					dataIndex: 'rows',
-					key: 'rows',
-					},
-					{
-					title: 'Column',
-					dataIndex: 'cols',
-					key: 'cols',
-					},
-					{
-					title: 'Floor',
-					dataIndex: 'floor',
-					key: 'floor',
-					},
-					{
-					title: 'Block',
-					dataIndex: 'blockId',
-					key: 'blockId',
-					render: (text, record) => {
-						const block = blocks.find((b) => b.id === text);
-						return block ? block.name : text;
-					  },
-					
-					},
-					{
-					title: "Available",
-					dataIndex: "isAvailable",
-					key: "isAvailable",
-					render: (text, record) => (
-						<Checkbox checked={text} 
-							disabled 
-							style={{ color: text ? 'blue' : 'red' }}/>
-					),
-					},
-		// ... (other columns)
-	  ];
 	
+	useEffect(() => {
+		loadRooms(); // Load rooms initially with a null programId
+	}, []);
+
 	return (
 		<div className="p-3">
 			<Link href={"/admin/forms/room/import"}>
@@ -159,6 +107,9 @@ const DynamicRoomForm = () => {
 					style={{ marginBottom: 16 }}
 				/>
 			)}
+			<div className="my-3">
+				<Link href={'/admin/rooms'}><Button type="primary">View Rooms</Button></Link>
+			</div>
 			<Form
 				name="main"
 				onFinish={handleSubmission}
@@ -268,7 +219,7 @@ const DynamicRoomForm = () => {
 										</Col>
 									</Row>
 									<Row gutter={16}>
-										
+
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[
@@ -279,7 +230,7 @@ const DynamicRoomForm = () => {
 												initialValue={false}
 												valuePropName="checked"
 											>
-												<Checkbox defaultChecked={false}/>
+												<Checkbox defaultChecked={false} />
 											</Form.Item>
 										</Col>
 										<Col xs={24} md={24} lg={7} xxl={7}>
@@ -333,15 +284,6 @@ const DynamicRoomForm = () => {
 					</Col>
 				</Row>
 			</Form>
-			<Card size="small" title="Rooms" style={{ marginTop: 16 }}>
-
-				<Table
-				dataSource={rooms}
-				columns={columns}
-				pagination={false}
-				style={{ width: '100%' }}
-				/>
-			</Card>
 		</div>
 	);
 };
