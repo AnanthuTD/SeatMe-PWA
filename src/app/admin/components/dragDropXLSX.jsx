@@ -6,12 +6,9 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const dragDrop = ({ requiredFields, records = (records) => {} }) => {
+const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 	const [fileData, setFileData] = useState([]);
-	const [mappedData, setMappedData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
-
-	console.log(requiredFields);
 
 	const handleFieldMapping = (field, column) => {
 		const newMappedFields = { ...mappedFields };
@@ -42,7 +39,6 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 				if (mappedFields[key] === field) mod[0][index] = key;
 			});
 		});
-		// setMappedData(mod);
 		mapData(mod);
 	}
 
@@ -63,42 +59,34 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 
 				let newMappedFields = {};
 
-				dataArr[0].map((column, index) => {
-					let selectedField = requiredFields.find(
-						(f) => f.key === column || f.value === column,
-					);
-					if (selectedField) {
-						newMappedFields[selectedField.key] = column;
-						newMappedFields = updateDuplicates(newMappedFields);
+				requiredFields.forEach((field) => {
+					const column = dataArr[0].find((col) => col === field.value || col === field.key);
+					if (column) {
+						newMappedFields[field.key] = column;
 					}
 				});
-
 				setMappedFields(newMappedFields);
-
 				setFileData(dataArr);
-				console.log(dataArr);
 			};
 			reader.readAsArrayBuffer(file);
 
 			return false;
 		},
-		onDrop(e) {
+		/* onDrop(e) {
 			console.log("Dropped files", e.dataTransfer.files);
-		},
+		}, */
 	};
 
 	const getAvailableFields = () => {
-		const selectedFields = Object.keys(mappedFields);
-		const options = requiredFields.filter(
+		const selectedFields = Object.values(mappedFields);
+		const options = fileData[0].filter(
 			(field) =>
-				!selectedFields.includes(field.value) &&
-				!selectedFields.includes(field.key),
+				!selectedFields.includes(field)
 		);
 		return options;
 	};
 
 	function mapData(data) {
-		console.log(data);
 		const mappedData = data.slice(1).map((row) => {
 			const obj = {};
 			data[0].forEach((field, index) => {
@@ -111,8 +99,6 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 			});
 			return obj;
 		});
-
-		// console.log(mappedData);
 
 		records(mappedData);
 	}
@@ -135,39 +121,28 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 			{fileData.length > 0 && (
 				<div className="mt-4">
 					<h2 className="text-lg font-semibold">Field Mapping</h2>
-					{fileData[0].map((column, index) => {
-						let selectedField = requiredFields.find(
-							(f) => f.key === column || f.value === column,
-						);
-						selectedField = selectedField
-							? selectedField.value
-							: "Select Field";
-						return (
+					{fileData.length > 0 && (
+						requiredFields.map((field, index) => (
 							<div key={index} className="mt-2 flex items-center">
-								<span>{column}</span>
+								<span>{field.value}</span>
 								<Select
-									defaultValue={selectedField}
+									defaultValue={fileData[0].includes(field.value) ? field.value : "Select Field"}
 									className="w-48 ml-2"
 									onChange={(value, opt) => {
-										handleFieldMapping(opt.key, column);
+										handleFieldMapping(field.key, value);
 									}}
 								>
-									<Option value="Select Field">
-										Select Field
-									</Option>
-									{getAvailableFields().map((field) => (
-										<Option
-											key={field.key}
-											value={field.value}
-										>
-											{field.value}
+									<Option value="Select Field">Select Field</Option>
+									{getAvailableFields().map((column) => (
+										<Option key={column} value={column}>
+											{column}
 										</Option>
 									))}
 								</Select>
 							</div>
-						);
-					})}
-					<Button
+						))
+					)}
+					< Button
 						type="primary"
 						className="mt-4"
 						onClick={() => {
@@ -177,8 +152,9 @@ const dragDrop = ({ requiredFields, records = (records) => {} }) => {
 						Save Mapping
 					</Button>
 				</div>
-			)}
-		</div>
+			)
+			}
+		</div >
 	);
 };
 
