@@ -122,7 +122,7 @@ const DynamicDepartmentForm = () => {
 									}
 								>
 									<Row gutter={16}>
-										<Col xs={24} md={24} lg={7} xxl={7}>
+										<Col xs={24} md={24} lg={8} xxl={8}>
 											<Form.Item
 												name={[field.name, "id"]}
 												label="Department ID"
@@ -137,7 +137,22 @@ const DynamicDepartmentForm = () => {
 												<Input />
 											</Form.Item>
 										</Col>
-										<Col xs={24} md={24} lg={10} xxl={10}>
+										<Col xs={24} md={24} lg={8} xxl={8}>
+											<Form.Item
+												name={[field.name, "code"]}
+												label="Department Code"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please enter the department Code",
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={8} xxl={8}>
 											<Form.Item
 												name={[field.name, "name"]}
 												label="Department Name"
@@ -178,6 +193,11 @@ const DynamicDepartmentForm = () => {
 					title: 'ID',
 					dataIndex: 'id',
 					key: 'id',
+					},
+					{
+					title: 'Code',
+					dataIndex: 'code',
+					key: 'code',
 					},
 					{
 					title: 'Name',
