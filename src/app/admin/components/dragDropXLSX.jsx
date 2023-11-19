@@ -59,6 +59,8 @@ const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 
 				let newMappedFields = {};
 
+				console.log(dataArr[0]);
+
 				requiredFields.forEach((field) => {
 					const column = dataArr[0].find((col) => col === field.value || col === field.key);
 					if (column) {
@@ -79,10 +81,12 @@ const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 
 	const getAvailableFields = () => {
 		const selectedFields = Object.values(mappedFields);
+		console.log('selectedFields', selectedFields);
 		const options = fileData[0].filter(
 			(field) =>
 				!selectedFields.includes(field)
 		);
+		console.log(options);
 		return options;
 	};
 
@@ -126,7 +130,11 @@ const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 							<div key={index} className="mt-2 flex items-center">
 								<span>{field.value}</span>
 								<Select
-									defaultValue={fileData[0].includes(field.value) ? field.value : "Select Field"}
+									defaultValue={
+										fileData[0].includes(field.key) || fileData[0].includes(field.value)
+											? field.key
+											: "Select Field"
+									}
 									className="w-48 ml-2"
 									onChange={(value, opt) => {
 										handleFieldMapping(field.key, value);
