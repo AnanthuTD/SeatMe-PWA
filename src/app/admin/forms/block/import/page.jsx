@@ -21,14 +21,13 @@ function BlockPage() {
 		const missingBlocks = blocks.filter((block) => {
 			// Check if any of the required fields are missing for a block
 			return !(
-				block.hasOwnProperty("id") &&
 				block.hasOwnProperty("name")
 			);
 		});
 
 		if (missingBlocks.length > 0) {
 			message.error(
-				`The following fields are required (Block Id, Block Name)`,
+				`The following fields are required (Block Name)`,
 			);
 			return;
 		}
