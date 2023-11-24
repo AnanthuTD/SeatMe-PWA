@@ -15,6 +15,7 @@ module.exports = {
 			colors: {
 				maincolor: {
 					50: "#1976d2",
+					100: "#1640D6"
 				},
 			},
 		},
