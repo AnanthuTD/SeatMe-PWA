@@ -42,7 +42,7 @@ function ProgramsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/program", {
+			const result = await axios.post("/api/admin/programentry/program", {
 				programs,
 			});
 			if (result.status === 200) {

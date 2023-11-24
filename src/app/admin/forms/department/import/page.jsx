@@ -10,6 +10,7 @@ import Link from "next/link";
 
 const requiredFields = [
 	{ key: "id", value: "Department ID" },
+	{ key: "code", value: "Department Code" },
 	{ key: "name", value: "Department Name" },
 ];
 
@@ -22,6 +23,7 @@ function DepartmentPage() {
 			// Check if any of the required fields are missing for a department
 			return !(
 				department.hasOwnProperty("id") &&
+				department.hasOwnProperty("code") &&
 				department.hasOwnProperty("name")
 			);
 		});
@@ -34,7 +36,7 @@ function DepartmentPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/department", {
+			const result = await axios.post("/api/admin/departmententry/department", {
 				departments,
 			});
 			if (result.status === 200) {
