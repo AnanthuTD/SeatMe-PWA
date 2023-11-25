@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 
 function Instruction() {
-	const [translate, setTranslate] = useState("false");
+	const [translate, setTranslate] = useState(false);
 
 	const translater = () => {
 		setTranslate(!translate);
@@ -19,16 +19,16 @@ function Instruction() {
 			>
 				Translate
 			</Button>
-			{translate ? (
+			{ translate ? (
 				<div>
 					<h1 className="  align-middle lg:text-xl text-red-500 text-sm ">
 						യൂണിവേഴ്സിറ്റി പരീക്ഷ എഴുതുന്ന േിദ്യാർത്ഥികൾക്കുള്ള
 						നിർവേശങ്ങൾ.
 					</h1>
 					<p className="sm:text-xs ">
-						
-					ഹാൾ ടിക്കറ്റിൽ നൽകിയിരിക്കുന്ന എല്ലാ നിർദ്ദേശങ്ങള ും നിയമങ്ങള ും പരീക്ഷാ ഹാളിൽ കയറുന്നതിന് 
-മുൻപ്വായിക്കുക. പ്രദ്ദയേകിച്ച് നിർദ്ദേശങ്ങൾ : 6,7,9,10 &12 <br /> <br />
+						ഹാൾ ടിക്കറ്റിൽ നൽകിയിരിക്കുന്ന എല്ലാ നിർദ്ദേശങ്ങള ും
+						നിയമങ്ങള ും പരീക്ഷാ ഹാളിൽ കയറുന്നതിന് മുൻപ്വായിക്കുക.
+						പ്രദ്ദയേകിച്ച് നിർദ്ദേശങ്ങൾ : 6,7,9,10 &12 <br /> <br />
 						• വിദ്യാർത്ഥികൾക്ക്അവരുടെഹാൾ െിക്കറ്റില ാ ല ാദ്യലേപ്പറില
 						ാ ഒന്ുുംഎഴുതാൻ അനുവാദ്മില്ല. എഴുതിയാൽ മാൽപ്ോക്റ്റിസായി
 						കണക്കാക്കുും. <br /> <br />
@@ -55,8 +55,7 @@ function Instruction() {
 						• മ ഴ വൻ യൂണിട ോമ ുംഐഡി കോർഡ ും ഹോൾ രിക്കറ ും
 						ഉള്ളവിദ്യോർത്ഥികതെ മോ്െടമ പരീക്ഷഎഴ െ വോന ള്ളഅന വോദ്ും
 						ഉെോയിരിക്ക കയ ള്ളൂ. ടകോടെജ് െട്ടങ്ങൾഅന സരിച്ച
-						ള്ളെോയിരിക്കണും <br />{" "}
-						<br />
+						ള്ളെോയിരിക്കണും <br /> <br />
 					</p>
 					<h5 className="ml-24">
 						{" "}
