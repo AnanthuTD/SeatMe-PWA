@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
+import Studentnav from "./studentnav";
+import Instruction from "./Instruction";
 import axios from "@/lib/axiosPublic";
 import { deleteCookie, getCookie } from "cookies-next";
 
@@ -140,6 +142,13 @@ const App = () => {
 	};
 
 	return (
+		<>
+		<nav   className="">
+			<Studentnav />
+		</nav>
+		<section className="w-full mt-28 ml-3  lg:ml-40   "   >
+                 <Instruction />
+		</section>
 		<div className="flex h-screen flex-col w-full p-5 overflow-hidden">
 			<section className="h-[40%] flex justify-center items-center w-full">
 				<div className="min-w-[50%]">
@@ -187,6 +196,7 @@ const App = () => {
 				</div>
 			</section>
 		</div >
+		</>
 	);
 };
 

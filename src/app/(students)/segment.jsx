@@ -27,7 +27,7 @@ const Segment = ({ seatingInfo, upcomingExams }) => {
 					}}
 					value={tab}
 				/>
-				<div className="flex-grow overflow-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-900 scrollbar-thumb-rounded-md">
+				<div /* className="flex-grow overflow-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-900 scrollbar-thumb-rounded-md"*/>
 					{tab === tab1 ? seatingInfo ? <Seating seatingInfo={seatingInfo} /> : <span>Not scheduled!</span> : null}
 					{tab === tab2 ? upcomingExams.length ? <TimeTable upcomingExams={upcomingExams} /> : <span>No upcoming exams!</span> : null}
 				</div>
