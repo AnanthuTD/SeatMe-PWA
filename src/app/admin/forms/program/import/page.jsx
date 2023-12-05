@@ -12,7 +12,7 @@ const requiredFields = [
 	{ key: "id", value: "Program ID" },
 	{ key: "name", value: "Program Name" },
 	{ key: "aided", value: "Aided" },
-	{ key: "department", value: "Department" },
+	{ key: "departmentId", value: "Department ID" },
 	{ key: "duration", value: "Duration (years)" },
 	{ key: "level", value: "Level (UG/PG)" },
 ];
@@ -28,7 +28,7 @@ function ProgramsPage() {
 				program.hasOwnProperty("id") &&
 				program.hasOwnProperty("name") &&
 				program.hasOwnProperty("aided") &&
-				program.hasOwnProperty("department") &&
+				program.hasOwnProperty("departmentId") &&
 				program.hasOwnProperty("duration") &&
 				program.hasOwnProperty("level")
 			);

@@ -26,7 +26,6 @@ function Page() {
 		const missingStudents = students.filter((student) => {
 			// Check if any of the required fields are missing for a student
 			return !(
-				student.hasOwnProperty("programId") &&
 				student.hasOwnProperty("semester") &&
 				student.hasOwnProperty("id") &&
 				student.hasOwnProperty("rollNumber") &&
