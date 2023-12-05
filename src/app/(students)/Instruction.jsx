@@ -1,26 +1,54 @@
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
+import { IoInformationCircleSharp } from "react-icons/io5";
+import { MdGTranslate } from "react-icons/md";
 
 function Instruction() {
 	const [translate, setTranslate] = useState(false);
+	const [dispinfo, setdispinfo] = useState(false);
+
 
 	const translater = () => {
 		setTranslate(!translate);
 		console.log(translate);
 	};
 
+	const showinfo = () => { 
+		setdispinfo(!dispinfo);
+
+
+	}
+
 	return (
 		<>
-			<Button
-				variant="contained"
-				size="small"
-				className="ml-56   lg:ml-80"
+			<button 
+			className="p-3 border-none flex gap-2 bg-white text-lg items-center"
+			onClick={showinfo}
+			>
+				<IoInformationCircleSharp />
+		
+				instruction
+			</button>
+			{ 
+			    dispinfo ? (
+					<button
+				className=" p-2 border-none bg-blue-700 text-white  rounded-md flex gap-2 text-sm"
 				onClick={translater}
 			>
+				<MdGTranslate />
 				Translate
-			</Button>
-			{ translate ? (
-				<div>
+			</button>
+				) : null
+			
+			
+			}
+			
+			{
+			 dispinfo ? (
+				
+			
+			translate ? (
+				
+				<div className="p-3">
 					<h1 className="  align-middle lg:text-xl text-red-500 text-sm ">
 						യൂണിവേഴ്സിറ്റി പരീക്ഷ എഴുതുന്ന േിദ്യാർത്ഥികൾക്കുള്ള
 						നിർവേശങ്ങൾ.
@@ -102,7 +130,8 @@ function Instruction() {
 						- Chief Superintendent / Principal{" "}
 					</h5>
 				</div>
-			)}
+			) )
+		 : null}
 		</>
 	);
 }

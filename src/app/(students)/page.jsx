@@ -143,10 +143,10 @@ const App = () => {
 
 	return (
 		<>
-		<nav   className="">
+		
 			<Studentnav />
-		</nav>
-		<section className="w-full mt-28 ml-3  lg:ml-40   "   >
+		
+		<section className="w-full mt-8 ml-3  lg:ml-40   "   >
                  <Instruction />
 		</section>
 		<div className="flex h-screen flex-col w-full p-5 overflow-hidden">

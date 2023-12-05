@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+	--foreground-rgb: 0, 0, 0;
+	--background-start-rgb: 214, 219, 220;
+	--background-end-rgb: 255, 255, 255;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -27,13 +27,21 @@
     rgb(var(--background-start-rgb));
 }*/
 
-body{
-  margin: 0px;
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Ephesis&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Paytone+One&family=Shadows+Into+Light&display=swap');
+
+.navhead_title {
+  font-family: 'Shadows Into Light', cursive;
+  
+}
+
+
+body {
+	margin: 0px;
 }
 
 .demo-logo-vertical {
-  height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
+	height: 32px;
+	margin: 16px;
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 6px;
 }
