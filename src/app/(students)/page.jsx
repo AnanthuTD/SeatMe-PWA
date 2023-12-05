@@ -144,12 +144,12 @@ const App = () => {
 	return (
 		<>
 		
-			<Studentnav />
+			<Studentnav  />
 		
 		<section className="w-full mt-8 ml-3  lg:ml-40   "   >
                  <Instruction />
 		</section>
-		<div className="flex h-screen flex-col w-full p-5 overflow-hidden">
+		<div className="flex h-screen flex-col w-full  overflow-hidden">
 			<section className="h-[40%] flex justify-center items-center w-full">
 				<div className="min-w-[50%]">
 					<Form

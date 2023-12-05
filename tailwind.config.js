@@ -20,9 +20,9 @@ module.exports = {
 			},
 		},
 		screens: {
-			sm: "320px",
+			 // sm: "320px",
 			// => @media (min-width: 640px) { ... }
-			lg: "1024px",
+			 // lg: "1024px",
 		},
 	},
 	plugins: [require("tailwind-scrollbar")({ nocompatible: true })],
