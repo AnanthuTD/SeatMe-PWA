@@ -9,26 +9,24 @@ import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 const requiredFields = [
-	{ key: "id", value: "Course ID" },
-	{ key: "name", value: "Course Name" },
+	{ key: "id", value: "Course Code" },
+	{ key: "name", value: "Course" },
 	{ key: "semester", value: "Semester" },
-	{ key: "isOpenCourse", value: "Is Open Course" },
-	{ key: "program", value: "Program" },
+	{ key: "type", value: "Type" },
+	{ key: "programId", value: "Program Id" },
 ];
 
 function CoursesPage() {
-	const [data, setData] = useState([]);
+	const [failedRecords, setFailedRecords] = useState([]);
 
 	const handleSubmission = async (courses) => {
-		setData([]);
 		const missingCourses = courses.filter((course) => {
 			// Check if any of the required fields are missing for a course
 			return !(
 				course.hasOwnProperty("id") &&
 				course.hasOwnProperty("name") &&
 				course.hasOwnProperty("semester") &&
-				course.hasOwnProperty("isOpenCourse")&&
-				course.hasOwnProperty("program")
+				course.hasOwnProperty("programId")
 			);
 		});
 
@@ -39,11 +37,26 @@ function CoursesPage() {
 			return;
 		}
 
+		const processedCourses = courses.map((course) => {
+			if (course.hasOwnProperty("type")) {
+				const typeWords = course.type.split(" ");
+				const modifiedType = typeWords[0];
+				return {
+					...course,
+					type: modifiedType || null,
+				};
+			}
+			return course || null;
+		});
+
+		console.log(processedCourses);
+
 		try {
-			const result = await axios.post("/api/admin/courseentry/course", { courses });
+			const result = await axios.post("/api/admin/courseentry/course", { courses: processedCourses });
 			if (result.status === 200) {
 				message.success("Successfully submitted");
-				setData(result.data);
+				console.log(result.data);
+				setFailedRecords(result.data.failedRecords);
 			} else message.error("Submit failed");
 		} catch (error) {
 			console.log(error);
@@ -73,7 +86,7 @@ function CoursesPage() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
 		</div>
 	);
 }

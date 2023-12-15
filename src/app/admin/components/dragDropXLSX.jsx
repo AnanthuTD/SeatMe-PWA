@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const dragDrop = ({ requiredFields, records = (records) => { } }) => {
+const DragDrop = ({ requiredFields, records = (records) => { } }) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
 
@@ -81,12 +81,12 @@ const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 
 	const getAvailableFields = () => {
 		const selectedFields = Object.values(mappedFields);
-		console.log('selectedFields', selectedFields);
+		// console.log('selectedFields', selectedFields);
 		const options = fileData[0].filter(
 			(field) =>
 				!selectedFields.includes(field)
 		);
-		console.log(options);
+		// console.log(options);
 		return options;
 	};
 
@@ -131,8 +131,8 @@ const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 								<span>{field.value}</span>
 								<Select
 									defaultValue={
-										fileData[0].includes(field.key) || fileData[0].includes(field.value)
-											? field.key
+										fileData[0].includes(field.key) ? field.key : fileData[0].includes(field.value) ?
+											field.value
 											: "Select Field"
 									}
 									className="w-48 ml-2"
@@ -166,4 +166,4 @@ const dragDrop = ({ requiredFields, records = (records) => { } }) => {
 	);
 };
 
-export default dragDrop;
+export default DragDrop;

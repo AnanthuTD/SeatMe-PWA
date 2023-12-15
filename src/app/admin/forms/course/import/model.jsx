@@ -1,108 +1,51 @@
-import React, { useState } from "react";
-import { Button, Modal, Row, Col, Card, message } from "antd";
-import axios from "@/lib/axiosPrivate";
+import React from "react";
+import { Button, Modal, Row, Col, Card, Typography } from "antd";
 
-const CoursesModel = ({ data, setData }) => {
-	const [loading, setLoading] = useState(false);
-	const [singleLoadings, setSingleLoadings] = useState(
-		new Array(data.length).fill(false),
-	);
-	const [open, setOpen] = useState(true);
+const { Text, Title } = Typography;
 
-	const showModal = () => {
-		setOpen(true);
-	};
+const CoursesModel = ({ failedRecords, setFailedRecords, loading, setLoading }) => {
 	const handleOk = async () => {
-		setLoading(true);
-
-		try {
-			const result = await axios.patch("/api/admin/courseentry/courseupdate", data);
-			if (result.data.length) {
-				message.warning("Unable to update some records");
-				setData(result.data);
-			} else {
-				message.success("Updated successfully");
-				setData([]);
-			}
-		} catch (error) {
-			message.error("Update failed");
-		}
-		setLoading(false);
+		setFailedRecords([]);
 	};
+
 	const handleCancel = () => {
-		setOpen(false);
-	};
-
-	const updateSingle = async (record, index) => {
-		const updatedLoadings = [...singleLoadings];
-		updatedLoadings[index] = true;
-
-		setSingleLoadings(updatedLoadings);
-
-		try {
-			const result = await axios.patch("/api/admin/courses", [record]);
-			if (result.data) {
-				message.success("Single record updated successfully");
-				const newData = [...data];
-				newData.splice(index, 1);
-				setData(newData);
-			} else message.error("Single record update failed");
-		} catch (error) {
-			message.error("Unknown error occurred");
-		}
-
-		updatedLoadings[index] = false;
-		setSingleLoadings(updatedLoadings);
+		setFailedRecords([]);
 	};
 
 	return (
 		<>
 			<Modal
-				open={open}
-				title="Courses Model"
+				open={true}
+				title={<Title level={3} type="danger">Some data have not been updated or inserted</Title>}
 				onOk={handleOk}
 				onCancel={handleCancel}
+				closable={true}
 				footer={[
-					<Button key="skip" onClick={handleCancel}>
-						Skip
-					</Button>,
-					<Button
-						key="update"
-						type="primary"
-						loading={loading}
-						onClick={handleOk}
-					>
-						Update
+					<Button key="ok" type="primary" loading={loading} onClick={handleOk}>
+						OK
 					</Button>,
 				]}
-				closable={true}
+				width={1000}
 			>
-				{data.map((record, index) => (
-					<Card key={index} className="my-4">
-						<Row gutter={[16, 16]}>
-							<Col span={12}>
-								<p className="font-bold mb-1">Course Info:</p>
 
-								<p>Course ID: {record.id}</p>
-								<p>Course Name: {record.name}</p>
-								<p>Semester: {record.semester}</p>
-								<p>
-									Is Open Course:{" "}
-									{record.isOpenCourse ? "Yes" : "No"}
-								</p>
-							</Col>
-							{/* Add more fields as needed */}
-						</Row>
-						<Button
-							type="primary"
-							ghost
-							loading={singleLoadings[index]}
-							onClick={() => updateSingle(record, index)}
-						>
-							Update
-						</Button>
-					</Card>
-				))}
+				{failedRecords.map((failedRecord, index) => {
+					const { record, error } = failedRecord;
+					return (
+						<Card key={index} className="my-4">
+							<Row gutter={[16, 16]}>
+								<Col span={12}>
+									<p className="font-bold mb-1">Course Info:</p>
+
+									<p>Course ID: {record.id}</p>
+									<p>Course Name: {record.name}</p>
+									<p>Semester: {record.semester}</p>
+									<p>Type: {record.type}</p>
+									<Text type="danger">{error}</Text>
+								</Col>
+							</Row>
+						</Card>
+					);
+				})}
 			</Modal>
 		</>
 	);
