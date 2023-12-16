@@ -1,36 +1,21 @@
+
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import { IoMdHome } from "react-icons/io";
+import { MdOutlineEventSeat } from "react-icons/md";
+
+/*  <IoMdHome  className='h-11 w-11' />  */ 
 
 export default function studentnav() {
   return (
-    <Box  >
-      <AppBar >
-        <Toolbar>
-         
-        <Typography
-						variant="h4"
-						noWrap
-						component="a"
-						href="/"
-						sx={{
-							mr: 2,
-                            ml : 10,
-							
-							fontFamily: "Roboto",
-							fontWeight: 800,
-							letterSpacing: ".4rem",
-							color: "inherit",
-							textDecoration: "none",
-						}}
-					>
-						SeatMe
-					</Typography>
-         
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <>
+	    <div className=' navhead_title  h-12 p-1  w-full  bg-blue-700  flex flex-row items-center justify-center gap-2 '     >
+		
+		 <MdOutlineEventSeat className='h-11 w-11' />
+			<h3 className='text-white  m-0 mt-2 text-3xl'  >Seatme</h3 >	  
+		</div>
+	
+	
+	
+	</>
   );
 }
