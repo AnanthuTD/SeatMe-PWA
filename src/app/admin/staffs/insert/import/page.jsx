@@ -15,6 +15,7 @@ const requiredFields = [
 	{ key: "name", value: "Name" },
 	{ key: "phone", value: "Phone" },
 	{ key: "email", value: "Email" },
+	{ key: "password", value: "Password" },
 ];
 
 function Page() {
@@ -34,6 +35,7 @@ function Page() {
 			return !(
 				staff.hasOwnProperty("departmentId") &&
 				staff.hasOwnProperty("id") &&
+				staff.hasOwnProperty("password") &&
 				staff.hasOwnProperty("name")
 			);
 		});
