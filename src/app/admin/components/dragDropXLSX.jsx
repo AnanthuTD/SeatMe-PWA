@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const DragDrop = ({ requiredFields, records = (records) => { } }) => {
+const DragDrop = ({ requiredFields, records = (records) => { }, loading = false }) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
 
@@ -156,6 +156,7 @@ const DragDrop = ({ requiredFields, records = (records) => { } }) => {
 						onClick={() => {
 							applyMapping();
 						}}
+						loading={loading}
 					>
 						Save Mapping
 					</Button>
