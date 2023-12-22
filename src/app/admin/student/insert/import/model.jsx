@@ -1,134 +1,87 @@
-"use client";
+import React from "react";
+import { Button, Modal, Row, Col, Card, Typography } from "antd";
+import * as XLSX from "xlsx";
 
-import React, { useState } from "react";
-import { Button, Modal, Row, Col, Card, message } from "antd";
-import axios from "@/lib/axiosPrivate";
+const { Title, Text } = Typography;
 
-const App = ({ data, setData }) => {
-	const [loading, setLoading] = useState(false);
-	const [singleLoadings, setSingleLoadings] = useState(
-		new Array(data.length).fill(false),
-	);
-	const [open, setOpen] = useState(true);
-
-	const showModal = () => {
-		setOpen(true);
-	};
+const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	const handleOk = async () => {
-		setLoading(true);
-
-		try {
-			const result = await axios.patch("/api/admin/student", data);
-			if (result.data.length) {
-				message.warning("unable to update some records");
-				setData(result.data);
-			} else {
-				message.success("updated successfully");
-				setData([]);
-			}
-		} catch (error) {
-			message.error("update failed");
-		}
-		setLoading(false);
+		setFailedRecords([]);
 	};
+
 	const handleCancel = () => {
-		setOpen(false);
+		setFailedRecords([]);
 	};
 
-	const updateSingle = async (record, index) => {
-		const updatedLoadings = [...singleLoadings];
-		updatedLoadings[index] = true;
+	const downloadToXLSX = () => {
+		const data = failedRecords.map((record) => ({
+			ID: record?.id,
+			Name: record?.name,
+			RollNumber: record?.rollNumber,
+			semester: record?.semester,
+			Email: record?.email,
+			Phone: record?.phone,
+			ProgramId: record?.programId,
+			Error: record?.error
+		}));
 
-		setSingleLoadings(updatedLoadings);
+		const ws = XLSX.utils.json_to_sheet(data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
 
-		try {
-			const result = await axios.patch("/api/admin/student", [record]);
-			if (result.data) {
-				message.success("Single record updated successfully");
-				const newData = [...data];
-				newData.splice(index, 1);
-				setData(newData);
-			} else message.error("Single record update failed");
-		} catch (error) {
-			message.error("unknown error occurred");
-		}
+		XLSX.writeFile(wb, 'staff-failed-records.xlsx');
 
-		updatedLoadings[index] = false;
-		setSingleLoadings(updatedLoadings);
 	};
+
 	return (
 		<>
 			<Modal
-				open={open}
-				title="Title"
+				open={true}
+				title={
+					<Row justify="space-between" align="middle">
+						<Col xs={24} sm={18}>
+							<Title level={3} type="danger">
+								Some data have not been updated or inserted
+							</Title>
+						</Col>
+						<Col xs={24} sm={6}>
+							<Button type="primary" onClick={downloadToXLSX}>
+								Download XLSX
+							</Button>
+						</Col>
+					</Row>
+				}
 				onOk={handleOk}
 				onCancel={handleCancel}
+				closable={true}
 				footer={[
-					<Button key="skip" onClick={handleCancel}>
-						Skip
-					</Button>,
-					<Button
-						key="update"
-						type="primary"
-						loading={loading}
-						onClick={handleOk}
-					>
-						Update
+					<Button key="ok" type="primary" onClick={handleOk}>
+						OK
 					</Button>,
 				]}
-				closable={true}
+				width={1000}
 			>
-				{data.map((record, index) => (
-					<Card key={index} className="my-4">
-						<Row gutter={[16, 16]}>
-							<Col span={12}>
-								<p className="font-bold mb-1">Found Student:</p>
-
-								<p>ID: {record.foundStudent.id}</p>
-								<p>
-									Roll Number:{" "}
-									{record.foundStudent.rollNumber}
-								</p>
-								<p>Semester: {record.foundStudent.semester}</p>
-								<p>Name: {record.foundStudent.name}</p>
-								<p>Email: {record.foundStudent.email}</p>
-								<p>Phone: {record.foundStudent.phone}</p>
-								<p>
-									Program ID: {record.foundStudent.programId}
-								</p>
-								<p>
-									Created At: {record.foundStudent.createdAt}
-								</p>
-								<p>
-									Updated At: {record.foundStudent.updatedAt}
-								</p>
-							</Col>
-							<Col span={12}>
-								<p className="font-bold mb-1">Student:</p>
-
-								<p>ID: {record.student.id}</p>
-								<p>Roll Number: {record.student.rollNumber}</p>
-								<p>Semester: {record.student.semester}</p>
-								<p>Name: {record.student.name}</p>
-								<p>Email: {record.student.email}</p>
-								<p>Phone: {record.student.phone}</p>
-								<p>Program ID: {record.student.programId}</p>
-								<p>Created At: {record.student.createdAt}</p>
-								<p>Updated At: {record.student.updatedAt}</p>
-							</Col>
-						</Row>
-						<Button
-							type="primary"
-							ghost
-							loading={singleLoadings[index]}
-							onClick={() => updateSingle(record, index)} 
-						>
-							Update
-						</Button>
-					</Card>
-				))}
+				{failedRecords.map((record, index) => {
+					return (
+						<Card key={index} className="my-4">
+							<Row gutter={[16, 16]}>
+								<Col span={12}>
+									<p>ID: {record?.id}</p>
+									<p>Roll Number: {record?.rollNumber}</p>
+									<p>Semester: {record?.semester}</p>
+									<p>Name: {record?.name}</p>
+									<p>Email: {record?.email}</p>
+									<p>Phone: {record?.phone}</p>
+									<p>Program ID: {record?.programId}</p>
+									<Text type="danger">{record?.error}</Text>
+								</Col>
+							</Row>
+						</Card>
+					);
+				})}
 			</Modal>
 		</>
 	);
 };
-export default App;
+
+export default ImportErrorModel;

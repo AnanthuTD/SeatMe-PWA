@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import Model from "./model";
+import ImportErrorModel from "./model";
 import Link from "next/link";
 import { FormOutlined } from "@ant-design/icons";
 
@@ -19,12 +19,10 @@ const requiredFields = [
 ];
 
 function Page() {
-	const [data, setData] = useState([]);
+	const [failedRecords, setFailedRecords] = useState([]);
 
 	const handleSubmission = async (students) => {
-		setData([]);
 		const missingStudents = students.filter((student) => {
-			// Check if any of the required fields are missing for a student
 			return !(
 				student.hasOwnProperty("semester") &&
 				student.hasOwnProperty("id") &&
@@ -43,16 +41,16 @@ function Page() {
 		try {
 			const result = await axios.post("/api/admin/student", { students });
 			if (result.status === 200) {
-				message.success("successfully submitted");
-				setData(result.data);
-			} else message.error("Submit failed");
+				message.success("Import Success");
+				setFailedRecords(result.data);
+				console.error(result.data);
+			} else {
+				const { error } = result.data;
+				message.error("Import Failed! ", error);
+			}
 		} catch (error) {
-			console.log(error);
-			if (error.response.status === 400) {
-				message.error(
-					`Record with register number '${error.response.data.value}' already exists`,
-				);
-			} else message.error("Something went wrong");
+			console.error(error.response.data);
+			message.error("Something went wrong at the server! ");
 		}
 	};
 
@@ -69,7 +67,7 @@ function Page() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
 		</div>
 	);
 }
