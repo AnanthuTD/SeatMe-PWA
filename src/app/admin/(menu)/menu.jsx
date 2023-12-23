@@ -36,6 +36,7 @@ const items = [
 		),
 		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
 	]),
+	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />),
 	getItem("Exam", "/admin/exam", <CalendarOutlined />, [
 		getItem(
 			"Insert",
@@ -88,6 +89,7 @@ const App = () => {
 		"/admin/staffs/insert": "/admin/staffs/insert",
 		"/admin/student": "/admin/student",
 		"/admin/student/insert": "/admin/student/insert",
+		"/admin/supplementary": "/admin/supplementary",
 		"/admin/exam/insert": "/admin/exam/insert",
 		"/admin/exam": "/admin/exam",
 		"/admin/exam/assign": "/admin/exam/assign",
