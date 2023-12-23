@@ -18,7 +18,7 @@ import {
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
-import SelectDepartment from "../../components/select";
+import SelectDepartment from "../../components/selectDepartment";
 import Link from "next/link";
 
 const { Title } = Typography;

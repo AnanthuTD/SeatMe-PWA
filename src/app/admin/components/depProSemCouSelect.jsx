@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import SelectDepartment from "./selectDepartment";
 import Select from "./select";
 import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
@@ -51,10 +52,10 @@ function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
 		}
 	};
 
-	const loadPrograms = async (departmentId) => {
+	const loadPrograms = async (departmentCode) => {
 		try {
 			const result = await axios.get("/api/admin/programs", {
-				params: { departmentId },
+				params: { departmentCode },
 			});
 			setPrograms(result.data);
 		} catch (error) {
@@ -85,8 +86,8 @@ function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
 		}
 	};
 
-	const handleDepartmentChange = (departmentId) => {
-		setSelectedDepartment(departmentId);
+	const handleDepartmentChange = (departmentCode) => {
+		setSelectedDepartment(departmentCode);
 		setSelectedProgram(null);
 		setSelectedSemester(null);
 		setSelectedCourse([]);
@@ -123,7 +124,7 @@ function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
 					<label className="block text-lg font-semibold mb-2">
 						Department:
 					</label>
-					<Select
+					<SelectDepartment
 						options={departments}
 						onChange={handleDepartmentChange}
 						placeholder="Select Department"
@@ -168,7 +169,7 @@ function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
 								onClick={handleCourseClick}
 								setSelectedCourses={setSelectedCourse}
 								className="w-full"
-								mode={courseMode}
+								// mode={courseMode}
 							/>
 						</Col>
 					</Row>
