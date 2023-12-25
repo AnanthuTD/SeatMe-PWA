@@ -9,7 +9,6 @@ import {
 	FormOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-// import { useMenuContext } from "./menuContext";
 import { useRouter, usePathname } from "next/navigation";
 
 function getItem(label, key, icon, children, type) {
@@ -36,7 +35,10 @@ const items = [
 		),
 		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
 	]),
-	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />),
+	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />,[
+		getItem("Insert", "/admin/supplementary", <FileAddOutlined />),
+		getItem("List", "/admin/supplementary/view", <UnorderedListOutlined />),
+	]),
 	getItem("Exam", "/admin/exam", <CalendarOutlined />, [
 		getItem(
 			"Insert",
@@ -90,6 +92,7 @@ const App = () => {
 		"/admin/student": "/admin/student",
 		"/admin/student/insert": "/admin/student/insert",
 		"/admin/supplementary": "/admin/supplementary",
+		"/admin/supplementary/view": "/admin/supplementary/view",
 		"/admin/exam/insert": "/admin/exam/insert",
 		"/admin/exam": "/admin/exam",
 		"/admin/exam/assign": "/admin/exam/assign",
