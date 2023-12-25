@@ -5,6 +5,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import DepProSemCouSelect from '../components/depProSemCouSelect';
 import axios from '@/lib/axiosPrivate';
 import DepProSemExaSelect from '../components/depProSemExaSelect';
+import ErrorModel from './errorModel';
 
 const Page = () => {
 
@@ -85,6 +86,8 @@ const DynamicForm = () => {
                     </Button>
                 </Form.Item>
             </Form>
+
+			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
         </>
     );
 
