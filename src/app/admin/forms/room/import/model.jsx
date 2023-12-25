@@ -1,113 +1,89 @@
-import React, { useState } from "react";
-import { Button, Modal, Row, Col, Card, message } from "antd";
-import axios from "@/lib/axiosPrivate";
+import React from "react";
+import { Button, Modal, Row, Col, Card, Typography } from "antd";
+import * as XLSX from "xlsx";
 
-const RoomsModel = ({ data, setData }) => {
-	const [loading, setLoading] = useState(false);
-	const [singleLoadings, setSingleLoadings] = useState(
-		new Array(data.length).fill(false),
-	);
-	const [open, setOpen] = useState(true);
+const { Text, Title } = Typography;
 
-	const showModal = () => {
-		setOpen(true);
-	};
+const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	const handleOk = async () => {
-		setLoading(true);
-
-		try {
-			const result = await axios.patch("/api/admin/rooms", data);
-			if (result.data.length) {
-				message.warning("Unable to update some records");
-				setData(result.data);
-			} else {
-				message.success("Updated successfully");
-				setData([]);
-			}
-		} catch (error) {
-			message.error("Update failed");
-		}
-		setLoading(false);
+		setFailedRecords([]);
 	};
+
 	const handleCancel = () => {
-		setOpen(false);
+		setFailedRecords([]);
 	};
 
-	const updateSingle = async (record, index) => {
-		const updatedLoadings = [...singleLoadings];
-		updatedLoadings[index] = true;
+	const downloadToXLSX = () => {
+		const data = failedRecords.map((record) => ({
+			ID: record?.id,
+			InternalRows: record?.internalRows,
+			InternalCols: record?.internalCols,
+			FinalRows: record?.finalRows,
+			FinalCols: record?.finalCols,
+			Floor: record?.floor,
+			BlockID: record?.blockId,
+			Description: record?.description,
+		}));
 
-		setSingleLoadings(updatedLoadings);
+		const ws = XLSX.utils.json_to_sheet(data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
 
-		try {
-			const result = await axios.patch("/api/admin/rooms", [record]);
-			if (result.data) {
-				message.success("Single record updated successfully");
-				const newData = [...data];
-				newData.splice(index, 1);
-				setData(newData);
-			} else message.error("Single record update failed");
-		} catch (error) {
-			message.error("Unknown error occurred");
-		}
+		// Use the correct bookType value "blob"
+		XLSX.writeFile(wb, 'staff-failed-records.xlsx');
 
-		updatedLoadings[index] = false;
-		setSingleLoadings(updatedLoadings);
 	};
 
 	return (
 		<>
 			<Modal
-				open={open}
-				title="Rooms Model"
+				open={true}
+				title={
+					<Row justify="space-between" align="middle">
+						<Col xs={24} sm={18}>
+							<Title level={3} type="danger">
+								Some data have not been updated or inserted
+							</Title>
+						</Col>
+						<Col xs={24} sm={6}>
+							<Button type="primary" onClick={downloadToXLSX}>
+								Download XLSX
+							</Button>
+						</Col>
+					</Row>
+				}
 				onOk={handleOk}
 				onCancel={handleCancel}
+				closable={true}
 				footer={[
-					<Button key="skip" onClick={handleCancel}>
-						Skip
-					</Button>,
-					<Button
-						key="update"
-						type="primary"
-						loading={loading}
-						onClick={handleOk}
-					>
-						Update
+					<Button key="ok" type="primary" onClick={handleOk}>
+						OK
 					</Button>,
 				]}
-				closable={true}
+				width={1000}
 			>
-				{data.map((record, index) => (
-					<Card key={index} className="my-4">
-						<Row gutter={[16, 16]}>
-							<Col span={12}>
-								<p className="font-bold mb-1">Room Info:</p>
-
-								<p>Room ID: {record.id}</p>
-								<p>Columns: {record.cols}</p>
-								<p>Rows: {record.rows}</p>
-								<p>
-									Is Available:{" "}
-									{record.isAvailable ? "Yes" : "No"}
-								</p>
-								<p>Floor: {record.floor}</p>
-								<p>Block: {record.blockId}</p>
-							</Col>
-							{/* Add more fields as needed */}
-						</Row>
-						<Button
-							type="primary"
-							ghost
-							loading={singleLoadings[index]}
-							onClick={() => updateSingle(record, index)}
-						>
-							Update
-						</Button>
-					</Card>
-				))}
+				{failedRecords.map((failedRecord, index) => {
+					return (
+						<Card key={index} className="my-4">
+							<Row gutter={[16, 16]}>
+								<Col span={12}>
+									<p>ID: {failedRecord?.id}</p>
+									<p>Internal Rows: {failedRecord?.internalRows}</p>
+									<p>Internal Cols: {failedRecord?.internalCols}</p>
+									<p>Final Rows: {failedRecord?.finalRows}</p>
+									<p>Final Cols: {failedRecord?.finalCols}</p>
+									<p>Floor: {failedRecord?.floor}</p>
+									<p>Block ID: {failedRecord?.blockId}</p>
+									<p>Description: {failedRecord?.description}</p>
+									<Text type="danger">{failedRecord?.error}</Text>
+								</Col>
+							</Row>
+						</Card>
+					);
+				})}
 			</Modal>
 		</>
 	);
 };
 
-export default RoomsModel;
+export default CoursesModel;

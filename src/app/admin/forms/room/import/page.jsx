@@ -10,27 +10,31 @@ import Link from "next/link";
 
 const requiredFields = [
 	{ key: "id", value: "Room ID" },
-	{ key: "cols", value: "Columns" },
-	{ key: "rows", value: "Rows" },
-	{ key: "isOpenAvailable", value: "Is Available" },
+	{ key: "internalCols", value: "Internal Columns" },
+	{ key: "internalRows", value: "Internal Rows" },
+	{ key: "finalCols", value: "Final Columns" },
+	{ key: "finalRows", value: "Final Rows" },
+	{ key: "isAvailable", value: "Is Available" },
 	{ key: "floor", value: "Floor" },
 	{ key: "blockId", value: "Block" },
+	{ key: "description", value: "Description" },
 ];
 
 function RoomsPage() {
-	const [data, setData] = useState([]);
+	const [failedRecords, setFailedRecords] = useState([]);
 
 	const handleSubmission = async (rooms) => {
-		setData([]);
+		setFailedRecords([]);
 		const missingRooms = rooms.filter((room) => {
 			// Check if any of the required fields are missing for a room
 			return !(
 				room.hasOwnProperty("id") &&
-				room.hasOwnProperty("cols") &&
-				room.hasOwnProperty("rows") &&
-				room.hasOwnProperty("isAvailable") &&
+				room.hasOwnProperty("internalCols") &&
+				room.hasOwnProperty("internalRows") &&
+				room.hasOwnProperty("finalCols") &&
+				room.hasOwnProperty("finalRows") &&
 				room.hasOwnProperty("floor") &&
-				room.hasOwnProperty("blockId") 
+				room.hasOwnProperty("blockId")
 			);
 		});
 
@@ -42,10 +46,11 @@ function RoomsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/rooms", { rooms });
+			const result = await axios.post("/api/admin/rooms", rooms);
 			if (result.status === 200) {
+				const { failedRecords } = result.data;
 				message.success("Successfully submitted");
-				setData(result.data);
+				setFailedRecords(failedRecords);
 			} else message.error("Submit failed");
 		} catch (error) {
 			console.log(error);
@@ -70,7 +75,7 @@ function RoomsPage() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
 		</div>
 	);
 }
