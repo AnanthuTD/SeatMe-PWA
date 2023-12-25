@@ -173,7 +173,7 @@ const EditableTable = ({
 		});
 
 		try {
-			const response = await axios.delete("/api/admin/student", {
+			const response = await axios.delete("/api/admin/student/supplementary", {
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
@@ -246,7 +246,7 @@ const EditableTable = ({
 			type: "select",
 			render: (_, record) => (
 				<span>
-					{record.supplementaries.map((supplementary) => supplementary.courseId).join(', ')}
+					{[...record.courses].join(', ')}
 				</span>
 			)
 		},
@@ -334,7 +334,9 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
+				console.log(row);
 				await axios.patch("/api/admin/student", row);
+				await axios.patch("/api/admin/student/supplementary", row);
 				message.success("Updated successfully");
 				setDataSource(newData);
 			}

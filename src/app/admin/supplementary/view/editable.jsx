@@ -2,23 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
-
-async function fetchOpenCourses(programId) {
-	const apiUrl = "/api/admin/open-courses";
-
-	let openCourses = [];
-	try {
-		const response = await axios.get(apiUrl, {
-			params: { programId },
-		});
-		openCourses = response.data;
-		console.log(JSON.stringify(openCourses, null, 2));
-	} catch (err) {
-		console.error("Error fetching open courses: ", err);
-	}
-
-	return openCourses || [];
-}
+import CoursesSelect from "../../components/courseSelect";
 
 const EditableContext = React.createContext(null);
 
@@ -47,6 +31,13 @@ const EditableCell = ({
 	const [openCourses, setOpenCourses] = useState([]);
 	const inputRef = useRef(null);
 	const form = useContext(EditableContext);
+	const [courses, setCourses] = useState([]);
+
+	const [selectedCourse, setSelectedCourse] = useState([]);
+
+	const handleCourseClick = () => {
+		if (courses.length === 0) loadCourses();
+	};
 
 	useEffect(() => {
 		if (editing) {
@@ -61,11 +52,6 @@ const EditableCell = ({
 		form.setFieldsValue({
 			[dataIndex]: record[dataIndex],
 		});
-		if (dataIndex === 'courses') {
-			form.setFieldsValue({
-				[dataIndex]: record.supplementaries.map(record => record.courseId),
-			});
-		}
 	};
 
 	const save = async () => {
@@ -104,7 +90,7 @@ const EditableCell = ({
 						onSelect={save}
 						fieldNames={{ label: 'name', value: 'id' }}
 					/>
-				) : (
+				) : dataIndex === "courses" ? <Select mode="multiple" open={false} onDeselect={save} ref={inputRef}/> : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />
 				)}
 			</Form.Item>

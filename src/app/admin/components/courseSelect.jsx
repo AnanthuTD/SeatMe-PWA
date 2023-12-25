@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Select, Space } from "antd";
 const { Option } = Select;
 
-const App = ({
+const CoursesSelect = ({
 	options = [],
-	onChange = () => {},
-	onClick = () => {},
+	onChange = () => { },
+	onClick = () => { },
 	sortByValue = false,
 	selectedCourses,
-	setSelectedCourses,
+	setSelectedCourses = (courses) => { },
 	mode = "multiple",
 }) => {
 	// Check if the length of options is less than 10
@@ -89,4 +89,4 @@ const App = ({
 	);
 };
 
-export default App;
+export default CoursesSelect;
