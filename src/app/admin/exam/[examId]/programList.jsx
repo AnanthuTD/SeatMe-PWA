@@ -102,7 +102,7 @@ const ProgramList = ({ data, examId }) => {
                         <p> Level: {program.level}</p>
                         <p>Semester: {data.semester}</p>
                         <p>{program.isAided ? 'Aided' : 'Unaided'}</p>
-                        <p>Department ID: {program.departmentId}</p>
+                        <p>Department ID: {program.departmentCode}</p>
                     </span>
                     <p>
                         <Button type="primary" shape="round" icon={<DownloadOutlined />}

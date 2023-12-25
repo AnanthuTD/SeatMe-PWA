@@ -7,7 +7,7 @@ import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
 import { Row, Col, Divider } from "antd";
 
-function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
+function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset = false }) {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 	const [selectedProgram, setSelectedProgram] = useState(null);
@@ -117,6 +117,22 @@ function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
 		if (courses.length === 0) loadCourses();
 	};
 
+	const handleReset = () => {
+		setDepartments([]);
+		setPrograms([]);
+		setCourses([]);
+		setSelectedCourse([]);
+		setSelectedDepartment([]);
+		setSelectedProgram([]);
+		setSelectedSemester([]);
+		setSemesters([]);
+		loadDepartments();
+	};
+
+	useEffect(() => {
+		handleReset();
+	}, [reset])
+
 	return (
 		<>
 			<Row gutter={16} align="middle">
@@ -169,7 +185,6 @@ function DepProSemCouSelect({ value = (values) => {}, courseField = true }) {
 								onClick={handleCourseClick}
 								setSelectedCourses={setSelectedCourse}
 								className="w-full"
-								// mode={courseMode}
 							/>
 						</Col>
 					</Row>

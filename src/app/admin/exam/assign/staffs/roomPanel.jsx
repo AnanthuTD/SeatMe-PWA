@@ -28,8 +28,8 @@ function RoomPanel({
 		}
 	}, [selectedDepartment]);
 
-	const handleDepartmentChange = (departmentId) => {
-		setSelectedDepartment(departmentId);
+	const handleDepartmentChange = (departmentCode) => {
+		setSelectedDepartment(departmentCode);
 		handleTeacherSelect(room.id, null);
 	};
 

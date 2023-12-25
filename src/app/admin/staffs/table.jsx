@@ -187,9 +187,9 @@ const EditableTable = ({
 		},
 		{
 			title: "Department",
-			dataIndex: "departmentId",
-			key: "departmentId",
-			...getColumnSearchProps("departmentId"),
+			dataIndex: "departmentCode",
+			key: "departmentCode",
+			...getColumnSearchProps("departmentCode"),
 			editable: true,
 			sorter: true,
 			render: (_, record) =>

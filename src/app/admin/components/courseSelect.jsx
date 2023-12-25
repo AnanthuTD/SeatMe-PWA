@@ -80,9 +80,9 @@ const CoursesSelect = ({
 					allowClear
 					key={option.id}
 					value={option.id}
-					label={`${option.name}(${option.name})`}
+					label={`${option.name}(${option.id})`}
 				>
-					<Space>{`${option.name}(${option.name})`}</Space>
+					<Space>{`${option.name}(${option.id})`}</Space>
 				</Option>
 			))}
 		</Select>

@@ -218,7 +218,7 @@ const DynamicProgramForm = () => {
 											<Form.Item
 												name={[
 													field.name,
-													"departmentId",
+													"departmentCode",
 												]}
 												label="Department"
 												rules={[
@@ -303,7 +303,7 @@ const DynamicProgramForm = () => {
 				<Select
 					style={{ width: 200, marginBottom: 16 }}
 					placeholder="Select Department"
-					onChange={(value) => setDepartmentId(value)}
+					onChange={(value) => setdepartmentCode(value)}
 				>
 					<Select.Option value={null}>All Departments</Select.Option>
 					{departments.map((dept) => (
@@ -338,8 +338,8 @@ const DynamicProgramForm = () => {
 					//   						},
 					//   						{
 					//   						title: "Department ID",
-					//   						dataIndex: "departmentId",
-					//   						key: "departmentId",
+					//   						dataIndex: "departmentCode",
+					//   						key: "departmentCode",
 
 					//   						},
 					//     {

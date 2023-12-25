@@ -174,7 +174,7 @@ const EditableTable = ({
 
 		try {
 			const response = await axios.delete("/api/admin/student/supplementary", {
-				params: { studentId: studentId },
+				params: { studentId },
 			});
 			setDataSource(newData);
 			message.success(response.data.message || 'Deleted successfully!'); // Assuming your response has a "message" field
@@ -324,7 +324,6 @@ const EditableTable = ({
 
 	const handleSave = async (row) => {
 		try {
-
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => row.id === item.id);
 
@@ -334,7 +333,7 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				console.log(row);
+				row.exams = row.exams.filter(exam => row.courses.includes(exam.courseId));
 				await axios.patch("/api/admin/student", row);
 				await axios.patch("/api/admin/student/supplementary", row);
 				message.success("Updated successfully");

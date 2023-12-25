@@ -7,6 +7,7 @@ import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
 import { Row, Col, Divider, FloatButton, message } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
+import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 function Page() {
 	const [departments, setDepartments] = useState([]);
@@ -16,15 +17,11 @@ function Page() {
 	const [selectedCourse, setSelectedCourse] = useState([]);
 	const [programs, setPrograms] = useState([]);
 	const [semesters, setSemesters] = useState([]);
-	const [courses, setCourses] = useState([]);
+	const [reset, toggleReset] = useState(false);
 	const [courseForms, setCourseForms] = useState([]);
 
-	useEffect(() => {
-		loadDepartments();
-	}, []);
-
-	useEffect(() => {
-		const updatedCourseForms = selectedCourse.map((selectedCourse) => {
+	const handleChange = (values) => {
+		const updatedCourseForms = values.courses.map((selectedCourse) => {
 			const existingCourseForm = courseForms.find(
 				(course) => selectedCourse.id === course.courseId,
 			);
@@ -43,7 +40,7 @@ function Page() {
 		});
 
 		setCourseForms(updatedCourseForms);
-	}, [selectedCourse]);
+	};
 
 	useEffect(() => {
 		if (selectedDepartment) {
@@ -64,91 +61,6 @@ function Page() {
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
 		}
-	};
-
-	const loadPrograms = async (departmentId) => {
-		try {
-			const result = await axios.get("/api/admin/programs", {
-				params: { departmentId },
-			});
-			setPrograms(result.data);
-		} catch (error) {
-			console.error("Error fetching programs: ", error);
-		}
-	};
-
-	const loadSemesters = (programId, option) => {
-		const totalSemesters = option.duration * 2;
-		const semesterOptions = Array.from(
-			{ length: totalSemesters },
-			(_, index) => ({
-				id: index + 1,
-				name: `Semester ${index + 1}`,
-			}),
-		);
-		setSemesters(semesterOptions);
-	};
-
-	const loadCourses = async (programId, semester) => {
-		try {
-			const result = await axios.get("/api/admin/courses", {
-				params: { programId, semester },
-			});
-			setCourses(result.data);
-		} catch (error) {
-			console.error("Error fetching courses: ", error);
-		}
-	};
-
-	const handleDepartmentChange = (departmentId) => {
-		try {
-			setSelectedDepartment(departmentId);
-			setSelectedProgram(null);
-			setSelectedSemester(null);
-			setSelectedCourse([]);
-		} catch (error) {
-			console.error(error);
-			handleReset();
-		}
-	};
-
-	const handleProgramChange = (programId, option) => {
-		try {
-			setSelectedProgram(programId);
-			loadSemesters(programId, option);
-			setSelectedSemester(null);
-			setSelectedCourse([]);
-		} catch (error) {
-			console.error(error);
-			handleReset();
-		}
-	};
-
-	const handleSemesterChange = (semester) => {
-		try{
-			setSelectedSemester(semester);
-			setSelectedCourse([]);
-		} catch (error) {
-			console.error(error);
-			handleReset();
-		}
-	};
-
-	const handleCourseChange = (courseId) => {
-		try{
-			setSelectedCourse([...selectedCourse, courseId]);
-		} catch (error) {
-			console.error(error);
-			handleReset();
-		}
-	};
-
-	const handleProgramClick = () => {
-		if (programs.length === 0) loadPrograms();
-	};
-
-	const handleCourseClick = () => {
-		if (courses.length === 0) loadCourses();
 	};
 
 	const handleReset = () => {
@@ -210,58 +122,7 @@ function Page() {
 
 	return (
 		<div className="p-4 bg-white">
-			<Row gutter={16} align="middle">
-				{/* On extra-small screens (<= 575px), use full width for each column */}
-				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
-					<label className="block text-lg font-semibold mb-2">
-						Department:
-					</label>
-					<Select
-						options={departments}
-						onChange={handleDepartmentChange}
-						placeholder="Select Department"
-					/>
-				</Col>
-				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
-					<label className="block text-lg font-semibold mb-2">
-						Program:
-					</label>
-					<Select
-						options={programs}
-						onChange={handleProgramChange}
-						onClick={handleProgramClick}
-						placeholder="Select Program"
-						sortByValue
-					/>
-				</Col>
-				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
-					<label className="block text-lg font-semibold mb-2">
-						Semester:
-					</label>
-					<Select
-						options={semesters}
-						onChange={handleSemesterChange}
-						placeholder="Select Semester"
-					/>
-				</Col>
-			</Row>
-			<Divider />
-			<Row gutter={16} align="middle">
-				<Col span={24}>
-					<label className="block text-lg font-semibold mb-2">
-						Course:
-					</label>
-					<CourseSelect
-						options={courses}
-						onChange={handleCourseChange}
-						placeholder="Select Course"
-						selectedCourses={selectedCourse}
-						onClick={handleCourseClick}
-						setSelectedCourses={setSelectedCourse}
-						className="w-full"
-					/>
-				</Col>
-			</Row>
+			<DepProSemCouSelect value={handleChange} reset={reset} />
 			{courseForms.map((courseForm, index) => (
 				<div key={courseForm.id}>
 					<Divider />
@@ -277,7 +138,7 @@ function Page() {
 				</div>
 			))}
 			<FloatButton
-				onClick={handleReset}
+				onClick={() => toggleReset(!reset)}
 				type="default"
 				style={{
 					backgroundColor: "#ffe6e6",
