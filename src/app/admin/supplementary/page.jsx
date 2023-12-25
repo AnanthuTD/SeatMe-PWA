@@ -4,6 +4,7 @@ import { Form, InputNumber, Button, Space, Divider, ConfigProvider, Row, Col, me
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import DepProSemCouSelect from '../components/depProSemCouSelect';
 import axios from '@/lib/axiosPrivate';
+import DepProSemExaSelect from '../components/depProSemExaSelect';
 
 const Page = () => {
 
@@ -32,7 +33,7 @@ const DynamicForm = () => {
 
     return (
         <>
-            <DepProSemCouSelect value={handleCourseId} />
+            <DepProSemExaSelect value={handleCourseId} />
             <Divider />
             <Form
                 name="dynamic_form_nest_item"
