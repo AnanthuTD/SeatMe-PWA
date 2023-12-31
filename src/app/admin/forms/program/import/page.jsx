@@ -11,23 +11,22 @@ import Link from "next/link";
 const requiredFields = [
 	{ key: "id", value: "Program ID" },
 	{ key: "name", value: "Program Name" },
-	{ key: "aided", value: "Aided" },
+	{ key: "isAided", value: "Aided" },
 	{ key: "departmentCode", value: "Department Code" },
 	{ key: "duration", value: "Duration (years)" },
 	{ key: "level", value: "Level (UG/PG)" },
 ];
 
 function ProgramsPage() {
-	const [data, setData] = useState([]);
+	const [failedRecords, setFailedRecords] = useState([]);
 
 	const handleSubmission = async (programs) => {
-		setData([]);
 		const missingPrograms = programs.filter((program) => {
 			// Check if any of the required fields are missing for a program
 			return !(
 				program.hasOwnProperty("id") &&
 				program.hasOwnProperty("name") &&
-				program.hasOwnProperty("aided") &&
+				program.hasOwnProperty("isAided") &&
 				program.hasOwnProperty("departmentCode") &&
 				program.hasOwnProperty("duration") &&
 				program.hasOwnProperty("level")
@@ -42,21 +41,20 @@ function ProgramsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/programentry/program", {
-				programs,
-			});
+			const result = await axios.post("/api/admin/programentry/program", { programs });
 			if (result.status === 200) {
-				message.success("Successfully submitted");
-				setData(result.data);
-			} else message.error("Submit failed");
+				message.success("Import Success");
+				setFailedRecords(result.data.failedRecords);
+				console.error(result.data.failedRecords);
+			} else {
+				const { error } = result.data;
+				message.error("Import Failed! ", error);
+			}
 		} catch (error) {
-			console.log(error);
-			if (error.response.status === 400) {
-				message.error(
-					`Record with Program ID '${error.response.data.value}' already exists`,
-				);
-			} else message.error("Something went wrong");
+			console.error(error.response.data);
+			message.error("Something went wrong at the server! ");
 		}
+
 	};
 
 	return (
@@ -72,7 +70,7 @@ function ProgramsPage() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
 		</div>
 	);
 }

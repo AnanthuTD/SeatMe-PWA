@@ -24,7 +24,6 @@ function RoomsPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
 
 	const handleSubmission = async (rooms) => {
-		setFailedRecords([]);
 		const missingRooms = rooms.filter((room) => {
 			// Check if any of the required fields are missing for a room
 			return !(
@@ -48,17 +47,16 @@ function RoomsPage() {
 		try {
 			const result = await axios.post("/api/admin/rooms", rooms);
 			if (result.status === 200) {
-				const { failedRecords } = result.data;
-				message.success("Successfully submitted");
-				setFailedRecords(failedRecords);
-			} else message.error("Submit failed");
+				message.success("Import Success");
+				setFailedRecords(result.data);
+				console.error(result.data);
+			} else {
+				const { error } = result.data;
+				message.error("Import Failed! ", error);
+			}
 		} catch (error) {
-			console.log(error);
-			if (error.response.status === 400) {
-				message.error(
-					`Record with Room ID '${error.response.data.value}' already exists`,
-				);
-			} else message.error("Something went wrong");
+			console.error(error.response.data);
+			message.error("Something went wrong at the server! ");
 		}
 	};
 

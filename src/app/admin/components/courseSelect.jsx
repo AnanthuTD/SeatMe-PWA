@@ -12,16 +12,16 @@ const CoursesSelect = ({
 	mode = "multiple",
 }) => {
 	// Check if the length of options is less than 10
-	// const isLessThan10 = options.length < 10;
+	const isLessThan20 = options.length < 20;
 
 	const [value, setValue] = useState([]);
 
 	// default selected options if less than 10 courses value
 	useEffect(() => {
-		// const option = isLessThan10 ? options.map((option) => option) : [];
-		// const courseId = isLessThan10 ? options.map((option) => option.id) : [];
-		const option = options.length ? options.map((option) => option) : [];
-		const courseId = options.length ? options.map((option) => option.id) : [];
+		const option = isLessThan20 ? options.map((option) => option) : [];
+		const courseId = isLessThan20 ? options.map((option) => option.id) : [];
+		// const option = options.length ? options.map((option) => option) : [];
+		// const courseId = options.length ? options.map((option) => option.id) : [];
 		setSelectedCourses(option);
 		setValue(courseId);
 	}, [options]);
