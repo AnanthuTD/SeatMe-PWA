@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import TeacherAssignment from './teacherAssignment'
 import axios from "@/lib/axiosPrivate";
 import { useSearchParams } from 'next/navigation';
-import { Row, Select, Spin } from 'antd';
+import { Select, Spin } from 'antd';
 import DatePicker from '@/app/admin/components/datePicker';
 
 const timeOptions = ['AN', 'FN'];
