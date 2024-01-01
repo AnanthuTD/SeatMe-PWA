@@ -1,17 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Form, Input } from "antd";
+import { Form, Input, Select } from "antd";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
-import SelectDepartment from "../components/selectDepartment";
-
-const loadDepartments = async () => {
-	try {
-		const result = await axios.get("/api/admin/departments");
-		return (result.data);
-	} catch (error) {
-		console.error("Error fetching departments: ", error);
-	}
-};
+import CoursesSelect from "../../components/courseSelect";
 
 const EditableContext = React.createContext(null);
 
@@ -33,12 +24,20 @@ const EditableCell = ({
 	dataIndex,
 	record,
 	handleSave,
+	programs,
 	...restProps
 }) => {
 	const [editing, setEditing] = useState(false);
-	const [departments, setDepartments] = useState([]);
+	const [openCourses, setOpenCourses] = useState([]);
 	const inputRef = useRef(null);
 	const form = useContext(EditableContext);
+	const [courses, setCourses] = useState([]);
+
+	const [selectedCourse, setSelectedCourse] = useState([]);
+
+	const handleCourseClick = () => {
+		if (courses.length === 0) loadCourses();
+	};
 
 	useEffect(() => {
 		if (editing) {
@@ -47,16 +46,6 @@ const EditableCell = ({
 			}
 		}
 	}, [editing]);
-
-	useEffect(() => {
-		if (dataIndex === "departmentCode") {
-			const fun = async () => {
-				const departments = await loadDepartments();
-				setDepartments(departments);
-			};
-			fun();
-		}
-	}, []);
 
 	const toggleEdit = () => {
 		setEditing(!editing);
@@ -94,9 +83,14 @@ const EditableCell = ({
 					},
 				]}
 			>
-				{dataIndex === "departmentCode" ? (
-					<SelectDepartment options={departments} onChange={save} />
-				) : (
+				{dataIndex === "openCourseId" || dataIndex === "programId" ? (
+					<Select
+						options={dataIndex === "openCourseId" ? openCourses : programs}
+						ref={inputRef}
+						onSelect={save}
+						fieldNames={{ label: 'name', value: 'id' }}
+					/>
+				) : dataIndex === "courses" ? <Select mode="multiple" open={false} onDeselect={save} ref={inputRef}/> : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />
 				)}
 			</Form.Item>

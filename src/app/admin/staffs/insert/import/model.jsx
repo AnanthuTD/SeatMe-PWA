@@ -62,7 +62,6 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 				width={1000}
 			>
 				{failedRecords.map((failedRecord, index) => {
-					console.log("failedRecord");
 					return (
 						<Card key={index} className="my-4">
 							<Row gutter={[16, 16]}>

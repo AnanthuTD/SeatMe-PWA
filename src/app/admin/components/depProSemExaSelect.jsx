@@ -7,7 +7,7 @@ import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
 import { Row, Col, Divider } from "antd";
 
-function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset = false }) {
+function DepProSemExaSelect({ value = (values) => { }, courseField = true, reset = false }) {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 	const [selectedProgram, setSelectedProgram] = useState(null);
@@ -77,7 +77,7 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 
 	const loadCourses = async (programId, semester) => {
 		try {
-			const result = await axios.get("/api/admin/courses", {
+			const result = await axios.get("/api/admin/courses/exams", {
 				params: { programId, semester },
 			});
 			setCourses(result.data);
@@ -194,4 +194,4 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 	);
 }
 
-export default DepProSemCouSelect;
+export default DepProSemExaSelect;

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, message, Descriptions } from "antd";
 import TeacherSelector from "./teacherSelector";
 import axios from "@/lib/axiosPrivate";
-import DepartmentSelector from "../../../components/select";
+import DepartmentSelector from "../../../components/selectDepartment";
 
 function RoomPanel({
 	room,
@@ -28,8 +28,8 @@ function RoomPanel({
 		}
 	}, [selectedDepartment]);
 
-	const handleDepartmentChange = (departmentId) => {
-		setSelectedDepartment(departmentId);
+	const handleDepartmentChange = (departmentCode) => {
+		setSelectedDepartment(departmentCode);
 		handleTeacherSelect(room.id, null);
 	};
 

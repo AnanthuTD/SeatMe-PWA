@@ -4,8 +4,7 @@ import * as XLSX from "xlsx";
 
 const { Text, Title } = Typography;
 
-const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
-	console.log(failedRecords);
+const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	const handleOk = async () => {
 		setFailedRecords([]);
 	};
@@ -15,17 +14,18 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	};
 
 	const downloadToXLSX = () => {
-		// const data = failedRecords.map((record) => { return { ...record.record, error: record.message } });
-		const data = failedRecords;
-
+		const data = failedRecords.map((record) => ({
+		  studentId: record.studentId,
+		  courseId: record.courseId,
+		}));
+	  
 		const ws = XLSX.utils.json_to_sheet(data);
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
-
-		// Use the correct bookType value "blob"
-		XLSX.writeFile(wb, 'staff-failed-records.xlsx');
-
-	};
+	  
+		XLSX.writeFile(wb,'staff-failed-records.xlsx');
+	  
+	  };	  
 
 	return (
 		<>
@@ -60,12 +60,8 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 						<Card key={index} className="my-4">
 							<Row gutter={[16, 16]}>
 								<Col span={12}>
-									<p>ID: {failedRecord?.id}</p>
-									<p>Name: {failedRecord?.name}</p>
-									<p>Aided: {failedRecord?.isAided ? 'yes' : 'no'}</p>
-									<p>Department Code: {failedRecord?.departmentCode}</p>
-									<p>Duration: {failedRecord?.duration}</p>
-									<p>Level: {failedRecord?.level}</p>
+									<p>Student ID: {failedRecord?.studentId}</p>
+									<p>Course ID: {failedRecord?.courseId}</p>
 									<Text type="danger">{failedRecord?.error}</Text>
 								</Col>
 							</Row>
@@ -77,4 +73,4 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	);
 };
 
-export default CoursesModel;
+export default ErrorModel;

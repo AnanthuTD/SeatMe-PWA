@@ -18,7 +18,7 @@ import {
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
-import SelectProgram from "../../components/select";
+import SelectProgram from "../../components/selectDepartment";
 import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 

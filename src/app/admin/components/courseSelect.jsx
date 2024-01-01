@@ -2,24 +2,26 @@ import React, { useState, useEffect } from "react";
 import { Select, Space } from "antd";
 const { Option } = Select;
 
-const App = ({
+const CoursesSelect = ({
 	options = [],
-	onChange = () => {},
-	onClick = () => {},
+	onChange = () => { },
+	onClick = () => { },
 	sortByValue = false,
 	selectedCourses,
-	setSelectedCourses,
+	setSelectedCourses = (courses) => { },
 	mode = "multiple",
 }) => {
 	// Check if the length of options is less than 10
-	const isLessThan10 = options.length < 10;
+	const isLessThan20 = options.length < 20;
 
 	const [value, setValue] = useState([]);
 
 	// default selected options if less than 10 courses value
 	useEffect(() => {
-		const option = isLessThan10 ? options.map((option) => option) : [];
-		const courseId = isLessThan10 ? options.map((option) => option.id) : [];
+		const option = isLessThan20 ? options.map((option) => option) : [];
+		const courseId = isLessThan20 ? options.map((option) => option.id) : [];
+		// const option = options.length ? options.map((option) => option) : [];
+		// const courseId = options.length ? options.map((option) => option.id) : [];
 		setSelectedCourses(option);
 		setValue(courseId);
 	}, [options]);
@@ -80,13 +82,13 @@ const App = ({
 					allowClear
 					key={option.id}
 					value={option.id}
-					label={`${option.name}(${option.name})`}
+					label={`${option.name}(${option.id})`}
 				>
-					<Space>{`${option.name}(${option.name})`}</Space>
+					<Space>{`${option.name}(${option.id})`}</Space>
 				</Option>
 			))}
 		</Select>
 	);
 };
 
-export default App;
+export default CoursesSelect;

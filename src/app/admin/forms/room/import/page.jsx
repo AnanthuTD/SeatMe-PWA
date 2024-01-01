@@ -10,27 +10,30 @@ import Link from "next/link";
 
 const requiredFields = [
 	{ key: "id", value: "Room ID" },
-	{ key: "cols", value: "Columns" },
-	{ key: "rows", value: "Rows" },
-	{ key: "isOpenAvailable", value: "Is Available" },
+	{ key: "internalCols", value: "Internal Columns" },
+	{ key: "internalRows", value: "Internal Rows" },
+	{ key: "finalCols", value: "Final Columns" },
+	{ key: "finalRows", value: "Final Rows" },
+	{ key: "isAvailable", value: "Is Available" },
 	{ key: "floor", value: "Floor" },
 	{ key: "blockId", value: "Block" },
+	{ key: "description", value: "Description" },
 ];
 
 function RoomsPage() {
-	const [data, setData] = useState([]);
+	const [failedRecords, setFailedRecords] = useState([]);
 
 	const handleSubmission = async (rooms) => {
-		setData([]);
 		const missingRooms = rooms.filter((room) => {
 			// Check if any of the required fields are missing for a room
 			return !(
 				room.hasOwnProperty("id") &&
-				room.hasOwnProperty("cols") &&
-				room.hasOwnProperty("rows") &&
-				room.hasOwnProperty("isAvailable") &&
+				room.hasOwnProperty("internalCols") &&
+				room.hasOwnProperty("internalRows") &&
+				room.hasOwnProperty("finalCols") &&
+				room.hasOwnProperty("finalRows") &&
 				room.hasOwnProperty("floor") &&
-				room.hasOwnProperty("blockId") 
+				room.hasOwnProperty("blockId")
 			);
 		});
 
@@ -42,18 +45,18 @@ function RoomsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/rooms", { rooms });
+			const result = await axios.post("/api/admin/rooms", rooms);
 			if (result.status === 200) {
-				message.success("Successfully submitted");
-				setData(result.data);
-			} else message.error("Submit failed");
+				message.success("Import Success");
+				setFailedRecords(result.data);
+				console.error(result.data);
+			} else {
+				const { error } = result.data;
+				message.error("Import Failed! ", error);
+			}
 		} catch (error) {
-			console.log(error);
-			if (error.response.status === 400) {
-				message.error(
-					`Record with Room ID '${error.response.data.value}' already exists`,
-				);
-			} else message.error("Something went wrong");
+			console.error(error.response.data);
+			message.error("Something went wrong at the server! ");
 		}
 	};
 
@@ -70,7 +73,7 @@ function RoomsPage() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
 		</div>
 	);
 }
