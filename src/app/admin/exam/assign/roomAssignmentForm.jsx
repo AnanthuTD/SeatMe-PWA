@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Rooms from "./rooms";
 import CustomDatePicker from "../../components/datePicker";
+import { getCookie, setCookie } from "cookies-next";
 
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),
@@ -44,10 +45,40 @@ const RoomAssignmentForm = ({
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileNames, setFileNames] = useState("");
-	const [examType, setExamType] = useState("internal");
-	const [date, setDate] = useState(new Date());
-	const [timeCode, setTimeCode] = useState('AN');
+	const [examType, setExamType] = useState(null);
+	const [date, setDate] = useState(null);
+	const [timeCode, setTimeCode] = useState(null);
 	const [visible, setVisible] = useState(false);
+
+	useEffect(() => {
+		const storedDate = localStorage.getItem('selectedDate');
+		const storedTimeCode = localStorage.getItem('timeCode');
+		const storedExamType = localStorage.getItem('examType');
+
+		if (storedDate) {
+			setDate(new Date(storedDate));
+		}else setDate(new Date())
+
+		if (storedTimeCode) {
+			setTimeCode(storedTimeCode);
+		}else setTimeCode('AN')
+
+		if (storedExamType) {
+			setExamType(storedExamType);
+		}else setExamType('internal')
+	}, []);
+
+	useEffect(() => {
+		if (date && typeof date.toISOString === 'function') {
+			localStorage.setItem('selectedDate', date.toISOString());
+		}
+		if (timeCode) {
+			localStorage.setItem('timeCode', timeCode);
+		}
+		if (examType) {
+			localStorage.setItem('examType', examType);
+		}
+	}, [date, timeCode, examType]);
 
 	const handleExamTypeChange = (e) => {
 		const examType = e.target.value;
@@ -175,7 +206,7 @@ const RoomAssignmentForm = ({
 								label="Time Code"
 								name="timeCode"
 								rules={[{ required: true, message: 'Please select AN or FN' }]}
-								initialValue={'AN'}
+								initialValue={timeCode}
 							>
 								<Select placeholder="Select AN or FN" onSelect={setTimeCode}>
 									{timeOptions.map((option) => (
@@ -186,12 +217,12 @@ const RoomAssignmentForm = ({
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col sm={24} md={18} lg={9} xl={10} /* className="justify-center items-center flex" */>
+						<Col sm={24} md={18} lg={9} xl={10}>
 							<Form.Item
 								name="examType"
 								label="Exam Type"
 								required={true}
-								initialValue={"internal"}
+								initialValue={examType}
 							>
 								<Radio.Group onChange={handleExamTypeChange}>
 									<Radio value="internal">Internal</Radio>
