@@ -2,31 +2,40 @@ import React from "react";
 import { Button } from "antd";
 import axios from "@/lib/axiosPrivate";
 
-const DownloadButton = ({ fileName }) => {
+const DownloadButton = ({ fileNames }) => {
 	const handleDownload = () => {
-		// Use the fetch function to initiate the download request
-		const url = `/api/admin/public/${fileName}`;
+		console.log(fileNames);
+		if (Array.isArray(fileNames) && fileNames.length > 0) {
+			fileNames.forEach((file) => {
+				downloadFile(file);
+			});
+		} else if (typeof fileNames === "string") {
+			downloadFile(fileNames);
+		}
+	};
+
+	const downloadFile = (file) => {
+		console.log(file);
+		const url = `/api/admin/public/${file}`;
 		axios
 			.get(url, {
 				responseType: "blob",
 			})
 			.then((response) => {
-				// Create a URL for the blob content
-				const url = window.URL.createObjectURL(
-					new Blob([response.data]),
-				);
-				// Create an anchor element to trigger the download
+				const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 				const a = document.createElement("a");
-				a.href = url;
-				a.download = `${fileName}`; // Specify the file name
+				a.href = blobUrl;
+				a.download = file;
 				document.body.appendChild(a);
 				a.click();
-				window.URL.revokeObjectURL(url);
+				window.URL.revokeObjectURL(blobUrl);
+				document.body.removeChild(a);
 			})
 			.catch((error) => {
-				console.error("Error downloading content:", error);
+				console.error(`Error downloading ${file}:`, error);
 			});
 	};
+
 	return (
 		<Button type="primary" onClick={handleDownload}>
 			Download

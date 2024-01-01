@@ -43,7 +43,7 @@ const RoomAssignmentForm = ({
 	const [examinesCount, setExaminesCount] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [warningMessage, setWarningMessage] = useState("");
-	const [fileName, setFileName] = useState("");
+	const [fileNames, setFileNames] = useState("");
 	const [examType, setExamType] = useState("internal");
 	const [date, setDate] = useState(new Date());
 	const [timeCode, setTimeCode] = useState('AN');
@@ -68,7 +68,7 @@ const RoomAssignmentForm = ({
 
 	useEffect(() => {
 		getExaminesCount();
-		setFileName("");
+		setFileNames("");
 	}, [date, timeCode]);
 
 	const loadSelectedRooms = async (examType) => {
@@ -83,7 +83,6 @@ const RoomAssignmentForm = ({
 	}, []);
 
 	const assign = async (values) => {
-		console.log(values);
 		try {
 			setLoading(true);
 			const { orderBy, selectedDate, examType, optimize, timeCode } = values;
@@ -100,7 +99,7 @@ const RoomAssignmentForm = ({
 				{
 					message.success("Assignments successfully");
 					setWarningMessage("");
-					setFileName(result.data.fileName);
+					setFileNames(result.data.fileNames);
 
 					setDate(selectedDate);
 					setVisible(true);
@@ -319,7 +318,7 @@ const RoomAssignmentForm = ({
 					<Col span={22} >
 						<div className="flex items-center">
 							<label className="">Download Seating Arrangement for Students:</label>
-							<DownloadButton fileName={fileName} />
+							<DownloadButton fileNames={fileNames} />
 						</div>
 					</Col>
 					{/* Assign Teachers Section */}
