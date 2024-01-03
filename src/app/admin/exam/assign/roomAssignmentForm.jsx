@@ -57,15 +57,15 @@ const RoomAssignmentForm = ({
 
 		if (storedDate) {
 			setDate(new Date(storedDate));
-		}else setDate(new Date())
+		} else setDate(new Date())
 
 		if (storedTimeCode) {
 			setTimeCode(storedTimeCode);
-		}else setTimeCode('AN')
+		} else setTimeCode('AN')
 
 		if (storedExamType) {
 			setExamType(storedExamType);
-		}else setExamType('internal')
+		} else setExamType('internal')
 	}, []);
 
 	useEffect(() => {
@@ -114,13 +114,15 @@ const RoomAssignmentForm = ({
 	}, []);
 
 	const assign = async (values) => {
+		console.log('date : ', values.selectedDate.toDate());
+
 		try {
 			setLoading(true);
 			const { orderBy, selectedDate, examType, optimize, timeCode } = values;
 			const result = await axios.get("/api/admin/exams/assign", {
 				params: {
 					orderBy,
-					date: selectedDate,
+					date: selectedDate.format('YYYY-MM-DDTHH:mm:ssZ'),
 					examType,
 					optimize,
 					timeCode

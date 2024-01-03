@@ -17,7 +17,7 @@ import { AccountProvider } from "@/context/accountContext";
 const RootLayout = ({ children }) => {
 	return (
 		<html lang="en">
-			<link rel="manifest" href="/manifest.json" />
+			{/* <link rel="manifest" href="/manifest.json" /> */}
 			<link rel="apple-touch-icon" href="/next.svg"></link>
 			<meta name="theme-color" content="#fff" />
 			<body className={[inter.className, "h-screen"].join(" ")}>
