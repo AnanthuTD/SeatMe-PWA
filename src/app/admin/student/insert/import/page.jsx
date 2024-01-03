@@ -42,11 +42,8 @@ function Page() {
 			const result = await axios.post("/api/admin/student", { students });
 			if (result.status === 200) {
 				message.success("Import Success");
+				console.error("failedRecords: ",result.data);
 				setFailedRecords(result.data);
-				console.error(result.data);
-			} else {
-				const { error } = result.data;
-				message.error("Import Failed! ", error);
 			}
 		} catch (error) {
 			console.error(error.response.data);
