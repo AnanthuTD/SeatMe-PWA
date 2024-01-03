@@ -62,7 +62,7 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 								<Col span={12}>
 									<p>Student ID: {failedRecord?.studentId}</p>
 									<p>Course ID: {failedRecord?.courseId}</p>
-									<Text type="danger">{failedRecord?.error}</Text>
+									<Text type="danger">Error: {failedRecord?.error}</Text>
 								</Col>
 							</Row>
 						</Card>

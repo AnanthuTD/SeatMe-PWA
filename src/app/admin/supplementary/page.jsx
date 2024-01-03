@@ -87,7 +87,7 @@ const DynamicForm = () => {
                 </Form.Item>
             </Form>
 
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+            {failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
         </>
     );
 
@@ -96,8 +96,11 @@ const DynamicForm = () => {
         try {
             const response = await axios.post('/api/admin/student/supplementary', { courseIds, studentIds });
             const { failedRecords } = response.data;
+            if (failedRecords.length > 0) message.warning("Failed to import some records!")
+            else message.success("Import Success");
             setFailedRecords(failedRecords);
         } catch (error) {
+            console.error(error);
             message.error('An error occurred at the server!')
         }
     }
@@ -109,7 +112,7 @@ const DynamicForm = () => {
         if (lastField?.id && changedValues.studentIds[lastFieldIndex]) {
             // const idLength = String(lastField.id).length;
             // if (idLength === 12)
-                addField();
+            addField();
         }
     }
 
