@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined,FileExcelOutlined } from "@ant-design/icons";
 import { Upload, Select, Button } from "antd";
 import * as XLSX from "xlsx";
 
@@ -9,6 +9,13 @@ const { Option } = Select;
 const DragDrop = ({ requiredFields, records = (records) => { }, loading = false }) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
+	const [fileName, setFileName] = useState("");
+
+	const resetState = () => {
+		setFileData([]);
+		setMappedFields({});
+		setFileName("");
+	};
 
 	const handleFieldMapping = (field, column) => {
 		const newMappedFields = { ...mappedFields };
@@ -47,6 +54,8 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false 
 		multiple: true,
 		showUploadList: false,
 		beforeUpload: (file) => {
+			resetState();
+			setFileName(file.name);
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				const data = e.target.result;
@@ -117,8 +126,12 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false 
 					Click or drag file to this area to upload
 				</p>
 				<p className="ant-upload-hint">
-					Support for a single or bulk upload. Strictly prohibited
-					from uploading company data or other banned files.
+					{fileName && (
+						<>
+							<FileExcelOutlined style={{ marginRight: "8px", color: "green", }} />
+							{fileName}
+						</>
+					)}
 				</p>
 			</Dragger>
 
