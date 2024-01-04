@@ -2,9 +2,9 @@ import React from "react";
 import { Button, Modal, Row, Col, Card, Typography } from "antd";
 import * as XLSX from "xlsx";
 
-const { Text, Title } = Typography;
+const { Title, Text } = Typography;
 
-const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
+const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	const handleOk = async () => {
 		setFailedRecords([]);
 	};
@@ -15,17 +15,18 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 
 	const downloadToXLSX = () => {
 		const data = failedRecords.map((record) => ({
-		  studentId: record.studentId,
-		  courseId: record.courseId,
+			studentId: record?.studentId,
+			courseId: record?.courseId,
+			Error: record?.error
 		}));
-	  
+
 		const ws = XLSX.utils.json_to_sheet(data);
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
-	  
-		XLSX.writeFile(wb,'staff-failed-records.xlsx');
-	  
-	  };	  
+
+		XLSX.writeFile(wb, 'supplementary-failed-records.xlsx');
+
+	};
 
 	return (
 		<>
@@ -55,14 +56,19 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 				]}
 				width={1000}
 			>
-				{failedRecords.map((failedRecord, index) => {
+				{failedRecords.map((record, index) => {
 					return (
 						<Card key={index} className="my-4">
 							<Row gutter={[16, 16]}>
 								<Col span={12}>
-									<p>Student ID: {failedRecord?.studentId}</p>
-									<p>Course ID: {failedRecord?.courseId}</p>
-									<Text type="danger">Error: {failedRecord?.error}</Text>
+									<p>ID: {record?.id}</p>
+									<p>Roll Number: {record?.rollNumber}</p>
+									<p>Semester: {record?.semester}</p>
+									<p>Name: {record?.name}</p>
+									<p>Email: {record?.email}</p>
+									<p>Phone: {record?.phone}</p>
+									<p>Program ID: {record?.programId}</p>
+									<Text type="danger">{record?.error}</Text>
 								</Col>
 							</Row>
 						</Card>
@@ -73,4 +79,4 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	);
 };
 
-export default ErrorModel;
+export default ImportErrorModel;
