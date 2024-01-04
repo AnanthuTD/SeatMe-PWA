@@ -15,6 +15,7 @@ const requiredFields = [
 	{ key: "departmentCode", value: "Department Code" },
 	{ key: "duration", value: "Duration (years)" },
 	{ key: "level", value: "Level (UG/PG)" },
+	{ key: "abbreviation", value: "Abbreviation" },
 ];
 
 function ProgramsPage() {
@@ -29,13 +30,14 @@ function ProgramsPage() {
 				program.hasOwnProperty("isAided") &&
 				program.hasOwnProperty("departmentCode") &&
 				program.hasOwnProperty("duration") &&
+				program.hasOwnProperty("abbreviation") &&
 				program.hasOwnProperty("level")
 			);
 		});
 
 		if (missingPrograms.length > 0) {
 			message.error(
-				`The following fields are required (Program ID, Program Name, Aided, Department, Duration, Level)`,
+				`The following fields are required (Program ID, Program Name, Aided, Department, Duration,Abbreviation, Level)`,
 			);
 			return;
 		}

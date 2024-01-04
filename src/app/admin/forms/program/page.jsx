@@ -120,6 +120,11 @@ const DynamicProgramForm = () => {
 			key: "name",
 		},
 		{
+			title: "Abbreviation",
+			dataIndex: "abbreviation",
+			key: "abbreviation",
+		},
+		{
 			title: "Is Aided",
 			dataIndex: "isAided",
 			key: "isAided",
@@ -206,6 +211,21 @@ const DynamicProgramForm = () => {
 														required: true,
 														message:
 															"Please enter the program name",
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col xs={24} md={24} lg={10} xxl={10}>
+											<Form.Item
+												name={[field.name, "abbreviation"]}
+												label="Name abbreviation"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please enter the program name abbreviation",
 													},
 												]}
 											>
