@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
 import ImportErrorModel from "./model";
 import Link from "next/link";
 import { FormOutlined } from "@ant-design/icons";
+import DragDrop from "../../components/dragDropXLSX";
 
 const requiredFields = [
 	{ key: "studentId", value: "register number" },

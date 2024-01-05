@@ -64,7 +64,7 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 	};
 
 	const loadSemesters = (programId, option) => {
-		const totalSemesters = option.duration * 2;
+		const totalSemesters = 7;
 		const semesterOptions = Array.from(
 			{ length: totalSemesters },
 			(_, index) => ({

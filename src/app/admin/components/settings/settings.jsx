@@ -187,7 +187,7 @@ const SettingsButton = () => {
 							<Form.Item
 								label="Name"
 								name="name"
-								initialValue={user.name}
+								initialValue={user?.name}
 								required
 							>
 								<Input />
@@ -195,7 +195,7 @@ const SettingsButton = () => {
 							<Form.Item
 								label="Email"
 								name="email"
-								initialValue={user.email}
+								initialValue={user?.email}
 								required
 							>
 								<Input />
@@ -225,7 +225,7 @@ const SettingsButton = () => {
 							<Form.Item
 								label="Phone"
 								name="phone"
-								initialValue={user.phone}
+								initialValue={user?.phone}
 							>
 								<Input />
 							</Form.Item>

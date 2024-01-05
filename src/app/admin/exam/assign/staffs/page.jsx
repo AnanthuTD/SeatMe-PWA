@@ -31,7 +31,7 @@ function Page() {
     return (
         <div>
             <div className='flex gap-3 mt-3 ml-4'>
-                <DatePicker defaultValue={date} onChange={(newDate) => {
+                <DatePicker value={date} defaultValue={date} onChange={(newDate) => {
                     setDate(newDate.toDate())
                 }} />
                 <Select placeholder="Select AN or FN" onSelect={setTimeCode} defaultValue={timeCode}>
@@ -46,7 +46,7 @@ function Page() {
                 loading ? <Spin /> : rooms.length
                     ? <TeacherAssignment
                         rooms={rooms}
-                        date = {date}
+                        date={date}
                         timeCode={timeCode}
                     />
                     : <h1>No rooms to assign staffs!. Make sure examinees has been assigned before assigning staffs.</h1>

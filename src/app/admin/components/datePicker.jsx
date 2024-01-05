@@ -2,7 +2,7 @@ import React from 'react';
 import { DatePicker as AntDatePicker } from 'antd'; // Importing DatePicker from antd with a different name
 import dayjs from 'dayjs';
 
-function CustomDatePicker({ onChange = () => { }, defaultValue }) {
+function CustomDatePicker({ onChange = () => { }, defaultValue, value }) {
     
     const disabledDate = (current) => {
         // Disable days before today
@@ -17,6 +17,7 @@ function CustomDatePicker({ onChange = () => { }, defaultValue }) {
             onChange={onChange}
             disabledDate={disabledDate}
             defaultValue={dayjs(defaultValue)}
+            value={dayjs(value)}
         />
     );
 }
