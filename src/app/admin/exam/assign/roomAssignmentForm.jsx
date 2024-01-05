@@ -29,9 +29,6 @@ const Space = dynamic(() =>
 const Alert = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Alert })),
 );
-const Switch = dynamic(() =>
-	import("antd").then((module) => ({ default: module.Switch })),
-);
 
 const timeOptions = ['AN', 'FN'];
 
@@ -46,6 +43,8 @@ const RoomAssignmentForm = ({
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
 	const [examType, setExamType] = useState(null);
+	const [examName, setExamName] = useState('');
+	const [sortByField, setSortByField] = useState('id');
 	const [date, setDate] = useState(null);
 	const [timeCode, setTimeCode] = useState(null);
 	const [visible, setVisible] = useState(false);
@@ -54,29 +53,36 @@ const RoomAssignmentForm = ({
 	const [form] = Form.useForm()
 
 	function loadFromLocalStorage() {
-		const { setFieldValue } = form;
 		const storedDate = localStorage.getItem('selectedDate');
 		const storedTimeCode = localStorage.getItem('timeCode');
 		const storedExamType = localStorage.getItem('examType');
+		const storedExamName = localStorage.getItem('examName');
+		const storedSortByField = localStorage.getItem('sortByField');
 
 		if (storedDate) {
-			setFieldValue('selectedDate', dayjs(new Date(storedDate)));
 			setDate(new Date(storedDate))
 		} else {
-			setFieldValue('selectedDate', new Date());
 			setDate(new Date())
 		}
-
 		if (storedTimeCode) {
-			setFieldValue('timeCode', storedTimeCode);
+			setTimeCode(storedTimeCode)
 		} else {
-			setFieldValue('timeCode', 'AN');
+			setTimeCode('AN');
 		}
-
 		if (storedExamType) {
-			setFieldValue('examType', storedExamType);
+			setExamType(storedExamType);
 		} else {
-			setFieldValue('examType', 'final');
+			setExamType('final')
+		}
+		if (storedExamName) {
+			setExamName(storedExamName);
+		} else {
+			setExamName();
+		}
+		if (storedSortByField) {
+			setSortByField(storedSortByField);
+		} else {
+			setSortByField('id');
 		}
 	}
 
@@ -104,7 +110,13 @@ const RoomAssignmentForm = ({
 		if (examType) {
 			localStorage.setItem('examType', examType);
 		}
-	}, [date, timeCode, examType]);
+		if (examName) {
+			localStorage.setItem('examName', examName);
+		}
+		if (sortByField) {
+			localStorage.setItem('sortByField', sortByField);
+		}
+	}, [date, timeCode, examType, examName, sortByField]);
 
 	const handleExamTypeChange = (e) => {
 		const examType = e.target.value;
@@ -136,12 +148,11 @@ const RoomAssignmentForm = ({
 	};
 
 	useEffect(() => {
+		console.log('examType: ', examType);
 		loadSelectedRooms(examType);
-	}, []);
+	}, [examType]);
 
 	const assign = async (values) => {
-		console.log('date : ', values.selectedDate.toDate());
-
 		try {
 			setLoading(true);
 			const { orderBy, selectedDate, examType, optimize, timeCode, examName } = values;
@@ -212,7 +223,6 @@ const RoomAssignmentForm = ({
 							<Form.Item
 								label="Date"
 								name="selectedDate"
-								// initialValue={dayjs(date)}
 								rules={[
 									{
 										required: true,
@@ -245,7 +255,7 @@ const RoomAssignmentForm = ({
 							<Form.Item
 								name="examType"
 								label="Exam Type"
-								required={true}
+								rules={[{ required: true, message: 'Please select exam type' }]}
 								initialValue={examType}
 							>
 								<Radio.Group onChange={handleExamTypeChange}>
@@ -261,12 +271,13 @@ const RoomAssignmentForm = ({
 						<Col sm={24} lg={10} md={10} xl={10} xs={24}>
 							<Form.Item
 								name="orderBy"
-								initialValue="id"
+								initialValue={sortByField}
 								label="Sort by"
-								required={true}
+								rules={[{ required: true, message: 'Please select a sort by field' }]}
 							>
 								<Select
 									className="select-box"
+									onSelect={setSortByField}
 								>
 									<Select.Option value="rollNumber">
 										Roll Number
@@ -278,8 +289,10 @@ const RoomAssignmentForm = ({
 							</Form.Item>
 						</Col>
 						<Col sm={24} lg={14} md={14} xl={14} xs={24}>
-							<Form.Item name="examName" label="Exam Name" required={true}>
-								<Input />
+							<Form.Item name="examName" label="Exam Name" initialValue={examName}
+								rules={[{ required: true, message: 'Please enter name of exam' }]}
+							>
+								<Input onChange={setExamName} />
 							</Form.Item>
 						</Col>
 					</Row>
@@ -319,7 +332,7 @@ const RoomAssignmentForm = ({
 							</Card>
 						</Col>
 						<Col sm={24} lg={10} md={10} xl={10} xs={24} className="flex items-center">
-							{examinesCount ? <Link href={`/admin/rooms/${examType}/${examinesCount}`} ><Button type="primary">Select Rooms</Button></Link> : null}
+							<Link href={`/admin/rooms/${examType}/${examinesCount}`} ><Button type="primary">Select Rooms</Button></Link>
 						</Col>
 					</Row>
 					<Row>
