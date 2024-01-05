@@ -66,6 +66,7 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 									<p>Department Code: {failedRecord?.departmentCode}</p>
 									<p>Duration: {failedRecord?.duration}</p>
 									<p>Level: {failedRecord?.level}</p>
+									<p>Abbreviation: {failedRecord?.abbreviation}</p>
 									<Text type="danger">{failedRecord?.error}</Text>
 								</Col>
 							</Row>
