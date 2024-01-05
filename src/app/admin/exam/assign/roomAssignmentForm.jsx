@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Select, message, Radio, Form, Spin, Divider, Statistic, Modal } from "antd";
+import { Select, message, Radio, Form, Spin, Divider, Statistic, Modal, Input } from "antd";
 import axios from "@/lib/axiosPrivate";
 import dayjs from "dayjs";
-import DownloadButton from "./download";
+import { usePathname, useSearchParams } from 'next/navigation'
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Rooms from "./rooms";
 import CustomDatePicker from "../../components/datePicker";
-import { getCookie, setCookie } from "cookies-next";
+import DownloadZipButton from "./downloadZip";
 
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),
@@ -44,29 +44,55 @@ const RoomAssignmentForm = ({
 	const [examinesCount, setExaminesCount] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [warningMessage, setWarningMessage] = useState("");
-	const [fileNames, setFileNames] = useState("");
+	const [fileName, setFileName] = useState("");
 	const [examType, setExamType] = useState(null);
 	const [date, setDate] = useState(null);
 	const [timeCode, setTimeCode] = useState(null);
 	const [visible, setVisible] = useState(false);
+	const pathname = usePathname()
+	const searchParams = useSearchParams()
+	const [form] = Form.useForm()
 
-	useEffect(() => {
+	function loadFromLocalStorage() {
+		const { setFieldValue } = form;
 		const storedDate = localStorage.getItem('selectedDate');
 		const storedTimeCode = localStorage.getItem('timeCode');
 		const storedExamType = localStorage.getItem('examType');
 
 		if (storedDate) {
-			setDate(new Date(storedDate));
-		} else setDate(new Date())
+			setFieldValue('selectedDate', dayjs(new Date(storedDate)));
+			setDate(new Date(storedDate))
+		} else {
+			setFieldValue('selectedDate', new Date());
+			setDate(new Date())
+		}
 
 		if (storedTimeCode) {
-			setTimeCode(storedTimeCode);
-		} else setTimeCode('AN')
+			setFieldValue('timeCode', storedTimeCode);
+		} else {
+			setFieldValue('timeCode', 'AN');
+		}
 
 		if (storedExamType) {
-			setExamType(storedExamType);
-		} else setExamType('internal')
+			setFieldValue('examType', storedExamType);
+		} else {
+			setFieldValue('examType', 'final');
+		}
+	}
+
+	useEffect(() => {
+		console.log('date: ', date);
+	}, [date]);
+
+	useEffect(() => {
+		loadFromLocalStorage();
 	}, []);
+
+	useEffect(() => {
+		loadFromLocalStorage();
+		const url = `${pathname}?${searchParams}`
+		console.log(url)
+	}, [pathname, searchParams])
 
 	useEffect(() => {
 		if (date && typeof date.toISOString === 'function') {
@@ -99,7 +125,7 @@ const RoomAssignmentForm = ({
 
 	useEffect(() => {
 		getExaminesCount();
-		setFileNames("");
+		setFileName("");
 	}, [date, timeCode]);
 
 	const loadSelectedRooms = async (examType) => {
@@ -118,28 +144,28 @@ const RoomAssignmentForm = ({
 
 		try {
 			setLoading(true);
-			const { orderBy, selectedDate, examType, optimize, timeCode } = values;
+			const { orderBy, selectedDate, examType, optimize, timeCode, examName } = values;
 			const result = await axios.get("/api/admin/exams/assign", {
 				params: {
 					orderBy,
 					date: selectedDate.format('YYYY-MM-DDTHH:mm:ssZ'),
 					examType,
 					optimize,
-					timeCode
+					timeCode,
+					examName
 				},
 			});
 			if (result.status === 201) {
 				{
 					message.success("Assignments successfully");
 					setWarningMessage("");
-					setFileNames(result.data.fileNames);
+					const { fileName } = result.data
+					console.log(fileName);
+					setFileName(fileName);
 
 					setDate(selectedDate);
 					setVisible(true);
 				}
-			} else if (result.status === 200) {
-				setWarningMessage(result.data.message);
-				setIsSuccess(false);
 			}
 		} catch (error) {
 			if (
@@ -154,11 +180,6 @@ const RoomAssignmentForm = ({
 		} finally {
 			setLoading(false);
 		}
-	};
-
-	const disabledDate = (current) => {
-		// Disable days before today
-		return current && current <= dayjs().startOf('day');
 	};
 
 	const calculateTotalSeats = () => {
@@ -184,13 +205,14 @@ const RoomAssignmentForm = ({
 					name="exam-assignment"
 					layout="vertical"
 					onFinish={assign}
+					form={form}
 				>
 					<Row gutter={16}>
-						<Col sm={24} md={12} lg={6} xl={5}>
+						<Col sm={24} md={12} lg={8} xl={6}>
 							<Form.Item
 								label="Date"
 								name="selectedDate"
-								initialValue={dayjs(date)}
+								// initialValue={dayjs(date)}
 								rules={[
 									{
 										required: true,
@@ -198,12 +220,12 @@ const RoomAssignmentForm = ({
 									},
 								]}
 							>
-								<CustomDatePicker defaultValue={date} onChange={(newDate) => {
+								<CustomDatePicker value={date} defaultValue={new dayjs()} onChange={(newDate) => {
 									setDate(newDate.toDate())
 								}} />
 							</Form.Item>
 						</Col>
-						<Col sm={24} md={12} lg={6} xl={5}>
+						<Col sm={24} md={7} lg={5} xl={5}>
 							<Form.Item
 								label="Time Code"
 								name="timeCode"
@@ -219,7 +241,7 @@ const RoomAssignmentForm = ({
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col sm={24} md={18} lg={9} xl={10}>
+						<Col sm={24} md={24} lg={9} xl={8}>
 							<Form.Item
 								name="examType"
 								label="Exam Type"
@@ -233,18 +255,13 @@ const RoomAssignmentForm = ({
 								</Radio.Group>
 							</Form.Item>
 						</Col>
-						<Col sm={24} md={6} lg={3} xl={2}>
-							<Form.Item name="optimize" label="Optimize" initialValue={true}>
-								<Switch defaultChecked={true
-								} />
-							</Form.Item>
-						</Col>
+
 					</Row>
 					<Row gutter={16}>
 						<Col sm={24} lg={10} md={10} xl={10} xs={24}>
 							<Form.Item
 								name="orderBy"
-								initialValue="rollNumber"
+								initialValue="id"
 								label="Sort by"
 								required={true}
 							>
@@ -260,7 +277,11 @@ const RoomAssignmentForm = ({
 								</Select>
 							</Form.Item>
 						</Col>
-
+						<Col sm={24} lg={14} md={14} xl={14} xs={24}>
+							<Form.Item name="examName" label="Exam Name" required={true}>
+								<Input />
+							</Form.Item>
+						</Col>
 					</Row>
 					<Row gutter={16}>
 						<Col>
@@ -351,7 +372,7 @@ const RoomAssignmentForm = ({
 					<Col span={22} >
 						<div className="flex items-center">
 							<label className="">Download Seating Arrangement for Students:</label>
-							<DownloadButton fileNames={fileNames} />
+							<DownloadZipButton fileName={fileName} />
 						</div>
 					</Col>
 					{/* Assign Teachers Section */}
