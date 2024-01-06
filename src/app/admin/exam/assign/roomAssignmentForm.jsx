@@ -60,35 +60,46 @@ const RoomAssignmentForm = ({
 		const storedSortByField = localStorage.getItem('sortByField');
 
 		if (storedDate) {
-			setDate(new Date(storedDate))
+			setDate(new Date(storedDate));
+			form.setFieldValue('selectedDate', dayjs(storedDate));
 		} else {
-			setDate(new Date())
+			setDate(new Date());
+			form.setFieldValue('selectedDate', dayjs(new Date()));
 		}
+
 		if (storedTimeCode) {
-			setTimeCode(storedTimeCode)
+			setTimeCode(storedTimeCode);
+			form.setFieldValue('timeCode', storedTimeCode);
 		} else {
 			setTimeCode('AN');
+			form.setFieldValue('timeCode', 'AN');
 		}
+
 		if (storedExamType) {
 			setExamType(storedExamType);
+			form.setFieldValue('examType', storedExamType);
 		} else {
-			setExamType('final')
+			setExamType('final');
+			form.setFieldValue('examType', 'final');
 		}
+
 		if (storedExamName) {
 			setExamName(storedExamName);
+			form.setFieldValue('examName', storedExamName);
 		} else {
-			setExamName();
+			setExamName('');
+			form.setFieldValue('examName', '');
 		}
+
 		if (storedSortByField) {
 			setSortByField(storedSortByField);
+			form.setFieldValue('sortByField', storedSortByField);
 		} else {
 			setSortByField('id');
+			form.setFieldValue('sortByField', 'id');
 		}
-	}
 
-	useEffect(() => {
-		console.log('date: ', date);
-	}, [date]);
+	}
 
 	useEffect(() => {
 		loadFromLocalStorage();
@@ -96,8 +107,6 @@ const RoomAssignmentForm = ({
 
 	useEffect(() => {
 		loadFromLocalStorage();
-		const url = `${pathname}?${searchParams}`
-		console.log(url)
 	}, [pathname, searchParams])
 
 	useEffect(() => {
@@ -148,7 +157,6 @@ const RoomAssignmentForm = ({
 	};
 
 	useEffect(() => {
-		console.log('examType: ', examType);
 		loadSelectedRooms(examType);
 	}, [examType]);
 
@@ -186,6 +194,7 @@ const RoomAssignmentForm = ({
 			) {
 				message.error(error.response.data.error);
 			} else {
+				console.error(error);
 				message.error("An error occurred while making the request.");
 			}
 		} finally {
@@ -230,9 +239,7 @@ const RoomAssignmentForm = ({
 									},
 								]}
 							>
-								<CustomDatePicker value={date} defaultValue={new dayjs()} onChange={(newDate) => {
-									setDate(newDate.toDate())
-								}} />
+								<CustomDatePicker value={date} onChange={setDate} />
 							</Form.Item>
 						</Col>
 						<Col sm={24} md={7} lg={5} xl={5}>
@@ -290,9 +297,9 @@ const RoomAssignmentForm = ({
 						</Col>
 						<Col sm={24} lg={14} md={14} xl={14} xs={24}>
 							<Form.Item name="examName" label="Exam Name" initialValue={examName}
-								rules={[{ required: true, message: 'Please enter name of exam' }]}
+								rules={[{ required: true, message: 'Please enter name of exam', type: 'string' }]}
 							>
-								<Input onChange={setExamName} />
+								<Input onChange={(e) => setExamName(e.target.value)} />
 							</Form.Item>
 						</Col>
 					</Row>
