@@ -25,7 +25,7 @@ function StudentsList({ data, setData, submitted = true }) {
 									Program:{" "}
 									{
 										student.exam.course.programCourses[0]
-											.program.name
+											.program.abbreviation
 									}
 								</p>
 								<p> Course: {student.exam.course.name} </p>
