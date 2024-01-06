@@ -16,12 +16,14 @@ const SelectDepartment = ({
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
 			// Sort by code
-			const valueA = Number(optionA.value);
-			const valueB = Number(optionB.value);
+			const valueA = Number(optionA?.value) || 0;
+			const valueB = Number(optionB?.value) || 0;
 			return valueA - valueB;
 		} else {
 			// Sort by label (default)
-			return optionA.label.localeCompare(optionB.label);
+			const labelA = optionA?.label || '';
+			const labelB = optionB?.label || '';
+			return labelA.localeCompare(labelB);
 		}
 	};
 
