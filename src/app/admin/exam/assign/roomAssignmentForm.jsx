@@ -181,8 +181,6 @@ const RoomAssignmentForm = ({
 					const { fileName } = result.data
 					console.log(fileName);
 					setFileName(fileName);
-
-					setDate(selectedDate);
 					setVisible(true);
 				}
 			}
@@ -390,10 +388,10 @@ const RoomAssignmentForm = ({
 				<Row gutter={[16, 16]}>
 					{/* Download Section */}
 					<Col span={22} >
-						<div className="flex items-center">
+						{fileName ? <div className="flex items-center">
 							<label className="">Download Seating Arrangement for Students:</label>
 							<DownloadZipButton fileName={fileName} />
-						</div>
+						</div> : null}
 					</Col>
 					{/* Assign Teachers Section */}
 					<Col span={24}>
