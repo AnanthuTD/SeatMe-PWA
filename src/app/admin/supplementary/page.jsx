@@ -2,13 +2,12 @@
 import React, { useState } from 'react';
 import { Form, InputNumber, Button, Space, Divider, ConfigProvider, Row, Col, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import DepProSemCouSelect from '../components/depProSemCouSelect';
 import axios from '@/lib/axiosPrivate';
 import DepProSemExaSelect from '../components/depProSemExaSelect';
 import ErrorModel from './errorModel';
+import ImportModel from './import';
 
 const Page = () => {
-
     return (<ConfigProvider
         theme={{
             components: {
@@ -26,6 +25,8 @@ const DynamicForm = () => {
     const [form] = Form.useForm();
     const [courseIds, setCourseIds] = useState([])
     const [failedRecords, setFailedRecords] = useState([])
+    const [studentIds, setStudentIds] = useState([])
+    const [displayImport, setDisplayImport] = useState(false)
 
     const handleCourseId = (values) => {
         const courseIds = values.courses.map(c => c.id);
@@ -76,6 +77,15 @@ const DynamicForm = () => {
                                     Add Students
                                 </Button>
                             </Form.Item>
+                            <Form.Item>
+                                <Button
+                                    type="dashed"
+                                    onClick={() => setDisplayImport(true)}
+                                    icon={<PlusOutlined />}
+                                >
+                                    Import Students
+                                </Button>
+                            </Form.Item>
                         </>
                     )}
                 </Form.List>
@@ -87,14 +97,27 @@ const DynamicForm = () => {
                 </Form.Item>
             </Form>
 
+            {displayImport ? <ImportModel setDisplayImport={setDisplayImport} onFinish={setStudentIds} /> : null}
             {failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
         </>
     );
 
+    function formatStudentIds(studentIds = []) {
+        return studentIds.map(studentId => studentId.id)
+    }
+
     async function onFinish(values) {
-        const studentIds = values.studentIds.map(studentId => studentId.id)
+        let ids = [];
+        if (studentIds.length)
+            ids = formatStudentIds(studentIds);
+        else if (values.studentIds.length) ids = formatStudentIds(values.studentIds)
+        else {
+            message.warning('Please provided studentIds !')
+            return null;
+        }
+        ids = ids.filter(id => id ? true : false)
         try {
-            const response = await axios.post('/api/admin/student/supplementary', { courseIds, studentIds });
+            const response = await axios.post('/api/admin/student/supplementary', { courseIds, studentIds: ids });
             const { failedRecords } = response.data;
             if (failedRecords.length > 0) message.warning("Failed to import some records!")
             else message.success("Import Success");
@@ -102,6 +125,8 @@ const DynamicForm = () => {
         } catch (error) {
             console.error(error);
             message.error('An error occurred at the server!')
+        } finally {
+            setStudentIds([]);
         }
     }
 

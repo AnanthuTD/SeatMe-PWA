@@ -16,7 +16,6 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	const downloadToXLSX = () => {
 		const data = failedRecords.map((record) => ({
 		  studentId: record.studentId,
-		  courseId: record.courseId,
 		}));
 	  
 		const ws = XLSX.utils.json_to_sheet(data);
@@ -61,7 +60,6 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 							<Row gutter={[16, 16]}>
 								<Col span={12}>
 									<p>Student ID: {failedRecord?.studentId}</p>
-									<p>Course ID: {failedRecord?.courseId}</p>
 									<Text type="danger">Error: {failedRecord?.error}</Text>
 								</Col>
 							</Row>
