@@ -11,7 +11,13 @@ const Page = ({ params }) => {
 
     const loadRooms = async (examType) => {
         setLoading(true);
-        const result = await axios.get(`/api/admin/rooms/${examType}`);
+        let url = '/api/admin/rooms';
+
+        if (examType) {
+            url = `/api/admin/rooms/${examType}`;
+        }
+
+        const result = await axios.get(url);
         result.data.sort((room1, room2) => {
             return room2.isAvailable - room1.isAvailable;
         });

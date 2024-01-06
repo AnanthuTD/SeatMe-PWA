@@ -157,6 +157,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 
     const save = async (id) => {
         try {
+            const url = examType ? `/api/admin/rooms/${examType}` : `/api/admin/rooms`;
             const row = await form.validateFields();
             const newData = [...data];
             const index = newData.findIndex((item) => id === item.id);
@@ -169,7 +170,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 
                 console.log({ ...row, id: item.id });
                 try {
-                    const res = await axios.patch(`/api/admin/rooms/${examType}`, { ...row, id: item.id })
+                    const res = await axios.patch(url, { ...row, id: item.id })
                     const { updateCount } = res.data;
                     if (!updateCount) message.warning('Nothing to update!')
                     cancel();
@@ -183,7 +184,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
         }
     };
 
-    const columns = [
+    let columns = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -197,7 +198,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
             key: 'seats',
             ...getColumnSearchProps('seats'),
         },
-        {
+        ...examType ? [{
             title: 'Rows',
             dataIndex: 'rows',
             key: 'rows',
@@ -210,17 +211,50 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
             key: 'cols',
             editable: true,
             ...getColumnSearchProps('cols'),
-        },
+        },]
+            :
+            [
+                {
+                    title: 'Final Row',
+                    dataIndex: 'finalRows',
+                    key: 'finalRow',
+                    editable: true,
+                    ...getColumnSearchProps('finalRow'),
+                },
+                {
+                    title: 'Final Column',
+                    dataIndex: 'finalCols',
+                    key: 'finalColumn',
+                    editable: true,
+                    ...getColumnSearchProps('finalColumn'),
+                },
+                {
+                    title: 'Internal Row',
+                    dataIndex: 'internalRows',
+                    key: 'internalRow',
+                    editable: true,
+                    ...getColumnSearchProps('internalRow'),
+                },
+                {
+                    title: 'Internal Column',
+                    dataIndex: 'internalCols',
+                    key: 'internalCol',
+                    editable: true,
+                    ...getColumnSearchProps('internalCol'),
+                }
+            ],
         {
             title: 'Floor',
             dataIndex: 'floor',
             key: 'floor',
+            editable: true,
             ...getColumnSearchProps('floor'),
         },
         {
             title: 'Block ID',
             dataIndex: 'blockId',
             key: 'block_id',
+            editable: true,
             ...getColumnSearchProps('blockId'),
         },
         {
@@ -250,6 +284,13 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
             },
         },
     ];
+
+    // Conditionally modify columns based on the existence of examType
+    if (!examType) {
+        // Remove 'Rows' and 'Columns'
+        columns = columns.filter(column => column.key !== 'rows' && column.key !== 'cols');
+    }
+
 
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [submitting, setSubmitting] = useState(false);
@@ -336,31 +377,33 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 
                     className='flex'
                 >
-                    <Card bordered={false}>
-
-                        {examinesCount - totalSeats === 0 ? (
-                            <Statistic
-                                title="Correct number of seats"
-                                value="0"
-                            />
-                        ) : examinesCount - totalSeats < 0 ? (
-                            <Statistic
-                                title="Extra seats"
-                                value={Math.abs(
-                                    examinesCount - totalSeats,
+                    {
+                        examinesCount === undefined ? null :
+                            <Card bordered={false}>
+                                {examinesCount - totalSeats === 0 ? (
+                                    <Statistic
+                                        title="Correct number of seats"
+                                        value="0"
+                                    />
+                                ) : examinesCount - totalSeats < 0 ? (
+                                    <Statistic
+                                        title="Extra seats"
+                                        value={Math.abs(
+                                            examinesCount - totalSeats,
+                                        )}
+                                        valueStyle={{ color: "green" }}
+                                    />
+                                ) : (
+                                    <Statistic
+                                        title="More seats needed"
+                                        value={
+                                            examinesCount - totalSeats
+                                        }
+                                        valueStyle={{ color: "red" }}
+                                    />
                                 )}
-                                valueStyle={{ color: "green" }}
-                            />
-                        ) : (
-                            <Statistic
-                                title="More seats needed"
-                                value={
-                                    examinesCount - totalSeats
-                                }
-                                valueStyle={{ color: "red" }}
-                            />
-                        )}
-                    </Card>
+                            </Card>
+                    }
                     <Card bordered={false}>
                         <Statistic
                             title="Rooms Selected"
