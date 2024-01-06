@@ -64,15 +64,15 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 	};
 
 	const loadSemesters = (programId, option) => {
-		const totalSemesters = 7;
+		const totalSemesters = option.duration * 2;
 		const semesterOptions = Array.from(
-			{ length: totalSemesters },
+			{ length: totalSemesters + 1 },
 			(_, index) => ({
-				id: index + 1,
-				name: `Semester ${index + 1}`,
+				id: index,
+				name: index===0?'Pass Out':`Semester ${index}`,
 			}),
 		);
-		setSemesters(semesterOptions);
+		setSemesters(semesterOptions); 
 	};
 
 	const loadCourses = async (programId, semester) => {
