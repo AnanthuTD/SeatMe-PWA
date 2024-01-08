@@ -105,7 +105,7 @@ const App = () => {
 			setSearchedColumn(['courses']);
 			setSearchText(courses);
 		}
-		else if (program && semester) {
+		else if (program && (semester || semester === 0)) {
 			setSearchedColumn(["programId", "semester"]);
 			setSearchText([program, semester]);
 		} else if (program) {

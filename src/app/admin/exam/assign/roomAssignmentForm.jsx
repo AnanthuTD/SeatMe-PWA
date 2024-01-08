@@ -145,6 +145,7 @@ const RoomAssignmentForm = ({
 	};
 
 	useEffect(() => {
+		if(date)
 		getExaminesCount();
 		setFileName("");
 	}, [date, timeCode]);
@@ -157,6 +158,7 @@ const RoomAssignmentForm = ({
 	};
 
 	useEffect(() => {
+		if(examType)
 		loadSelectedRooms(examType);
 	}, [examType]);
 

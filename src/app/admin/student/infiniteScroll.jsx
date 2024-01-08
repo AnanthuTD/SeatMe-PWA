@@ -100,7 +100,7 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (program && semester) {
+		if (program && (semester || semester === 0)) {
 			setSearchedColumn(["programId", "semester"]);
 			setSearchText([program, semester]);
 		} else if (program) {
@@ -120,7 +120,7 @@ const App = () => {
 					if (value.program) {
 						setProgram(value.program);
 					}
-					if (value.semester) {
+					if (value.semester || value.semester === 0) {
 						setSemester(value.semester);
 					}
 				}}
