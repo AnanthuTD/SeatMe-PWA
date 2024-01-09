@@ -6,6 +6,7 @@ const SelectDepartment = ({
 	onChange,
 	onClick,
 	sortByValue = false,
+	defaultValue = undefined
 }) => {
 	useEffect(() => {
 		setValue([]);
@@ -28,21 +29,18 @@ const SelectDepartment = ({
 	};
 
 	const handleSelectChange = (value, option) => {
-		// Instead of just returning value, return the entire option object
 		const selectedOption = options.find((opt) => opt.code === value);
-		setValue([value]);
 		onChange(value, selectedOption);
 	};
 
 	return (
 		<Select
 			showSearch
-			allowClear
+			allowClear={true}
 			style={{
 				width: 200,
 			}}
 			placeholder="Search to Select"
-			optionFilterProp="children"
 			filterOption={(input, option) =>
 				(option?.label?.toLowerCase() ?? "").includes(
 					input.toLowerCase(),
@@ -51,19 +49,11 @@ const SelectDepartment = ({
 			filterSort={customSort}
 			onChange={handleSelectChange}
 			onClick={onClick}
-			value={value}
-		>
-			{options.map((option) => (
-				<Select.Option
-					allowClear
-					key={option.code}
-					value={option.code}
-					label={option.name}
-				>
-					{option.name}
-				</Select.Option>
-			))}
-		</Select>
+			defaultValue={defaultValue}
+			fieldNames={{ label: 'name', value: 'code', key: 'code' }}
+			options={options}
+		/>
+
 	);
 };
 

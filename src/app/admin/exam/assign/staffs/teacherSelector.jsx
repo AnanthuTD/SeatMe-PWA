@@ -3,22 +3,18 @@ import { Select } from "antd";
 
 const { Option } = Select;
 
-function TeacherSelector({ options, onChange, value }) {
+function TeacherSelector({ options, onChange, defaultValue = undefined }) {
     return (
         <Select
             showSearch
+            options={options}
             style={{ width: "100%" }}
             placeholder="Select a teacher"
             optionFilterProp="children"
             onChange={onChange}
-            value={value}
-        >
-            {options.map((option) => (
-                <Option key={option.id} value={option.id}>
-                    {option.name}
-                </Option>
-            ))}
-        </Select>
+            defaultValue={defaultValue}
+            fieldNames={{ label: 'name', value: 'id', key: 'id' }}
+        />
     );
 }
 

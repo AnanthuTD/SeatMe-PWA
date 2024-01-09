@@ -46,10 +46,6 @@ function TeacherAssignment({
 		setDateTimeId(getDateTimeId({ date, timeCode }));
 	}, []);
 
-	useEffect(() => {
-		// console.log(JSON.stringify(roomTeachers, null, 2));
-	}, [roomTeachers]);
-
 	const handleTeacherSelect = (roomId, teacherId) => {
 		setRoomTeachers({
 			...roomTeachers,

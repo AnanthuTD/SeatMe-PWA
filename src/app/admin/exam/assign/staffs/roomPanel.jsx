@@ -59,7 +59,7 @@ function RoomPanel({
 			message.error(errorMessage);
 		}
 	};
-	
+
 	return (<Row gutter={8} style={panelStyle}>
 		<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 			<h4 className="text-md font-semibold mb-2">
@@ -70,6 +70,7 @@ function RoomPanel({
 			<DepartmentSelector
 				options={departments}
 				onChange={handleDepartmentChange}
+				defaultValue={room?.departmentName}
 			/>
 		</Col>
 		<Col xs={24} sm={24} md={10} lg={10} xl={10}>
@@ -78,7 +79,7 @@ function RoomPanel({
 				onChange={(value) =>
 					handleTeacherSelect(room.id, value)
 				}
-				value={roomTeachers[room.id]}
+				defaultValue={room?.name}
 			/>
 		</Col>
 	</Row>);
