@@ -12,11 +12,12 @@ import {
 	message,
 	Alert,
 	FloatButton,
-	Checkbox
+	Checkbox,
+	Select,
+	Avatar
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
-import SelectBlock from "../../components/selectDepartment";
 import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 
@@ -29,7 +30,6 @@ const DynamicRoomForm = () => {
 		try {
 			const result = await axios.get("/api/admin/blocks");
 			setBlocks(result.data);
-			console.log(result.data);
 		} catch (error) {
 			console.error("Error fetching blocks: ", error);
 		}
@@ -83,7 +83,7 @@ const DynamicRoomForm = () => {
 	useEffect(() => {
 		form.setFieldsValue({ rooms: [{}] });
 	}, [form]);
-	
+
 	useEffect(() => {
 		loadRooms(); // Load rooms initially with a null programId
 	}, []);
@@ -260,10 +260,21 @@ const DynamicRoomForm = () => {
 													},
 												]}
 											>
-												<SelectBlock
-													options={blocks}
+												<Select
 													placeholder="Select Block"
-												/>
+													optionLabelProp="label"
+												>
+													{blocks.map((block) => (
+														<Option
+															allowClear
+															key={block.id}
+															value={block.id}
+															label={block.id}
+														>
+															<div>{block.id}</div>
+														</Option>
+													))}
+												</Select>
 											</Form.Item>
 										</Col>
 									</Row>
@@ -284,7 +295,7 @@ const DynamicRoomForm = () => {
 					</Col>
 				</Row>
 			</Form>
-		</div>
+		</div >
 	);
 };
 
