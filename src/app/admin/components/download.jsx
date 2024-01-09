@@ -16,7 +16,7 @@ const DownloadButton = ({ fileNames }) => {
 
 	const downloadFile = (file) => {
 		console.log(file);
-		const url = `/api/admin/public/${file}`;
+		const url = `/api/admin/reports/${file}`;
 		axios
 			.get(url, {
 				responseType: "blob",

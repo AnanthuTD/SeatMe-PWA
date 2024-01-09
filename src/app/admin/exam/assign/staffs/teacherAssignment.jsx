@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Collapse, Button, message, Divider, Descriptions } from "antd";
 import axios from "@/lib/axiosPrivate";
-import DownloadButton from "../download";
+import DownloadButton from "../../../components/download";
 import RoomPanel from "./roomPanel";
 
 function TeacherAssignment({

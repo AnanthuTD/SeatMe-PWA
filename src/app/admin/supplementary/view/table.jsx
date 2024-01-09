@@ -16,47 +16,26 @@ import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
 
-const EditableTable = ({
+const StudentList = ({
 	dataSource,
 	setDataSource = () => { },
 	loading = false,
-	setSorterField = () => { },
-	setSorterOrder = () => { },
-	searchedColumn = [""],
-	setSearchedColumn = () => { },
-	searchText = [""],
-	setSearchText = () => { },
-	handleReset = () => { },
 }) => {
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef(null);
 
-	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
-		setSearchText([selectedKeys[0]]);
-		setSearchedColumn([dataIndex]);
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
+		setSearchText(selectedKeys[0]);
+		setSearchedColumn(dataIndex);
 	};
-
-	const handleTableChange = (pagination, filters, sorter) => {
-		// Handle table sorting
-		if (sorter.field) {
-			setSorterField(sorter.field);
-			let order = sorter.order === "descend" ? "desc" : "asc";
-			setSorterOrder(order);
-		}
+	const handleReset = (clearFilters) => {
+		clearFilters();
+		setSearchText('');
 	};
-
-	const textColumnSorter = (a, b) => {
-		return a.localeCompare(b);
-	};
-
 	const getColumnSearchProps = (dataIndex) => ({
-		filterDropdown: ({
-			setSelectedKeys,
-			selectedKeys,
-			confirm,
-			clearFilters,
-			close,
-		}) => (
+		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
 			<div
 				style={{
 					padding: 8,
@@ -67,23 +46,17 @@ const EditableTable = ({
 					ref={searchInput}
 					placeholder={`Search ${dataIndex}`}
 					value={selectedKeys[0]}
-					onChange={(e) => {
-						setSelectedKeys(e.target.value ? [e.target.value] : []);
-					}}
-					onPressEnter={() => {
-						handleSearch(selectedKeys, confirm, dataIndex);
-					}}
+					onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+					onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
 					style={{
 						marginBottom: 8,
-						display: "block",
+						display: 'block',
 					}}
 				/>
 				<Space>
 					<Button
 						type="primary"
-						onClick={() => {
-							handleSearch(selectedKeys, confirm, dataIndex);
-						}}
+						onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
 						icon={<SearchOutlined />}
 						size="small"
 						style={{
@@ -93,13 +66,7 @@ const EditableTable = ({
 						Search
 					</Button>
 					<Button
-						onClick={async () => {
-							await clearFilters({
-								closeDropdown: true,
-								confirm: true,
-							});
-							clearFilters && handleReset();
-						}}
+						onClick={() => clearFilters && handleReset(clearFilters)}
 						size="small"
 						style={{
 							width: 90,
@@ -114,8 +81,8 @@ const EditableTable = ({
 							confirm({
 								closeDropdown: false,
 							});
-							setSearchText([selectedKeys[0]]);
-							setSearchedColumn([dataIndex]);
+							setSearchText(selectedKeys[0]);
+							setSearchedColumn(dataIndex);
 						}}
 					>
 						Filter
@@ -135,15 +102,12 @@ const EditableTable = ({
 		filterIcon: (filtered) => (
 			<SearchOutlined
 				style={{
-					color: filtered ? "#1677ff" : undefined,
+					color: filtered ? '#1677ff' : undefined,
 				}}
 			/>
 		),
 		onFilter: (value, record) =>
-			record[dataIndex]
-				.toString()
-				.toLowerCase()
-				.includes(value.toLowerCase()),
+			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
 		onFilterDropdownOpenChange: (visible) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
@@ -153,12 +117,12 @@ const EditableTable = ({
 			searchedColumn === dataIndex ? (
 				<Highlighter
 					highlightStyle={{
-						backgroundColor: "#ffc069",
+						backgroundColor: '#ffc069',
 						padding: 0,
 					}}
 					searchWords={[searchText]}
 					autoEscape
-					textToHighlight={text ? text.toString() : ""}
+					textToHighlight={text ? text.toString() : ''}
 				/>
 			) : (
 				text
@@ -166,16 +130,17 @@ const EditableTable = ({
 	});
 
 	const handleDelete = async (id) => {
-		let studentId = undefined;
+		let supplyId = undefined;
 		const newData = dataSource.filter((item) => {
 			if (item.id !== id) return true;
-			studentId = item.id;
+			console.log(item);
+			supplyId = item.supplementaries[0].id;
 		});
 
+		if (!supplyId) { message.error('Unable to process this req!(supplyId no found)'); return }
+
 		try {
-			const response = await axios.delete("/api/admin/student/supplementary", {
-				params: { studentId },
-			});
+			const response = await axios.delete(`/api/admin/student/supplementary/${supplyId}`);
 			setDataSource(newData);
 			message.success(response.data.message || 'Deleted successfully!'); // Assuming your response has a "message" field
 		} catch (error) {
@@ -199,7 +164,6 @@ const EditableTable = ({
 			dataIndex: "name",
 			key: "name",
 			width: "20%",
-			editable: true,
 			...getColumnSearchProps("name"),
 			sorter: (a, b) => textColumnSorter(a.name, b.name),
 		},
@@ -208,7 +172,6 @@ const EditableTable = ({
 			dataIndex: "rollNumber",
 			key: "rollNumber",
 			width: "10%",
-			editable: true,
 			...getColumnSearchProps("rollNumber"),
 			sorter: (a, b) => a.rollNumber - b.rollNumber,
 		},
@@ -217,7 +180,6 @@ const EditableTable = ({
 			dataIndex: "semester",
 			key: "semester",
 			width: "10%",
-			editable: true,
 			sorter: (a, b) => a.semester - b.semester,
 		},
 		{
@@ -233,36 +195,23 @@ const EditableTable = ({
 			)
 		},
 		{
-			title: "aided",
-			dataIndex: "isAided",
-			key: "isAided",
-		},
-		{
-			title: "Course",
-			dataIndex: "courses",
+			title: "Open Course",
+			dataIndex: "openCourseId",
 			key: "courses",
 			width: "25%",
-			editable: true,
 			type: "select",
-			render: (_, record) => (
-				<span>
-					{[...record.courses].join(', ')}
-				</span>
-			)
 		},
 		{
 			title: "Email",
 			dataIndex: "email",
 			key: "email",
 			width: "15%",
-			editable: true,
 		},
 		{
 			title: "Contact",
 			dataIndex: "phone",
 			key: "contact",
 			width: "15%",
-			editable: true,
 		},
 		{
 			title: "operation",
@@ -357,10 +306,9 @@ const EditableTable = ({
 			columns={columns}
 			pagination={false}
 			loading={loading}
-			onChange={handleTableChange}
 			rowKey={(record) => record.id}
 		/>
 	);
 };
 
-export default EditableTable;
+export default StudentList;

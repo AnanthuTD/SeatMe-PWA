@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Rooms from "./rooms";
 import CustomDatePicker from "../../components/datePicker";
-import DownloadZipButton from "./downloadZip";
+import DownloadZipButton from "../../components/downloadReport";
 
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),
@@ -145,8 +145,8 @@ const RoomAssignmentForm = ({
 	};
 
 	useEffect(() => {
-		if(date)
-		getExaminesCount();
+		if (date)
+			getExaminesCount();
 		setFileName("");
 	}, [date, timeCode]);
 
@@ -158,8 +158,8 @@ const RoomAssignmentForm = ({
 	};
 
 	useEffect(() => {
-		if(examType)
-		loadSelectedRooms(examType);
+		if (examType)
+			loadSelectedRooms(examType);
 	}, [examType]);
 
 	const assign = async (values) => {
@@ -176,16 +176,20 @@ const RoomAssignmentForm = ({
 					examName
 				},
 			});
-			if (result.status === 201) {
-				{
-					message.success("Assignments successfully");
-					setWarningMessage("");
-					const { fileName } = result.data
-					console.log(fileName);
-					setFileName(fileName);
-					setVisible(true);
-				}
+
+			const { data } = result
+
+			if (data.error) {
+				message.warning(data.error)
+				setWarningMessage(data.error);
 			}
+			else
+				message.success("Assignments successfully");
+
+			const { fileName } = result.data
+			setFileName(fileName);
+			setVisible(true);
+
 		} catch (error) {
 			if (
 				error.response &&

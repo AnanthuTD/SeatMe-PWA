@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { List, Button, Modal, Input } from "antd";
 import axios from "@/lib/axiosPrivate";
-import DownloadButton from "./exam/assign/download";
+import DownloadButton from "./components/download";
 
 const PDFList = () => {
 	const [pdfs, setPDFs] = useState([]);
@@ -19,7 +19,7 @@ const PDFList = () => {
 
 	const confirmDelete = () => {
 		axios
-			.delete(`api/admin/public/${fileToDelete}`)
+			.delete(`api/admin/reports/${fileToDelete}`)
 			.then(() => {
 				// Successfully deleted, remove the file from the list
 				setPDFs((prevPDFs) =>
@@ -41,7 +41,7 @@ const PDFList = () => {
 
 	useEffect(() => {
 		axios
-			.get("api/admin/list-pdfs")
+			.get("api/admin/reports")
 			.then((response) => {
 				setPDFs(response.data);
 			})
