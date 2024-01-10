@@ -15,7 +15,7 @@ const proxy = {
 		return [
 			{
 				source: "/api/:path*",
-				destination: process.env.API + "/:path*/",
+				destination: process.env.API + "/:path*",
 			},
 		];
 	},
