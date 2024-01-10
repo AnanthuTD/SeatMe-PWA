@@ -47,8 +47,8 @@ const Seating = ({ seatingInfo }) => {
 				children: seatingInfo.floor.toString(),
 			},
 			{
-				label: "Room Number",
-				children: seatingInfo.roomId.toString(),
+				label: "Room",
+				children: seatingInfo.roomName?.toString() || seatingInfo.roomId.toString(),
 			},
 			{
 				label: "Seat Number",
