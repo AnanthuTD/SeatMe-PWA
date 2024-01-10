@@ -81,7 +81,7 @@ const DynamicCourseForm = () => {
 	const [courses, setCourses] = useState([]);
 	// let [semesterOptions, setSemesterOptions] = useState([]);
 	const [selectedSemester, setSelectedSemester] = useState(null);
-	const [semesterOptions, setSemesterOptions] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+	const [semesterOptions, setSemesterOptions] = useState([1, 2, 3, 4, 5, 6, 7, 8,9,10]);
 	const loadSemesterOptions = async () => {
 		try {
 		  const result = await axios.get("/api/admin/courses");
@@ -272,24 +272,26 @@ const DynamicCourseForm = () => {
 			<Card size="small" title="Courses" style={{ marginTop: 16 }}>
 			{semesterOptions ? (
 			<Select
-				style={{ width: 200, marginBottom: 16 }}
-				placeholder="Select Semester"
-				onChange={(value) => setSelectedSemester(value)}
-				value={selectedSemester}
-			>
-				<Select.Option value={null}>All Semesters</Select.Option>
-				{semesterOptions.map((semester) => (
-				<Select.Option key={semester} value={semester}>
-					{semester}
-				</Select.Option>
-				))}
-			</Select>
+			style={{ width: 200, marginBottom: 16 }}
+			placeholder="Select Semester"
+			onChange={(value) => setSelectedSemester(value)}
+			value={selectedSemester}
+		  >
+			<Select.Option value={null}>All Semesters</Select.Option>
+			{semesterOptions.map((semester) => (
+			  <Select.Option key={semester} value={semester}>
+				{semester}
+			  </Select.Option>
+			))}
+		  </Select>
 			) : (
 			<span>Loading semesters...</span>
 			)}
 
 				<Table
-				dataSource={courses}
+				dataSource={courses.filter((course) =>
+					selectedSemester ? course.semester === selectedSemester : true
+				  )}
 				columns={[
 					{
 					title: 'ID',
