@@ -1,22 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Select from "./select";
+import React, { useState } from "react";
 import axios from "@/lib/axiosPrivate";
-import CourseSelect from "./courseSelect";
 import CourseForm from "./courseForm";
 import { Row, Col, Divider, FloatButton, message } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 function Page() {
-	const [departments, setDepartments] = useState([]);
-	const [selectedDepartment, setSelectedDepartment] = useState(null);
-	const [selectedProgram, setSelectedProgram] = useState(null);
-	const [selectedSemester, setSelectedSemester] = useState(null);
-	const [selectedCourse, setSelectedCourse] = useState([]);
-	const [programs, setPrograms] = useState([]);
-	const [semesters, setSemesters] = useState([]);
 	const [reset, toggleReset] = useState(false);
 	const [courseForms, setCourseForms] = useState([]);
 
@@ -40,40 +31,6 @@ function Page() {
 		});
 
 		setCourseForms(updatedCourseForms);
-	};
-
-	useEffect(() => {
-		if (selectedDepartment) {
-			loadPrograms(selectedDepartment);
-		}
-	}, [selectedDepartment]);
-
-	useEffect(() => {
-		if (selectedSemester && selectedProgram) {
-			loadCourses(selectedProgram, selectedSemester);
-		}
-	}, [selectedSemester, selectedProgram]);
-
-	const loadDepartments = async () => {
-		try {
-			const result = await axios.get("/api/admin/departments");
-			setDepartments(result.data);
-		} catch (error) {
-			console.error("Error fetching departments: ", error);
-		}
-	};
-
-	const handleReset = () => {
-		setDepartments([]);
-		setPrograms([]);
-		setCourses([]);
-		setCourseForms([]);
-		setSelectedCourse([]);
-		setSelectedDepartment([]);
-		setSelectedProgram([]);
-		setSelectedSemester([]);
-		setSemesters([]);
-		loadDepartments();
 	};
 
 	const onFinish = async (formData) => {

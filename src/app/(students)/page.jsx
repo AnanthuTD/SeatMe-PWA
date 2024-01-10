@@ -50,7 +50,7 @@ const App = () => {
 
 	const fetchSeatingInfo = async (studentId) => {
 		try {
-			const response = await axios.get("api/", {
+			const response = await axios.get("/api", {
 				params: { studentId },
 			});
 

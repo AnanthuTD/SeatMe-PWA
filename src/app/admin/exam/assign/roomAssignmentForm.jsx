@@ -53,15 +53,20 @@ const RoomAssignmentForm = ({
 	const [form] = Form.useForm()
 
 	function loadFromLocalStorage() {
-		const storedDate = localStorage.getItem('selectedDate');
+		let storedDate = localStorage.getItem('selectedDate');
 		const storedTimeCode = localStorage.getItem('timeCode');
 		const storedExamType = localStorage.getItem('examType');
 		const storedExamName = localStorage.getItem('examName');
 		const storedSortByField = localStorage.getItem('sortByField');
 
 		if (storedDate) {
-			setDate(new Date(storedDate));
-			form.setFieldValue('selectedDate', dayjs(storedDate));
+			try {
+				storedDate = dayjs(storedDate)
+				setDate(storedDate);
+				form.setFieldValue('selectedDate', dayjs(storedDate));
+			}catch(e){
+				setDate(new dayjs())
+			}
 		} else {
 			setDate(new Date());
 			form.setFieldValue('selectedDate', dayjs(new Date()));
