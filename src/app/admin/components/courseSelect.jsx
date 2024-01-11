@@ -16,16 +16,24 @@ const CoursesSelect = ({
 	const isLessThan20 = options.length < 20;
 
 	const [value, setValue] = useState([]);
+	const [cleared, setCleared] = useState(false);
 
 	// default selected options if less than 10 courses value
 	useEffect(() => {
-		const option = isLessThan20 ? options.map((option) => option) : [];
-		const courseId = isLessThan20 ? options.map((option) => option.id) : [];
+		console.log('options changed');
+		setCleared(false)
+		const option = /* isLessThan20 ? options.map((option) => option) :  */[];
+		const courseId = /* isLessThan20 ? options.map((option) => option.id) : */ [];
 		// const option = options.length ? options.map((option) => option) : [];
 		// const courseId = options.length ? options.map((option) => option.id) : [];
 		setSelectedCourses(option);
 		setValue(courseId);
 	}, [options]);
+
+	useEffect(() => {
+		console.log('cleared');
+	}, [cleared])
+
 
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
@@ -60,7 +68,7 @@ const CoursesSelect = ({
 	return (
 		<Select
 			mode={mode}
-			allowClear
+			allowClear={true}
 			style={{
 				width: "100%",
 			}}
@@ -71,7 +79,7 @@ const CoursesSelect = ({
 				)
 			}
 			filterSort={customSort}
-			onChange={onChange}
+			// onChange={onChange}
 			optionLabelProp="label"
 			value={value}
 			onDeselect={removeDefaultValues}
