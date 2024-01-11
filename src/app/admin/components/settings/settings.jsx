@@ -27,6 +27,7 @@ const SettingsButton = () => {
 	const [visible, setVisible] = useState(false);
 	const [descriptionItems, setDescriptionItems] = useState([]);
 	const { user, setUser } = useAccount();
+	const [updateSchedule, triggerUpdateSchedule] = useState(false)
 
 	const router = useRouter();
 
@@ -240,8 +241,8 @@ const SettingsButton = () => {
 
 						<div id="seatingAvailableTimeConfig">
 							<Title level={4}>Schedule Seating Availability</Title>
-							<ScheduleSeatingAvailabilityForm />
-							<ViewSchedules />
+							<ScheduleSeatingAvailabilityForm triggerUpdateSchedule={triggerUpdateSchedule} updateSchedule={updateSchedule} />
+							<ViewSchedules updateSchedule={updateSchedule} />
 						</div>
 					</Col>
 				</Row>
