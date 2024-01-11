@@ -26,11 +26,13 @@ const DynamicProgramForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 	const [departments, setDepartments] = useState([]); // State to store department data
+	const [selectedDepartmentCode, setSelectedDepartmentCode] = useState(null);
+
 
 	const loadDepartments = async () => {
 		try {
 			const result = await axios.get("/api/admin/departments");
-			console.log(result.data);
+			console.log("departments data",result.data);
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -317,25 +319,54 @@ const DynamicProgramForm = () => {
 				</Row>
 			</Form>
 			<div>
-				<Title level={4} style={{ color: "black", fontWeight: "bold", marginTop: "20px" }}>
-					Programs
-				</Title>
-				<Select
-					style={{ width: 200, marginBottom: 16 }}
-					placeholder="Select Department"
-					onChange={(value) => setdepartmentCode(value)}
-				>
-					<Select.Option value={null}>All Departments</Select.Option>
-					{departments.map((dept) => (
-						<Select.Option key={dept.id} value={dept.id}>
-							{dept.name}
-						</Select.Option>
-					))}
-				</Select>
-				<Table
+			<Title level={4} style={{ color: "black", fontWeight: "bold", marginTop: "20px" }}>
+				Programs
+			</Title>
+			<Select
+				style={{ width: 200, marginBottom: 16 }}
+				placeholder="Select Department"
+				onChange={(value) => setSelectedDepartmentCode(value)}
+			>
+				<Select.Option value={null}>All Departments</Select.Option>
+				{departments.map((dept) => (
+				<Select.Option key={dept.code} value={dept.code}>
+					{dept.name}
+				</Select.Option>
+				))}
+			</Select>
+			<Table
+				dataSource={programs.filter((program) => {
+					console.log('Program Department Code:', program.departmentCode);
+					console.log('Selected Department Code:', selectedDepartmentCode);
+				
+					return selectedDepartmentCode
+					  ? program.departmentCode.toLowerCase() === selectedDepartmentCode.toLowerCase()
+					  : true;
+				  })}
+				  columns={columns}
+				  pagination={false}
+			/>
+
+				
+			</div>
+		</div>
+	);
+};
+
+export default DynamicProgramForm;
+
+
+
+
+{/* <Table
 					dataSource={programs}
 					columns={columns}
-					//   					columns={[
+					
+					pagination={false}
+				/> */}
+
+
+//   					columns={[
 					//   						{
 					//   						title: "ID",
 					//   						dataIndex: "id",
@@ -374,11 +405,3 @@ const DynamicProgramForm = () => {
 					//     },
 					//     // Add more columns as needed
 					//   ]}
-					pagination={false}
-				/>
-			</div>
-		</div>
-	);
-};
-
-export default DynamicProgramForm;
