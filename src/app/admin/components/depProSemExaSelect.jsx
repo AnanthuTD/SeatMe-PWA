@@ -185,6 +185,7 @@ function DepProSemExaSelect({ value = (values) => { }, courseField = true, reset
 								onClick={handleCourseClick}
 								setSelectedCourses={setSelectedCourse}
 								className="w-full"
+								defaultSelectAll={false}
 							/>
 						</Col>
 					</Row>
