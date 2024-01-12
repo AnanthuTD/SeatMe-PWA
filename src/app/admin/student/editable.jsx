@@ -12,7 +12,6 @@ async function fetchOpenCourses(programId) {
 			params: { programId },
 		});
 		openCourses = response.data;
-		console.log(JSON.stringify(openCourses, null, 2));
 	} catch (err) {
 		console.error("Error fetching open courses: ", err);
 	}

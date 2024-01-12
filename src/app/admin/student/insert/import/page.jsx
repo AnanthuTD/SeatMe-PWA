@@ -43,8 +43,9 @@ function Page() {
 			const result = await axios.post("/api/admin/student", { students });
 			if (result.status === 200) {
 				message.success("Import Success");
-				console.error("failedRecords: ",result.data);
-				setFailedRecords(result.data);
+				console.error("failedRecords: ", result.data);
+				const { failedRecords } = result.data
+				setFailedRecords(failedRecords);
 			}
 		} catch (error) {
 			console.error(error.response.data);
@@ -66,7 +67,7 @@ function Page() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
+			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName} /> : null}
 		</div>
 	);
 }

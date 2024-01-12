@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
 	Input,
 	Button,
@@ -14,63 +14,34 @@ import {
 	FloatButton,
 } from "antd";
 import { FileExcelOutlined } from "@ant-design/icons";
-import DepProSemCouSelect from "../../components/depProSemCouSelect";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
 import Link from "next/link";
+import ErrorModel from "@/app/admin/components/errorModel";
 
 const DynamicStudentForm = () => {
-	const [form] = Form.useForm();
-	const [values, setValues] = useState({
-		department: "",
-		program: "",
-		semester: "",
-	});
+	const [failedRecords, setFailedRecords] = useState([])
 
 	const handleSubmission = async (values) => {
-		const students = values.students.map((student) => {
-			(student.department = values.department),
-				(student.program = values.program),
-				(student.semester = values.semester);
-			return student;
-		});
-		console.log(students);
+		const { students } = values
+		console.log('values: ', students);
 
 		try {
 			const result = await axios.post("/api/admin/student", { students });
-			if (result.status === 200) {
-				message.success(result.message);
-			} else message.error("Submit failed");
+
+			const { failedRecords } = result.data
+
+			setFailedRecords(failedRecords)
+
+			const warnMessage = 'Some records were failed to insert!'
+			const successMessage = 'Inserted successfully'
+
+			failedRecords.length ? message.warning(warnMessage) : message.success(successMessage)
 		} catch (error) {
 			console.log(error);
-			if (error.response.status === 400) {
-				message.error(
-					`Record with register number '${error.response.data.value}' already exists`,
-				);
-			} else message.error("Something went wrong");
+			message.error("Something went wrong");
 		}
 	};
-
-	const onFinishFailed = (errorInfo) => {
-		const requiredFields = ["department", "program", "semester"];
-
-		let error = false;
-
-		requiredFields.forEach((field) => {
-			const errorField = errorInfo.errorFields.find(
-				(error) => error.name[0] === field,
-			);
-			if (errorField && !error) {
-				message.warning("Department, program, semester are required");
-				error = true;
-			}
-		});
-	};
-
-	useEffect(() => {
-		// console.log(values);
-		form.setFieldsValue(values);
-	}, [values]);
 
 	return (
 		<div className="p-3">
@@ -81,39 +52,13 @@ const DynamicStudentForm = () => {
 					type="primary"
 				/>
 			</Link>
-			<DepProSemCouSelect
-				value={setValues}
-				courseMode=""
-				courseField={false}
-			/>
-			<Divider />
 			<Form
 				name="main"
 				onFinish={handleSubmission}
-				form={form}
 				initialValues={{
 					students: [{}],
 				}}
-				onFinishFailed={onFinishFailed}
 			>
-				<Form.Item
-					name={"department"}
-					hidden
-					rules={[{ required: true }]}
-				>
-					<Input />
-				</Form.Item>
-				<Form.Item name={"program"} hidden rules={[{ required: true }]}>
-					<Input />
-				</Form.Item>
-				<Form.Item
-					name={"semester"}
-					rules={[{ required: true }]}
-					hidden
-					// initialValue={{}}
-				>
-					<Input />
-				</Form.Item>
 				<Form.List name="students">
 					{(fields, { add, remove }) => (
 						<div
@@ -147,8 +92,8 @@ const DynamicStudentForm = () => {
 														required: true,
 														message:
 															"Please enter a valid register number",
-														/* max: 999999999999,
-														min: 100000000000, */
+														max: 999999999999,
+														min: 100000000000,
 													},
 												]}
 											>
@@ -206,6 +151,15 @@ const DynamicStudentForm = () => {
 									<Row gutter={16}>
 										<Col>
 											<Form.Item
+												name={[field.name, "semester"]}
+												rules={[{ required: true }]}
+												label="Semester"
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
 												name={[field.name, "email"]}
 												label="Email"
 											>
@@ -251,6 +205,7 @@ const DynamicStudentForm = () => {
 					</Col>
 				</Row>
 			</Form>
+			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={'students'} /> : null}
 		</div>
 	);
 };

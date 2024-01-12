@@ -32,7 +32,6 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		console.log("loading data");
 		const resultsPerPage = 50;
 		setLoading(true);
 		axios
@@ -100,13 +99,13 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (program && (semester || semester === 0)) {
+		if (program?.length && (semester || semester === 0)) {
 			setSearchedColumn(["programId", "semester"]);
 			setSearchText([program, semester]);
-		} else if (program) {
+		} else if (program?.length) {
 			setSearchedColumn(["programId"]);
 			setSearchText([program]);
-		} else if (semester) {
+		} else if (semester?.length) {
 			setSearchedColumn(["semester"]);
 			setSearchText([semester]);
 		}
