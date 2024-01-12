@@ -20,6 +20,7 @@ const requiredFields = [
 
 function ProgramsPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
+	const [fileName, setFileName] = useState('program')
 
 	const handleSubmission = async (programs) => {
 		const missingPrograms = programs.filter((program) => {
@@ -71,8 +72,9 @@ function ProgramsPage() {
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
+				fileName={setFileName}
 			/>
-			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
 		</div>
 	);
 }

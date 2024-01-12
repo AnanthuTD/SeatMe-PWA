@@ -21,6 +21,7 @@ const requiredFields = [
 function Page() {
 	const [failedRecords, setFailedRecords] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [fileName, setFileName] = useState('staffs')
 
 		const handleSubmission = async (staffs) => {
 		setLoading(true);
@@ -85,8 +86,9 @@ function Page() {
 					requiredFields={requiredFields}
 					records={handleSubmission}
 					loading = {loading}
+					fileName={setFileName}
 				/>
-				{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+				{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
 			</div>
 		</>
 	);

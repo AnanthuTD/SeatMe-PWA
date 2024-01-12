@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 
 const { Title, Text } = Typography;
 
-const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
+const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { }, fileName }) => {
 	const handleOk = async () => {
 		setFailedRecords([]);
 	};
@@ -29,7 +29,7 @@ const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) 
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
 
-		XLSX.writeFile(wb, 'staff-failed-records.xlsx');
+		XLSX.writeFile(wb, 'student-failed-records.xlsx');
 
 	};
 

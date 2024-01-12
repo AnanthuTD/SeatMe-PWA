@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 
 const { Text, Title } = Typography;
 
-const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
+const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { }, fileName }) => {
 	console.log(failedRecords);
 	const handleOk = async () => {
 		setFailedRecords([]);
@@ -23,7 +23,7 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
 
 		// Use the correct bookType value "blob"
-		XLSX.writeFile(wb, 'staff-failed-records.xlsx');
+		XLSX.writeFile(wb, `${fileName}-failed-records.xlsx`);
 
 	};
 

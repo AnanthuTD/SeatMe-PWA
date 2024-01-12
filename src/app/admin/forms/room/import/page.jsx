@@ -22,6 +22,7 @@ const requiredFields = [
 
 function RoomsPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
+	const [fileName, setFileName] = useState('room')
 
 	const handleSubmission = async (rooms) => {
 		const missingRooms = rooms.filter((room) => {
@@ -72,8 +73,9 @@ function RoomsPage() {
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
+				fileName={setFileName}
 			/>
-			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={setFileName}/> : null}
 		</div>
 	);
 }

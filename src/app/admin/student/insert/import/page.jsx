@@ -20,6 +20,7 @@ const requiredFields = [
 
 function Page() {
 	const [failedRecords, setFailedRecords] = useState([]);
+	const [fileName, setFileName] = useState('students')
 
 	const handleSubmission = async (students) => {
 		const missingStudents = students.filter((student) => {
@@ -63,8 +64,9 @@ function Page() {
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
+				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
 		</div>
 	);
 }

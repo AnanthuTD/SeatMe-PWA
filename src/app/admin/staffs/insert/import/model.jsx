@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 
 const { Text, Title } = Typography;
 
-const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
+const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { }, fileName }) => {
 	const handleOk = async () => {
 		setFailedRecords([]);
 	};
@@ -15,23 +15,23 @@ const CoursesModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 
 	const downloadToXLSX = () => {
 		const data = failedRecords.map((record) => ({
-		  ID: record?.id,
-		  Name: record?.name,
-		  Email: record?.email,
-		  DepartmentCode: record?.department,
-		  Phone: record?.phone,
-		  Password: record?.password,
-		  Error: record?.error,
+			ID: record?.id,
+			Name: record?.name,
+			Email: record?.email,
+			DepartmentCode: record?.department,
+			Phone: record?.phone,
+			Password: record?.password,
+			Error: record?.error,
 		}));
-	  
+
 		const ws = XLSX.utils.json_to_sheet(data);
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
-	  
+
 		// Use the correct bookType value "blob"
-		const xlsxBlob = XLSX.writeFile(wb,'staff-failed-records.xlsx');
-	  
-	  };	  
+		const xlsxBlob = XLSX.writeFile(wb, `${fileName}-failed-records.xlsx`);
+
+	};
 
 	return (
 		<>
