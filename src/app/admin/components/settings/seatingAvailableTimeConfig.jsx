@@ -5,7 +5,7 @@ import axios from "@/lib/axiosPrivate"
 import dayjs from 'dayjs'
 
 // Constants for the day and time options
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const timeOptions = ['AN', 'FN'];
 
 // Example component for the seating arrangement form
