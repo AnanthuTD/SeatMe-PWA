@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import errorModel from "@/app/admin/components/errorModel";
+import ErrorModel from "@/app/admin/components/errorModel";
 import {FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -66,7 +66,7 @@ function BlockPage() {
 				fileName={setFileName}
 
 			/>
-			{data.length ? <errorModel data={data} setData={setData} fileName={fileName}/> : null}
+			{data.length ? <ErrorModel data={data} setData={setData} fileName={fileName}/> : null}
 		</div>
 	);
 }

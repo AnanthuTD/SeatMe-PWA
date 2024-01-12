@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import Model from "./model";
+import ErrorModel from "@/app/admin/components/errorModel";
 import {FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -68,7 +68,7 @@ function DepartmentPage() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{data.length ? <Model data={data} setData={setData} fileName={fileName}/> : null}
+			{data.length ? <ErrorModel data={data} setData={setData} fileName={fileName}/> : null}
 		</div>
 	);
 }
