@@ -99,13 +99,13 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (program?.length && (semester || semester === 0)) {
+		if (program && (semester || semester === 0)) {
 			setSearchedColumn(["programId", "semester"]);
 			setSearchText([program, semester]);
-		} else if (program?.length) {
+		} else if (program) {
 			setSearchedColumn(["programId"]);
 			setSearchText([program]);
-		} else if (semester?.length) {
+		} else if (semester) {
 			setSearchedColumn(["semester"]);
 			setSearchText([semester]);
 		}

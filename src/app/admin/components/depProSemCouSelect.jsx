@@ -122,9 +122,9 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 		setPrograms([]);
 		setCourses([]);
 		setSelectedCourse([]);
-		setSelectedDepartment([]);
-		setSelectedProgram([]);
-		setSelectedSemester([]);
+		setSelectedDepartment(null);
+		setSelectedProgram(null);
+		setSelectedSemester(null);
 		setSemesters([]);
 		loadDepartments();
 	};
