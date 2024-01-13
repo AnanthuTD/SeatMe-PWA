@@ -163,6 +163,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
             const index = newData.findIndex((item) => id === item.id);
             if (index > -1) {
                 const item = newData[index];
+                row.seats = row.cols * row.rows
                 newData.splice(index, 1, {
                     ...item,
                     ...row,

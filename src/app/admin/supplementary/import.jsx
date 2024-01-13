@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { message, Modal } from "antd";
-import axios from "@/lib/axiosPrivate";
 import ImportErrorModel from "./errorModel";
 import DragDrop from "../components/dragDropXLSX";
 
@@ -12,6 +11,7 @@ const requiredFields = [
 
 function ImportModel({ setDisplayImport = () => { }, onFinish = () => { } }) {
     const [failedRecords, setFailedRecords] = useState([]);
+    const [fileName, setFileName] = useState('supplementary')
 
     const handleSubmission = async (studentIds) => {
         const missingStudents = studentIds.filter((student) => {
@@ -44,9 +44,10 @@ function ImportModel({ setDisplayImport = () => { }, onFinish = () => { } }) {
                 <DragDrop
                     requiredFields={requiredFields}
                     records={handleSubmission}
+                    fileName={setFileName}
                 />
             </Modal>
-            {failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+            {failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName} /> : null}
         </div>
     );
 }

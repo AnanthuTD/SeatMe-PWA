@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import ImportErrorModel from "./model";
+import ErrorModel from "@/app/admin/components/errorModel";
 import Link from "next/link";
 import { FormOutlined } from "@ant-design/icons";
 import DragDrop from "../../components/dragDropXLSX";
@@ -58,7 +58,7 @@ function Page() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
 		</div>
 	);
 }

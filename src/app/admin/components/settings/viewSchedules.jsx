@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from "@/lib/axiosPrivate";
-import { Table } from 'antd';
+import { Table, Button, Popconfirm } from 'antd';
 
-const ViewSchedules = () => {
+const ViewSchedules = ({ updateSchedule }) => {
     const [schedules, setSchedules] = useState([]);
 
     useEffect(() => {
         axios.get('/api/admin/config/seating-availability-schedule')
-            .then((response) => setSchedules(response.data))
+            .then((response) => {
+                if (response.status === 200) {
+                    setSchedules(response.data);
+                } else {
+                    console.error('Error fetching schedules:', response.statusText);
+                }
+            })
             .catch((error) => console.error('Error fetching schedules:', error));
-    }, []);
+    }, [updateSchedule]);
 
     const columns = [
         {
@@ -37,7 +43,32 @@ const ViewSchedules = () => {
             dataIndex: 'timeCode',
             key: 'timeCode',
         },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text, record) => (
+                <span>
+                    <Popconfirm
+                        title="Are you sure you want to delete this schedule?"
+                        onConfirm={() => handleDelete(record.id)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button type="primary" danger>Delete</Button>
+                    </Popconfirm>
+                </span>
+            ),
+        },
     ];
+
+    const handleDelete = (id) => {
+        axios.delete(`/api/admin/config/seating-availability-schedule/${id}`)
+            .then(() => {
+                setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
+                console.log(`Deleted record with ID ${id}`);
+            })
+            .catch((error) => console.error(`Error deleting record with ID ${id}:`, error));
+    };
 
     return (
         <div>

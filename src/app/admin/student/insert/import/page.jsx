@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import ImportErrorModel from "./model";
+import ErrorModel from "@/app/admin/components/errorModel";
 import Link from "next/link";
 import { FormOutlined } from "@ant-design/icons";
 
@@ -20,6 +20,7 @@ const requiredFields = [
 
 function Page() {
 	const [failedRecords, setFailedRecords] = useState([]);
+	const [fileName, setFileName] = useState('students')
 
 	const handleSubmission = async (students) => {
 		const missingStudents = students.filter((student) => {
@@ -42,8 +43,9 @@ function Page() {
 			const result = await axios.post("/api/admin/student", { students });
 			if (result.status === 200) {
 				message.success("Import Success");
-				console.error("failedRecords: ",result.data);
-				setFailedRecords(result.data);
+				console.error("failedRecords: ", result.data);
+				const { failedRecords } = result.data
+				setFailedRecords(failedRecords);
 			}
 		} catch (error) {
 			console.error(error.response.data);
@@ -63,8 +65,9 @@ function Page() {
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
+				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ImportErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName} /> : null}
 		</div>
 	);
 }

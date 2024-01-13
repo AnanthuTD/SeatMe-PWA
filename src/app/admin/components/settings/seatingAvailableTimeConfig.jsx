@@ -5,11 +5,11 @@ import axios from "@/lib/axiosPrivate"
 import dayjs from 'dayjs'
 
 // Constants for the day and time options
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const timeOptions = ['AN', 'FN'];
 
 // Example component for the seating arrangement form
-const ScheduleSeatingAvailabilityForm = () => {
+const ScheduleSeatingAvailabilityForm = ({ triggerUpdateSchedule, updateSchedule }) => {
     const [form] = Form.useForm();
     const [submitting, setSubmitting] = useState(false);
 
@@ -26,6 +26,8 @@ const ScheduleSeatingAvailabilityForm = () => {
             values.endTime = formatTime(values.endTime)
 
             await axios.post('/api/admin/config/seating-availability-schedule', values)
+
+            triggerUpdateSchedule(!updateSchedule)
 
             form.resetFields();
         } catch (error) {

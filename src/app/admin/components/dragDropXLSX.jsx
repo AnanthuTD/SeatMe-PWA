@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { InboxOutlined,FileExcelOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import { InboxOutlined, FileExcelOutlined } from "@ant-design/icons";
 import { Upload, Select, Button } from "antd";
 import * as XLSX from "xlsx";
 
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const DragDrop = ({ requiredFields, records = (records) => { }, loading = false }) => {
+const DragDrop = ({ requiredFields, records = (records) => { }, loading = false, fileName: name }) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
 	const [fileName, setFileName] = useState("");
@@ -16,6 +16,11 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false 
 		setMappedFields({});
 		setFileName("");
 	};
+
+	useEffect(() => {
+		name(fileName)
+	}, [fileName])
+
 
 	const handleFieldMapping = (field, column) => {
 		const newMappedFields = { ...mappedFields };

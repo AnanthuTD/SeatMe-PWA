@@ -54,7 +54,7 @@ const App = () => {
 				params: { studentId },
 			});
 
-			if(response.status === 204) return undefined;
+			if (response.status === 204) return undefined;
 
 			const { data } = response;
 			const { seatingInfo } = data;
@@ -82,10 +82,12 @@ const App = () => {
 	const onFinish = async (values) => {
 		const studentId = values.studentId;
 		const existingStudentId = parseInt(getCookie('studentId'));
+		let upcomingExamLength = upcomingExams.length;
 
 		if (studentId !== existingStudentId) {
 			localStorage.removeItem('upcomingExams');
 			setUpcomingExams([])
+			upcomingExamLength = 0;
 		}
 
 		try {
@@ -95,7 +97,7 @@ const App = () => {
 			setSeatingInfo(undefined);
 		}
 
-		if (!upcomingExams.length) {
+		if (!upcomingExamLength) {
 			const examsData = await fetchUpcomingExams();
 			setUpcomingExams(examsData);
 		}
@@ -143,59 +145,59 @@ const App = () => {
 
 	return (
 		<>
-		
-			<Studentnav  />
-		
-		<section className="w-full mt-8 ml-3  lg:ml-40   "   >
-                 <Instruction />
-		</section>
-		<div className="flex h-screen flex-col w-full  overflow-hidden">
-			<section className="h-[40%] flex justify-center items-center w-full">
-				<div className="min-w-[50%]">
-					<Form
-						{...layout}
-						form={form}
-						name="control-hooks"
-						onFinish={onFinish}
-						style={{ maxWidth: 600 }}
-					>
-						<Form.Item
-							name="studentId"
-							label="Register Number"
-							rules={[
-								{
-									required: true,
-									type: "number",
-									min: 100000000000,
-									max: 999999999999,
-									message: "Invalid Register number",
-								},
-							]}
-						>
-							<InputNumber style={{ width: "100%" }} />
-						</Form.Item>
-						<Form.Item {...tailLayout}>
-							<Button type="primary" htmlType="submit">
-								Submit
-							</Button>
-							<Button
-								htmlType="button"
-								onClick={onReset}
-								className="m-1"
-							>
-								Reset
-							</Button>
-						</Form.Item>
 
-					</Form>
-				</div>
-			</section >
-			<section className="w-full h-[60%]">
-				<div className="mx-auto w-full h-full">
-					<Segment seatingInfo={seatingInfo} upcomingExams={upcomingExams} />
-				</div>
+			<Studentnav />
+
+			<section className="w-full mt-8 ml-3  lg:ml-40   "   >
+				<Instruction />
 			</section>
-		</div >
+			<div className="flex h-screen flex-col w-full  overflow-hidden">
+				<section className="h-[40%] flex justify-center items-center w-full">
+					<div className="min-w-[50%]">
+						<Form
+							{...layout}
+							form={form}
+							name="control-hooks"
+							onFinish={onFinish}
+							style={{ maxWidth: 600 }}
+						>
+							<Form.Item
+								name="studentId"
+								label="Register Number"
+								rules={[
+									{
+										required: true,
+										type: "number",
+										min: 100000000000,
+										max: 999999999999,
+										message: "Invalid Register number",
+									},
+								]}
+							>
+								<InputNumber style={{ width: "100%" }} />
+							</Form.Item>
+							<Form.Item {...tailLayout}>
+								<Button type="primary" htmlType="submit">
+									Submit
+								</Button>
+								<Button
+									htmlType="button"
+									onClick={onReset}
+									className="m-1"
+								>
+									Reset
+								</Button>
+							</Form.Item>
+
+						</Form>
+					</div>
+				</section >
+				<section className="w-full h-[60%]">
+					<div className="mx-auto w-full h-full">
+						<Segment seatingInfo={seatingInfo} upcomingExams={upcomingExams} />
+					</div>
+				</section>
+			</div >
 		</>
 	);
 };

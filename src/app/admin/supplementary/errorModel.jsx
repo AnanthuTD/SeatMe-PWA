@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 
 const { Text, Title } = Typography;
 
-const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
+const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { }, fileName }) => {
 	const handleOk = async () => {
 		setFailedRecords([]);
 	};
@@ -14,17 +14,14 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 	};
 
 	const downloadToXLSX = () => {
-		const data = failedRecords.map((record) => ({
-		  studentId: record.studentId,
-		}));
-	  
-		const ws = XLSX.utils.json_to_sheet(data);
+
+		const ws = XLSX.utils.json_to_sheet(failedRecords);
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
-	  
-		XLSX.writeFile(wb,'staff-failed-records.xlsx');
-	  
-	  };	  
+
+		XLSX.writeFile(wb, `${fileName}-failed-records.xlsx`);
+
+	};
 
 	return (
 		<>
@@ -59,13 +56,23 @@ const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
 						<Card key={index} className="my-4">
 							<Row gutter={[16, 16]}>
 								<Col span={12}>
-									<p>Student ID: {failedRecord?.studentId}</p>
-									<Text type="danger">Error: {failedRecord?.error}</Text>
+									{Object.entries(failedRecord).map(([key, value]) => (
+										(key?.toLowerCase() === 'error') ? (
+											<Text type="danger" key={key}>
+												<strong>{key}:</strong> {value}
+											</Text>
+										) : (
+											<p key={key}>
+												<strong>{key}:</strong> {value}
+											</p>
+										)
+									))}
 								</Col>
 							</Row>
 						</Card>
 					);
 				})}
+
 			</Modal>
 		</>
 	);

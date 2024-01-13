@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Divider, Skeleton, message } from "antd";
+import { Divider, Skeleton, Statistic, Card, Row, Col } from "antd";
 import Table from "./table";
 import axios from "@/lib/axiosPrivate";
 import DepProSemCouSelect from "../components/depProSemCouSelect";
@@ -24,7 +24,12 @@ const App = () => {
 	const [semester, setSemester] = useState(undefined);
 
 	const getTotalDataCount = async () => {
-		const result = await axios.get("/api/admin/student/count");
+		const result = await axios.get("/api/admin/student/count", {
+			params: {
+				programId: program,
+				semester
+			}
+		});
 		setTotalDataCount(result.data);
 	};
 
@@ -32,9 +37,12 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		console.log("loading data");
 		const resultsPerPage = 50;
+
 		setLoading(true);
+
+		getTotalDataCount()
+
 		axios
 			.get(`/api/admin/student/list`, {
 				params: {
@@ -114,17 +122,30 @@ const App = () => {
 
 	return (
 		<div>
-			<DepProSemCouSelect
-				courseField={false}
-				value={(value) => {
-					if (value.program) {
-						setProgram(value.program);
-					}
-					if (value.semester || value.semester === 0) {
-						setSemester(value.semester);
-					}
-				}}
-			/>
+			<Row gutter={16}>
+				<Col span={20}>
+					<DepProSemCouSelect
+						courseField={false}
+						value={(value) => {
+							if (value.program) {
+								setProgram(value.program);
+							}
+							if (value.semester || value.semester === 0) {
+								setSemester(value.semester);
+							}
+						}}
+					/>
+				</Col>
+				<Col span={4}>
+					<Card bordered={false}>
+						<Statistic
+							title="Total Students"
+							value={totalDataCount}
+							valueStyle={{ color: 'green' }}
+						/>
+					</Card>
+				</Col>
+			</Row>
 			<InfiniteScroll
 				dataLength={data.length}
 				next={() => loadMoreData({})}

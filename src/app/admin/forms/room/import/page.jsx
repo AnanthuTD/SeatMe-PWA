@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import Model from "./model";
+import ErrorModel from "@/app/admin/components/errorModel";
 import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -22,6 +22,7 @@ const requiredFields = [
 
 function RoomsPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
+	const [fileName, setFileName] = useState('room')
 
 	const handleSubmission = async (rooms) => {
 		const missingRooms = rooms.filter((room) => {
@@ -72,8 +73,9 @@ function RoomsPage() {
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
+				fileName={setFileName}
 			/>
-			{failedRecords.length ? <Model failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={setFileName}/> : null}
 		</div>
 	);
 }

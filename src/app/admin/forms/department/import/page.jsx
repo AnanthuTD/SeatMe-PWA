@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
-import Model from "./model";
+import ErrorModel from "@/app/admin/components/errorModel";
 import {FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -16,6 +16,7 @@ const requiredFields = [
 
 function DepartmentPage() {
 	const [data, setData] = useState([]);
+	const [fileName, setFileName] = useState('courses')
 
 	const handleSubmission = async (departments) => {
 		setData([]);
@@ -65,8 +66,9 @@ function DepartmentPage() {
 			<DragDrop
 				requiredFields={requiredFields}
 				records={handleSubmission}
+				fileName={setFileName}
 			/>
-			{data.length ? <Model data={data} setData={setData} /> : null}
+			{data.length ? <ErrorModel data={data} setData={setData} fileName={fileName}/> : null}
 		</div>
 	);
 }

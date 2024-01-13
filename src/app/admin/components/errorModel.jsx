@@ -2,9 +2,9 @@ import React from "react";
 import { Button, Modal, Row, Col, Card, Typography } from "antd";
 import * as XLSX from "xlsx";
 
-const { Title, Text } = Typography;
+const { Text, Title } = Typography;
 
-const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) => {
+const ErrorModel = ({ failedRecords = [], setFailedRecords = () => { }, fileName }) => {
 	const handleOk = async () => {
 		setFailedRecords([]);
 	};
@@ -14,22 +14,12 @@ const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) 
 	};
 
 	const downloadToXLSX = () => {
-		const data = failedRecords.map((record) => ({
-			ID: record?.id,
-			Name: record?.name,
-			RollNumber: record?.rollNumber,
-			semester: record?.semester,
-			Email: record?.email,
-			Phone: record?.phone,
-			ProgramId: record?.programId,
-			Error: record?.error
-		}));
 
-		const ws = XLSX.utils.json_to_sheet(data);
+		const ws = XLSX.utils.json_to_sheet(failedRecords);
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "FailedRecords");
 
-		XLSX.writeFile(wb, 'staff-failed-records.xlsx');
+		XLSX.writeFile(wb, `${fileName}-failed-records.xlsx`);
 
 	};
 
@@ -61,27 +51,31 @@ const ImportErrorModel = ({ failedRecords = [], setFailedRecords = () => { } }) 
 				]}
 				width={1000}
 			>
-				{failedRecords.map((record, index) => {
+				{failedRecords.map((failedRecord, index) => {
 					return (
 						<Card key={index} className="my-4">
 							<Row gutter={[16, 16]}>
 								<Col span={12}>
-									<p>ID: {record?.id}</p>
-									<p>Roll Number: {record?.rollNumber}</p>
-									<p>Semester: {record?.semester}</p>
-									<p>Name: {record?.name}</p>
-									<p>Email: {record?.email}</p>
-									<p>Phone: {record?.phone}</p>
-									<p>Program ID: {record?.programId}</p>
-									<Text type="danger">{record?.error}</Text>
+									{Object.entries(failedRecord).map(([key, value]) => (
+										(key?.toLowerCase() === 'error') ? (
+											<Text type="danger" key={key}>
+												<strong>{key}:</strong> {value}
+											</Text>
+										) : (
+											<p key={key}>
+												<strong>{key}:</strong> {value}
+											</p>
+										)
+									))}
 								</Col>
 							</Row>
 						</Card>
 					);
 				})}
+
 			</Modal>
 		</>
 	);
 };
 
-export default ImportErrorModel;
+export default ErrorModel;
