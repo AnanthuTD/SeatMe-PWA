@@ -10,6 +10,7 @@ import Link from "next/link";
 import Rooms from "./rooms";
 import CustomDatePicker from "../../components/datePicker";
 import DownloadZipButton from "../../components/downloadReport";
+import ProgramCountsDisplay from "./ProgramCountsDisplay";
 
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),
@@ -64,7 +65,7 @@ const RoomAssignmentForm = ({
 				storedDate = dayjs(storedDate)
 				setDate(storedDate);
 				form.setFieldValue('selectedDate', dayjs(storedDate));
-			}catch(e){
+			} catch (e) {
 				setDate(new dayjs())
 			}
 		} else {
@@ -138,15 +139,16 @@ const RoomAssignmentForm = ({
 	};
 
 	const getExaminesCount = async () => {
-		const result = await axios.get("/api/admin/examines-count", {
+		const response = await axios.get("/api/admin/examines-count", {
 			params: {
 				date,
 				timeCode
 			},
 		});
-		if (result.data === 0)
+		const examineesByProgram = response.data
+		if (examineesByProgram.total === 0)
 			message.warning("No exams scheduled at this date");
-		setExaminesCount(result.data);
+		setExaminesCount(examineesByProgram);
 	};
 
 	useEffect(() => {
@@ -317,22 +319,22 @@ const RoomAssignmentForm = ({
 							<Card bordered={false}>
 								<Statistic
 									title="Total Examinees"
-									value={examinesCount}
+									value={examinesCount.total}
 								/>
 							</Card>
 						</Col>
 						<Col>
 							<Card bordered={false}>
-								{examinesCount - totalSeats === 0 ? (
+								{examinesCount.total - totalSeats === 0 ? (
 									<Statistic
 										title="Correct number of seats"
 										value="0"
 									/>
-								) : examinesCount - totalSeats < 0 ? (
+								) : examinesCount.total - totalSeats < 0 ? (
 									<Statistic
 										title="Extra seats"
 										value={Math.abs(
-											examinesCount - totalSeats,
+											examinesCount.total - totalSeats,
 										)}
 										valueStyle={{ color: "green" }}
 									/>
@@ -340,7 +342,7 @@ const RoomAssignmentForm = ({
 									<Statistic
 										title="More seats needed"
 										value={
-											examinesCount - totalSeats
+											examinesCount.total - totalSeats
 										}
 										valueStyle={{ color: "red" }}
 									/>
@@ -348,14 +350,19 @@ const RoomAssignmentForm = ({
 							</Card>
 						</Col>
 						<Col sm={24} lg={10} md={10} xl={10} xs={24} className="flex items-center">
-							<Link href={`/admin/rooms/${examType}/${examinesCount}`} ><Button type="primary">Select Rooms</Button></Link>
+							<Link href={`/admin/rooms/${examType}/${examinesCount.total}`} ><Button type="primary">Select Rooms</Button></Link>
 						</Col>
 					</Row>
-					<Row>
-						{loadingRooms
-							? <Spin />
-							: selectedRooms.length ? <Rooms data={selectedRooms} /> : null
-						}
+					<Row gutter={[16, 16]}>
+						<Col lg={16} xl={16}>
+							{loadingRooms
+								? <Spin />
+								: selectedRooms.length ? <Rooms data={selectedRooms} /> : null
+							}
+						</Col>
+						<Col lg={8} xl={8}>
+							{examinesCount ? <ProgramCountsDisplay totalCounts={examinesCount} /> : null}
+						</Col>
 					</Row>
 					<Divider />
 					<Row>
@@ -367,7 +374,7 @@ const RoomAssignmentForm = ({
 										className="assign-button"
 										htmlType="submit"
 										loading={loading}
-										disabled={examinesCount > totalSeats}
+										disabled={examinesCount.total > totalSeats}
 									>
 										Assign
 									</Button>

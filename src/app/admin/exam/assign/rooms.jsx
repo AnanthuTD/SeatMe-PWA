@@ -110,6 +110,11 @@ const App = ({ data }) => {
 
     const defaultColumns = [
         {
+            title: 'Sl.No',
+            key: 'serialNumber',
+            render: (text, record, index) => index + 1,
+        },
+        {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
