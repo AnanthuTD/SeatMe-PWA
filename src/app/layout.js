@@ -18,11 +18,8 @@ import { AccountProvider } from "@/context/accountContext";
 const RootLayout = ({ children }) => {
 	return (
 		<html lang="en">
-			<Script
-				async
-				src="https://www.googletagmanager.com/gtag/js?id=G-4Z973J09EJ"
-			></Script>
-			<Script>
+			<Script src="https://www.googletagmanager.com/gtag/js?id=G-4Z973J09EJ" />
+			<Script id="google-analytics">
 				{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
