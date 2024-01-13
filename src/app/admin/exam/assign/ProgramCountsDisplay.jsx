@@ -1,17 +1,33 @@
 import React from 'react';
-import { Card, Descriptions } from 'antd';
+import { Table } from 'antd';
 
-const ProgramCountsDisplay = ({ totalCounts }) => {
+const columns = [
+    {
+        title: 'Program ID',
+        dataIndex: 'programId',
+        key: 'programId',
+    },
+    {
+        title: 'Regular',
+        dataIndex: 'regular',
+        key: 'regular',
+    },
+    {
+        title: 'Supply',
+        dataIndex: 'supply',
+        key: 'supply',
+    },
+];
+
+const ProgramCountsDisplay = ({ data }) => {
     return (
-        // <Card title="Program Counts">
-            <Descriptions column={1} bordered title="Program Counts">
-                {Object.entries(totalCounts).map(([programId, count]) => (
-                    <Descriptions.Item key={programId} label={`${programId}`}>
-                        {count}
-                    </Descriptions.Item>
-                ))}
-            </Descriptions>
-        // </Card>
+        <Table
+            dataSource={data}
+            columns={columns}
+            bordered
+            title={() => 'Program Counts'}
+            pagination={false} // Optional: Disable pagination if not needed
+        />
     );
 };
 

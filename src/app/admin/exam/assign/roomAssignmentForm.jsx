@@ -39,7 +39,8 @@ const RoomAssignmentForm = ({
 	const [loading, setLoading] = useState(false);
 	const [loadingRooms, setLoadingRooms] = useState(false);
 	const [selectedRooms, setSelectedRooms] = useState([]);
-	const [examinesCount, setExaminesCount] = useState(0);
+	const [examineesByProgram, setExamineesByProgram] = useState([]);
+	const [totalExaminees, setTotalExaminees] = useState(0);
 	const [totalSeats, setTotalSeats] = useState(0);
 	const [warningMessage, setWarningMessage] = useState("");
 	const [fileName, setFileName] = useState("");
@@ -146,9 +147,15 @@ const RoomAssignmentForm = ({
 			},
 		});
 		const examineesByProgram = response.data
+		setExamineesByProgram(examineesByProgram)
+
 		if (examineesByProgram.total === 0)
 			message.warning("No exams scheduled at this date");
-		setExaminesCount(examineesByProgram);
+
+		const totalRegular = examineesByProgram.reduce((sum, program) => sum + program.regular, 0);
+		const totalSupply = examineesByProgram.reduce((sum, program) => sum + program.supply, 0);
+		const totalCombined = totalRegular + totalSupply;
+		setTotalExaminees(totalCombined);
 	};
 
 	useEffect(() => {
@@ -319,22 +326,22 @@ const RoomAssignmentForm = ({
 							<Card bordered={false}>
 								<Statistic
 									title="Total Examinees"
-									value={examinesCount.total}
+									value={totalExaminees}
 								/>
 							</Card>
 						</Col>
 						<Col>
 							<Card bordered={false}>
-								{examinesCount.total - totalSeats === 0 ? (
+								{totalExaminees - totalSeats === 0 ? (
 									<Statistic
 										title="Correct number of seats"
 										value="0"
 									/>
-								) : examinesCount.total - totalSeats < 0 ? (
+								) : totalExaminees - totalSeats < 0 ? (
 									<Statistic
 										title="Extra seats"
 										value={Math.abs(
-											examinesCount.total - totalSeats,
+											totalExaminees - totalSeats,
 										)}
 										valueStyle={{ color: "green" }}
 									/>
@@ -342,7 +349,7 @@ const RoomAssignmentForm = ({
 									<Statistic
 										title="More seats needed"
 										value={
-											examinesCount.total - totalSeats
+											totalExaminees - totalSeats
 										}
 										valueStyle={{ color: "red" }}
 									/>
@@ -350,7 +357,7 @@ const RoomAssignmentForm = ({
 							</Card>
 						</Col>
 						<Col sm={24} lg={10} md={10} xl={10} xs={24} className="flex items-center">
-							<Link href={`/admin/rooms/${examType}/${examinesCount.total}`} ><Button type="primary">Select Rooms</Button></Link>
+							<Link href={`/admin/rooms/${examType}/${totalExaminees}`} ><Button type="primary">Select Rooms</Button></Link>
 						</Col>
 					</Row>
 					<Row gutter={[16, 16]}>
@@ -361,7 +368,7 @@ const RoomAssignmentForm = ({
 							}
 						</Col>
 						<Col lg={8} xl={8}>
-							{examinesCount ? <ProgramCountsDisplay totalCounts={examinesCount} /> : null}
+							{examineesByProgram.length ? <ProgramCountsDisplay data={examineesByProgram} /> : null}
 						</Col>
 					</Row>
 					<Divider />
@@ -374,7 +381,7 @@ const RoomAssignmentForm = ({
 										className="assign-button"
 										htmlType="submit"
 										loading={loading}
-										disabled={examinesCount.total > totalSeats}
+										disabled={totalExaminees > totalSeats}
 									>
 										Assign
 									</Button>
