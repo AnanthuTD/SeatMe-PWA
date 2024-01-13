@@ -19,7 +19,7 @@
 		"@mui/material": "^5.14.11",
 		"@mui/styled-engine-sc": "^5.14.11",
 		"@vercel/analytics": "^1.0.2",
-		"antd": "^5.11.1",
+		"antd": "^5.12.8",
 		"autoprefixer": "10.4.15",
 		"axios": "^1.5.1",
 		"cookies-next": "^4.0.0",

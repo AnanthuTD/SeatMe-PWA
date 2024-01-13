@@ -185,6 +185,13 @@ const DynamicBlockForm = () => {
 					key: 'name',
 					},
 				]}
+				onRow={(record) => {
+					return {
+					  onClick: () => {
+						console.log('Block Details:', record);
+					  },
+					};
+				  }}
 				pagination={false}
 				style={{ width: '100%' }}
 				/>

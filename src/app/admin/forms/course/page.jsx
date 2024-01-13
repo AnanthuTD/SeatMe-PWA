@@ -1,5 +1,10 @@
 "use client";
 
+import { SearchOutlined } from "@ant-design/icons";
+import Highlighter from 'react-highlight-words';
+import { useRef } from "react";
+
+
 import React, { useState, useEffect } from "react";
 import {
 	Input,
@@ -23,9 +28,80 @@ import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 
 const DynamicCourseForm = () => {
+
+	const [searchText, setSearchText] = useState(""); // State to store the search text
+	const [searchedColumn, setSearchedColumn] = useState(""); // State to store the column being searched
+	const searchInputRef = useRef(null);
+	
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 	const [programs, setPrograms] = useState([]); // State to store program data
+
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+		confirm();
+		setSearchText(selectedKeys[0]);
+		setSearchedColumn(dataIndex);
+	  };
+	  
+	  const handleReset = (clearFilters) => {
+		clearFilters();
+		setSearchText("");
+	  };
+	  <Input
+		ref={(node) => {
+			setSearchInputRef(node);
+		}}
+		// ...
+		/>
+	  const getColumnSearchProps = (dataIndex, placeholder) => ({
+		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+		  <div style={{ padding: 8 }}>
+			<Input
+			  placeholder={placeholder}
+			  value={selectedKeys[0]}
+			  onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+			  onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+			  style={{ width: 188, marginBottom: 8, display: "block" }}
+			/>
+			<Button
+			  type="primary"
+			  onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+			  icon={<SearchOutlined />}
+			  size="small"
+			  style={{ width: 90, marginRight: 8 }}
+			>
+			  Search
+			</Button>
+			<Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+			  Reset
+			</Button>
+		  </div>
+		),
+		filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />,
+		onFilter: (value, record) =>
+		  record[dataIndex] ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()) : "",
+		  onFilterDropdownVisibleChange: (visible) => {
+			if (visible) {
+			  setTimeout(() => {
+				if (searchInputRef.current && searchInputRef.current.select) {
+				  searchInputRef.current.select();
+				}
+			  }, 100);
+			}
+		  },
+		render: (text) =>
+		  searchedColumn === dataIndex ? (
+			<Highlighter
+			  highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+			  searchWords={[searchText]}
+			  autoEscape
+			  textToHighlight={text ? text.toString() : ""}
+			/>
+		  ) : (
+			text
+		  ),
+	  });
+	  
 
 	const loadPrograms = async () => {
 		try {
@@ -270,48 +346,52 @@ const DynamicCourseForm = () => {
 				</Row>
 			</Form>
 			<Card size="small" title="Courses" style={{ marginTop: 16 }}>
-			{semesterOptions ? (
-			<Select
-			style={{ width: 200, marginBottom: 16 }}
-			placeholder="Select Semester"
-			onChange={(value) => setSelectedSemester(value)}
-			value={selectedSemester}
-		  >
-			<Select.Option value={null}>All Semesters</Select.Option>
-			{semesterOptions.map((semester) => (
-			  <Select.Option key={semester} value={semester}>
-				{semester}
-			  </Select.Option>
-			))}
-		  </Select>
-			) : (
-			<span>Loading semesters...</span>
-			)}
+			{
+		// 	semesterOptions ? (
+		// 	<Select
+		// 	// style={{ width: 200, marginBottom: 16 }}
+		// 	// placeholder="Select Semester"
+		// 	// onChange={(value) => setSelectedSemester(value)}
+		// 	// value={selectedSemester}
+		//   >
+		// 	{/* <Select.Option value={null}>All Semesters</Select.Option>
+		// 	{semesterOptions.map((semester) => (
+		// 	  <Select.Option key={semester} value={semester}>
+		// 		{semester}
+		// 	  </Select.Option>
+		// 	))} */}
+		//   </Select>
+		// 	) : (
+		// 	<span>Loading semesters...</span>
+		// 	)
+			}
 
 				<Table
-				dataSource={courses.filter((course) =>
-					selectedSemester ? course.semester === selectedSemester : true
-				  )}
-				columns={[
-					{
-					title: 'ID',
-					dataIndex: 'id',
-					key: 'id',
-					},
-					{
-					title: 'Name',
-					dataIndex: 'name',
-					key: 'name',
-					},
+				 dataSource={courses}
+				 columns={[
+				   {
+					 title: 'ID',
+					 dataIndex: 'id',
+					 key: 'id',
+					 ...getColumnSearchProps('id', 'Search ID'),
+				   },
+				   {
+					 title: 'Name',
+					 dataIndex: 'name',
+					 key: 'name',
+					 ...getColumnSearchProps('name', 'Search Name'),
+				   },
 					{
 					title: 'Semester',
 					dataIndex: 'semester',
 					key: 'semester',
+					...getColumnSearchProps('semester', 'Search Semester'),
 					},
 					{
 						title: "Is Open Course",
 						dataIndex: "isOpenCourse",
 						key: "isOpenCourse",
+
 						
 						render: (text, record) => (
 						  <span style={{ color: text  ? 'green' : 'red' }}>
