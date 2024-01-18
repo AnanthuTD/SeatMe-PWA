@@ -75,7 +75,7 @@ const PDFList = () => {
 						<div className="flex items-center justify-between w-full">
 							<div>{pdf}</div>
 							<div className="space-x-2">
-								<DownloadButton fileName={pdf} />
+								<DownloadButton fileNames={pdf} />
 								<Button
 									type="primary"
 									danger
