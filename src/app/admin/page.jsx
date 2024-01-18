@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { List, Button, Modal, Input } from "antd";
 import axios from "@/lib/axiosPrivate";
-import DownloadButton from "./components/download";
+import DownloadButton from "./components/downloadReport";
 
 const PDFList = () => {
 	const [pdfs, setPDFs] = useState([]);
@@ -75,7 +75,7 @@ const PDFList = () => {
 						<div className="flex items-center justify-between w-full">
 							<div>{pdf}</div>
 							<div className="space-x-2">
-								<DownloadButton fileNames={pdf} />
+								<DownloadButton fileName={pdf} />
 								<Button
 									type="primary"
 									danger

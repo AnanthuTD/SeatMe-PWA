@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import SelectDepartment from "./selectDepartment";
-import Select from "./select";
+import SelectProgram from "./selectProgram";
 import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, Select } from "antd";
 
 function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset = false }) {
 	const [departments, setDepartments] = useState([]);
@@ -146,11 +146,11 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 						placeholder="Select Department"
 					/>
 				</Col>
-				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
+				<Col xs={24} sm={12} md={12} lg={12} xl={9}>
 					<label className="block text-lg font-semibold mb-2">
 						Program:
 					</label>
-					<Select
+					<SelectProgram
 						options={programs}
 						onChange={handleProgramChange}
 						onClick={handleProgramClick}
@@ -158,7 +158,7 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 						sortByValue
 					/>
 				</Col>
-				<Col xs={24} sm={12} md={12} lg={8} xl={7}>
+				<Col xs={24} sm={12} md={12} lg={4} xl={5}>
 					<label className="block text-lg font-semibold mb-2">
 						Semester:
 					</label>
@@ -166,6 +166,8 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 						options={semesters}
 						onChange={handleSemesterChange}
 						placeholder="Select Semester"
+						fieldNames={{ label: 'name', value: 'id', key: 'id' }}
+						value={selectedSemester}
 					/>
 				</Col>
 			</Row>

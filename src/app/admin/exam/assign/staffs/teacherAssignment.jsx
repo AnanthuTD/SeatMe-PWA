@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Collapse, Button, message, Divider, Descriptions } from "antd";
 import axios from "@/lib/axiosPrivate";
-import DownloadButton from "../../../components/download";
+import DownloadButton from "../../../components/downloadReport";
 import RoomPanel from "./roomPanel";
 
 function TeacherAssignment({
@@ -16,9 +16,7 @@ function TeacherAssignment({
 	const [failedAssignments, setFailedAssignments] = useState([]);
 	const [visibleDownloadButton, setVisibleDownloadButton] = useState(false);
 	const [roomTeachers, setRoomTeachers] = useState({});
-
-	const pdfFileName = `${date.toISOString().split("T")[0]}-${timeCode
-		}.pdf`;
+	const [fileName, setFileName] = useState(undefined);
 
 	const loadDepartments = async () => {
 		try {
@@ -66,10 +64,12 @@ function TeacherAssignment({
 				...roomTeachers,
 				dateTimeId: dateTimeId,
 			};
+			
 			const response = await axios.post(
-				"/api/admin/exams/assign-teacher",
+				"/api/admin/staff/assign",
 				reqData,
 			);
+
 			if (response.data.error && response.data.failedAssignments) {
 				// Handle failed assignments
 				const { error, failedAssignments } = response.data;
@@ -80,6 +80,11 @@ function TeacherAssignment({
 			} else {
 				message.success("Teachers assigned successfully!");
 			}
+
+			const { fileName } = response.data
+
+			setFileName(fileName)
+
 			setVisibleDownloadButton(true);
 		} catch (error) {
 			console.error("Error assigning teachers: ", error);
@@ -130,7 +135,7 @@ function TeacherAssignment({
 					Assign
 				</Button>
 				{visibleDownloadButton ? (
-					<DownloadButton fileName={pdfFileName} />
+					<DownloadButton fileName={fileName} />
 				) : null}
 			</div>
 		</div>

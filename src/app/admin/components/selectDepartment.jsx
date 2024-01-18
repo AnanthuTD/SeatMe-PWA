@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Select } from "antd";
 
 const SelectDepartment = ({
@@ -8,11 +8,6 @@ const SelectDepartment = ({
 	sortByValue = false,
 	defaultValue = undefined
 }) => {
-	useEffect(() => {
-		setValue([]);
-	}, [options]);
-
-	const [value, setValue] = useState([]);
 
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
@@ -33,6 +28,13 @@ const SelectDepartment = ({
 		onChange(value, selectedOption);
 	};
 
+	const customFilter = (input, option) => {
+		const codeMatches = (option?.code?.toLowerCase() ?? "").includes(input.toLowerCase());
+		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(input.toLowerCase());
+
+		return codeMatches || nameMatches;
+	}
+
 	return (
 		<Select
 			showSearch
@@ -41,11 +43,7 @@ const SelectDepartment = ({
 				width: 200,
 			}}
 			placeholder="Search to Select"
-			filterOption={(input, option) =>
-				(option?.label?.toLowerCase() ?? "").includes(
-					input.toLowerCase(),
-				)
-			}
+			filterOption={customFilter}
 			filterSort={customSort}
 			onChange={handleSelectChange}
 			onClick={onClick}
