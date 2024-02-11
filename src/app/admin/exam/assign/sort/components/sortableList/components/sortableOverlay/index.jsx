@@ -1,1 +1,1 @@
-export { SortableOverlay } from "./SortableOverlay";
+export { SortableOverlay } from "./sortableOverlay";

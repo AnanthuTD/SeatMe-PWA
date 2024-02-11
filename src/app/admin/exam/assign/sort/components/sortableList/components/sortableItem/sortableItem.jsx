@@ -4,7 +4,7 @@ import React, { createContext, useContext, useMemo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import "./SortableItem.css";
+import "./sortableItem.css";
 
 const SortableItemContext = createContext({
 	attributes: {},
