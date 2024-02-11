@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Row, Col, message, Descriptions } from "antd";
@@ -13,7 +13,6 @@ function RoomPanel({
 	handleTeacherSelect,
 	isFailed = false,
 }) {
-
 	const [teacherList, setTeacherList] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(undefined);
 
@@ -60,29 +59,29 @@ function RoomPanel({
 		}
 	};
 
-	return (<Row gutter={8} style={panelStyle}>
-		<Col xs={24} sm={24} md={6} lg={6} xl={6}>
-			<h4 className="text-md font-semibold mb-2">
-				Room ID: {room.id}
-			</h4>
-		</Col>
-		<Col xs={24} sm={24} md={8} lg={8} xl={8}>
-			<DepartmentSelector
-				options={departments}
-				onChange={handleDepartmentChange}
-				defaultValue={room?.departmentName}
-			/>
-		</Col>
-		<Col xs={24} sm={24} md={10} lg={10} xl={10}>
-			<TeacherSelector
-				options={teacherList}
-				onChange={(value) =>
-					handleTeacherSelect(room.id, value)
-				}
-				defaultValue={room?.name}
-			/>
-		</Col>
-	</Row>);
+	return (
+		<Row gutter={8} style={panelStyle}>
+			<Col xs={24} sm={24} md={6} lg={6} xl={6}>
+				<h4 className="text-md font-semibold mb-2">
+					Room ID: {room.id}
+				</h4>
+			</Col>
+			<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+				<DepartmentSelector
+					options={departments}
+					onChange={handleDepartmentChange}
+					defaultValue={room?.departmentName}
+				/>
+			</Col>
+			<Col xs={24} sm={24} md={10} lg={10} xl={10}>
+				<TeacherSelector
+					options={teacherList}
+					onChange={(value) => handleTeacherSelect(room.id, value)}
+					defaultValue={room?.name}
+				/>
+			</Col>
+		</Row>
+	);
 }
 
 export default RoomPanel;
