@@ -6,9 +6,8 @@ const SelectDepartment = ({
 	onChange,
 	onClick,
 	sortByValue = false,
-	defaultValue = undefined
+	defaultValue = undefined,
 }) => {
-
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
 			// Sort by code
@@ -17,8 +16,8 @@ const SelectDepartment = ({
 			return valueA - valueB;
 		} else {
 			// Sort by label (default)
-			const labelA = optionA?.label || '';
-			const labelB = optionB?.label || '';
+			const labelA = optionA?.label || "";
+			const labelB = optionB?.label || "";
 			return labelA.localeCompare(labelB);
 		}
 	};
@@ -29,11 +28,15 @@ const SelectDepartment = ({
 	};
 
 	const customFilter = (input, option) => {
-		const codeMatches = (option?.code?.toLowerCase() ?? "").includes(input.toLowerCase());
-		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(input.toLowerCase());
+		const codeMatches = (option?.code?.toLowerCase() ?? "").includes(
+			input.toLowerCase(),
+		);
+		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(
+			input.toLowerCase(),
+		);
 
 		return codeMatches || nameMatches;
-	}
+	};
 
 	return (
 		<Select
@@ -48,10 +51,9 @@ const SelectDepartment = ({
 			onChange={handleSelectChange}
 			onClick={onClick}
 			defaultValue={defaultValue}
-			fieldNames={{ label: 'name', value: 'code', key: 'code' }}
+			fieldNames={{ label: "name", value: "code", key: "code" }}
 			options={options}
 		/>
-
 	);
 };
 

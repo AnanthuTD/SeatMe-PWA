@@ -11,10 +11,8 @@ const Seating = ({ seatingInfo }) => {
 	const [item, setItem] = useState([]);
 
 	useEffect(() => {
-		if (seatingInfo)
-			fetchItems();
-		else
-			setItem([]);
+		if (seatingInfo) fetchItems();
+		else setItem([]);
 	}, [seatingInfo]);
 
 	const fetchItems = () => {
@@ -48,7 +46,9 @@ const Seating = ({ seatingInfo }) => {
 			},
 			{
 				label: "Room",
-				children: seatingInfo.roomName?.toString() || seatingInfo.roomId.toString(),
+				children:
+					seatingInfo.roomName?.toString() ||
+					seatingInfo.roomId.toString(),
 			},
 			{
 				label: "Seat Number",
@@ -63,14 +63,15 @@ const Seating = ({ seatingInfo }) => {
 
 	return (
 		<>
-			{item.length ?
+			{item.length ? (
 				<Descriptions
 					bordered
 					column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
 					items={item}
 				/>
-				: "Nothing"}
-
+			) : (
+				"Nothing"
+			)}
 		</>
 	);
 };

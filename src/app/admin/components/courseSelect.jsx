@@ -1,17 +1,17 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import { Select, Button } from "antd";
 const { Option } = Select;
 
 const CoursesSelect = ({
 	options = [],
-	onChange = () => { },
-	onClick = () => { },
+	onChange = () => {},
+	onClick = () => {},
 	sortByValue = false,
 	selectedCourses,
-	setSelectedCourses = (courses) => { },
+	setSelectedCourses = (courses) => {},
 	mode = "multiple",
-	defaultSelectAll = true
+	defaultSelectAll = true,
 }) => {
 	// Check if the length of options is less than 10
 	const isLessThan20 = defaultSelectAll ? options.length < 20 : false;
@@ -21,8 +21,8 @@ const CoursesSelect = ({
 
 	// default selected options if less than 10 courses value
 	useEffect(() => {
-		console.log('options changed');
-		setCleared(false)
+		console.log("options changed");
+		setCleared(false);
 		const option = isLessThan20 ? options.map((option) => option) : [];
 		const courseId = isLessThan20 ? options.map((option) => option.id) : [];
 		// const option = options.length ? options.map((option) => option) : [];
@@ -32,9 +32,8 @@ const CoursesSelect = ({
 	}, [options]);
 
 	useEffect(() => {
-		console.log('cleared');
-	}, [cleared])
-
+		console.log("cleared");
+	}, [cleared]);
 
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
@@ -67,13 +66,13 @@ const CoursesSelect = ({
 	};
 
 	const handleClear = () => {
-		console.log('Clear button clicked!');
+		console.log("Clear button clicked!");
 		setSelectedCourses([]);
 		setValue([]);
 	};
 
 	return (
-		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+		<div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
 			<Select
 				mode={mode}
 				// allowClear={true}
@@ -100,9 +99,19 @@ const CoursesSelect = ({
 						value={option.id}
 						label={`${option.name}(${option.id})`}
 					>
-						<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+						<div
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+							}}
+						>
 							<div>{`${option.name} - (${option.id})`}</div>
-							{option.type && <span style={{ marginLeft: 8 }}>{option.type}</span>}
+							{option.type && (
+								<span style={{ marginLeft: 8 }}>
+									{option.type}
+								</span>
+							)}
 						</div>
 					</Option>
 				))}
@@ -111,7 +120,6 @@ const CoursesSelect = ({
 				Clear
 			</Button>
 		</div>
-
 	);
 };
 

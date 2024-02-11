@@ -7,7 +7,7 @@ import SelectDepartment from "../components/selectDepartment";
 const loadDepartments = async () => {
 	try {
 		const result = await axios.get("/api/admin/departments");
-		return (result.data);
+		return result.data;
 	} catch (error) {
 		console.error("Error fetching departments: ", error);
 	}

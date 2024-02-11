@@ -4,7 +4,7 @@ import { Select } from "antd";
 const SelectProgram = ({
 	options,
 	onChange,
-	onClick = () => { },
+	onClick = () => {},
 	sortByValue = false,
 }) => {
 	useEffect(() => {
@@ -34,12 +34,15 @@ const SelectProgram = ({
 
 	const customFilter = (input, option) => {
 		console.log(option);
-		const codeMatches = (option?.children?.toLowerCase() ?? "").includes(input.toLowerCase());
-		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(input.toLowerCase());
+		const codeMatches = (option?.children?.toLowerCase() ?? "").includes(
+			input.toLowerCase(),
+		);
+		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(
+			input.toLowerCase(),
+		);
 
 		return codeMatches || nameMatches;
-	}
-
+	};
 
 	return (
 		<Select
@@ -63,7 +66,13 @@ const SelectProgram = ({
 					value={option.id}
 					label={option.name}
 				>
-					{option.name + " ( " + option.id + " )"+ " ( " + option.abbreviation + " )"}
+					{option.name +
+						" ( " +
+						option.id +
+						" )" +
+						" ( " +
+						option.abbreviation +
+						" )"}
 				</Select.Option>
 			))}
 		</Select>

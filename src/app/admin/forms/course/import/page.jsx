@@ -18,7 +18,7 @@ const requiredFields = [
 
 function CoursesPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
-	const [fileName, setFileName] = useState('courses')
+	const [fileName, setFileName] = useState("courses");
 
 	const handleSubmission = async (courses) => {
 		const missingCourses = courses.filter((course) => {
@@ -53,7 +53,9 @@ function CoursesPage() {
 		console.log(processedCourses);
 
 		try {
-			const result = await axios.post("/api/admin/courseentry/course", { courses: processedCourses });
+			const result = await axios.post("/api/admin/courseentry/course", {
+				courses: processedCourses,
+			});
 			if (result.status === 200) {
 				message.success("Successfully submitted");
 				console.log(result.data);
@@ -65,8 +67,7 @@ function CoursesPage() {
 				message.error(
 					`Record with Course ID '${error.response.data.value}' already exists`,
 				);
-			}
-			else if (error.response.status === 500) {
+			} else if (error.response.status === 500) {
 				message.error(
 					`Record with Course ID '${error.response.data.value}' already exists`,
 				);
@@ -88,7 +89,13 @@ function CoursesPage() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
+			{failedRecords.length ? (
+				<ErrorModel
+					failedRecords={failedRecords}
+					setFailedRecords={setFailedRecords}
+					fileName={fileName}
+				/>
+			) : null}
 		</div>
 	);
 }

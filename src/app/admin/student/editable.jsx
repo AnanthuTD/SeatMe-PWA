@@ -63,7 +63,6 @@ const EditableCell = ({
 			};
 			fun();
 		}
-
 	}, []);
 
 	const toggleEdit = () => {
@@ -104,10 +103,14 @@ const EditableCell = ({
 			>
 				{dataIndex === "openCourseId" || dataIndex === "programId" ? (
 					<Select
-						options={dataIndex === "openCourseId" ? openCourses : programs}
+						options={
+							dataIndex === "openCourseId"
+								? openCourses
+								: programs
+						}
 						ref={inputRef}
 						onSelect={save}
-						fieldNames={{ label: 'name', value: 'id' }}
+						fieldNames={{ label: "name", value: "id" }}
 					/>
 				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />

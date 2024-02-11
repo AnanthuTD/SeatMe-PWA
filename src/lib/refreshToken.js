@@ -18,7 +18,7 @@ const refreshTokenFn = async () => {
 
 		return accessToken;
 	} catch (error) {
-		console.error('refreshToken', error);
+		console.error("refreshToken", error);
 		localStorage.removeItem("user");
 		setAuthorizationToken();
 	}

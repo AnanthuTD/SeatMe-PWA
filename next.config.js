@@ -1,13 +1,12 @@
-/* const withPWA = require("next-pwa")({
+const withPWA = require("next-pwa")({
 	dest: "public",
 	register: true,
 	skipWaiting: true,
-	disable: process.env.NODE_ENV === 'development',
-}); */
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+});
+/* const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true",
 	openAnalyzer: false,
-});
+}); */
 
 /** @type {import('next').NextConfig} */
 const proxy = {
@@ -21,7 +20,7 @@ const proxy = {
 	},
 };
 
-module.exports = /* withPWA */({
+module.exports = withPWA({
 	...proxy,
 	// reactStrictMode: false,
 	eslint: {

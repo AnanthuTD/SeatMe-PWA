@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Input,
 	Button,
@@ -12,6 +11,7 @@ import {
 	Card,
 	message,
 	FloatButton,
+	Radio,
 } from "antd";
 import { FileExcelOutlined } from "@ant-design/icons";
 import { CloseOutlined } from "@ant-design/icons";
@@ -20,27 +20,73 @@ import Link from "next/link";
 import ErrorModel from "@/app/admin/components/errorModel";
 
 const DynamicStudentForm = () => {
-	const [failedRecords, setFailedRecords] = useState([])
+	const [failedRecords, setFailedRecords] = useState([]);
+	const [secondLangs, setSecondLangs] = useState([]);
+	const [courseOptions, setCourseOptions] = useState([]);
 
 	const handleSubmission = async (values) => {
-		const { students } = values
-		console.log('values: ', students);
+		const { students } = values;
+		console.log("values: ", students);
 
 		try {
 			const result = await axios.post("/api/admin/student", { students });
 
-			const { failedRecords } = result.data
+			const { failedRecords } = result.data;
 
-			setFailedRecords(failedRecords)
+			setFailedRecords(failedRecords);
 
-			const warnMessage = 'Some records were failed to insert!'
-			const successMessage = 'Inserted successfully'
+			const warnMessage = "Some records were failed to insert!";
+			const successMessage = "Inserted successfully";
 
-			failedRecords.length ? message.warning(warnMessage) : message.success(successMessage)
+			failedRecords.length
+				? message.warning(warnMessage)
+				: message.success(successMessage);
 		} catch (error) {
 			console.log(error);
 			message.error("Something went wrong");
 		}
+	};
+
+	const loadSecondLang = async () => {
+		const res = await axios.get("/api/admin/course/common2");
+		const { data } = res;
+		console.log(data);
+		setSecondLangs(data);
+	};
+
+	useEffect(() => {
+		loadSecondLang();
+	}, []);
+
+	const getCoursesForRollNumber = (rollNumber) => {
+		const programId = rollNumber.toString().substring(2, 4);
+		return secondLangs.filter(
+			(course) => course.programId === parseInt(programId, 10),
+		);
+	};
+
+	const handleRollNumberChange = (rollNumber, index) => {
+		const courses = getCoursesForRollNumber(rollNumber);
+		const semesterCourses = courses.reduce((acc, course) => {
+			if (!acc[course.semester]) {
+				acc[course.semester] = [];
+			}
+			acc[course.semester].push(course);
+			return acc;
+		}, {});
+		setCourseOptions((prevOptions) => {
+			const newOptions = [...prevOptions];
+			newOptions[index] = Object.entries(semesterCourses).map(
+				([semester, courses]) => ({
+					label: `Semester ${semester}`,
+					options: courses.map((course) => ({
+						label: course.name,
+						value: course.id,
+					})),
+				}),
+			);
+			return newOptions;
+		});
 	};
 
 	return (
@@ -100,9 +146,7 @@ const DynamicStudentForm = () => {
 												<InputNumber
 													placeholder="Input a number"
 													controls={false}
-													style={{
-														width: "100%",
-													}}
+													style={{ width: "100%" }}
 												/>
 											</Form.Item>
 										</Col>
@@ -123,17 +167,20 @@ const DynamicStudentForm = () => {
 														min: 100000,
 													},
 												]}
+												onChange={(e) =>
+													handleRollNumberChange(
+														e.target.value,
+														field.name,
+													)
+												}
 											>
 												<InputNumber
 													placeholder="Input a number"
 													controls={false}
-													style={{
-														width: "100%",
-													}}
+													style={{ width: "100%" }}
 												/>
 											</Form.Item>
 										</Col>
-
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
 												name={[field.name, "name"]}
@@ -181,12 +228,27 @@ const DynamicStudentForm = () => {
 												<InputNumber
 													placeholder="Input a number"
 													controls={false}
-													style={{
-														width: "100%",
-													}}
+													style={{ width: "100%" }}
 												/>
 											</Form.Item>
 										</Col>
+									</Row>
+									<Row gutter={16}>
+										{courseOptions[field.name]?.map(
+											(section, index) => (
+												<Col key={index}>
+													<Form.Item
+														label={section.label}
+													>
+														<Radio.Group
+															options={
+																section.options
+															}
+														/>
+													</Form.Item>
+												</Col>
+											),
+										)}
 									</Row>
 								</Card>
 							))}
@@ -205,7 +267,13 @@ const DynamicStudentForm = () => {
 					</Col>
 				</Row>
 			</Form>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={'students'} /> : null}
+			{failedRecords.length ? (
+				<ErrorModel
+					failedRecords={failedRecords}
+					setFailedRecords={setFailedRecords}
+					fileName={"students"}
+				/>
+			) : null}
 		</div>
 	);
 };

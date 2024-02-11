@@ -7,7 +7,11 @@ import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
 import { Row, Col, Divider, Select } from "antd";
 
-function DepProSemExaSelect({ value = (values) => { }, courseField = true, reset = false }) {
+function DepProSemExaSelect({
+	value = (values) => {},
+	courseField = true,
+	reset = false,
+}) {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 	const [selectedProgram, setSelectedProgram] = useState(null);
@@ -131,7 +135,7 @@ function DepProSemExaSelect({ value = (values) => { }, courseField = true, reset
 
 	useEffect(() => {
 		handleReset();
-	}, [reset])
+	}, [reset]);
 
 	return (
 		<>
@@ -166,7 +170,7 @@ function DepProSemExaSelect({ value = (values) => { }, courseField = true, reset
 						options={semesters}
 						onChange={handleSemesterChange}
 						placeholder="Select Semester"
-						fieldNames={{ label: 'name', value: 'id', key: 'id' }}
+						fieldNames={{ label: "name", value: "id", key: "id" }}
 						value={selectedSemester}
 					/>
 				</Col>

@@ -12,7 +12,7 @@ import {
 	DatePicker,
 	Select,
 	message,
-	Tag
+	Tag,
 } from "antd";
 import "./table.css";
 import dayjs from "dayjs";
@@ -32,10 +32,14 @@ const EditableCell = ({
 	if (!record) return <td {...restProps}>{children}</td>;
 
 	const inputNode =
-		inputType === "date" ? <DatePicker format="YYYY-MM-DD" /> : <Select style={{ width: 120 }}>
-			<Select.Option value="AN">AN</Select.Option>
-			<Select.Option value="FN">FN</Select.Option>
-		</Select>;
+		inputType === "date" ? (
+			<DatePicker format="YYYY-MM-DD" />
+		) : (
+			<Select style={{ width: 120 }}>
+				<Select.Option value="AN">AN</Select.Option>
+				<Select.Option value="FN">FN</Select.Option>
+			</Select>
+		);
 
 	return (
 		<td {...restProps}>
@@ -63,15 +67,15 @@ const EditableCell = ({
 
 const App = ({
 	dataSource,
-	setData = () => { },
+	setData = () => {},
 	loading = false,
-	setSorterField = () => { },
-	setSorterOrder = () => { },
+	setSorterField = () => {},
+	setSorterOrder = () => {},
 	searchedColumn = "",
-	setSearchedColumn = () => { },
+	setSearchedColumn = () => {},
 	searchText = "",
-	setSearchText = () => { },
-	handleReset = () => { },
+	setSearchText = () => {},
+	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
 
@@ -211,16 +215,17 @@ const App = ({
 					newData.splice(index, 1);
 					setData(newData);
 				}
-				message.success('Record deleted successfully!');
+				message.success("Record deleted successfully!");
 			} else {
-				message.error(response.data.error || 'Failed to delete record.');
+				message.error(
+					response.data.error || "Failed to delete record.",
+				);
 			}
 		} catch (error) {
-			message.error('Error deleting record!');
-			console.error('Error deleting record:', error);
+			message.error("Error deleting record!");
+			console.error("Error deleting record:", error);
 		}
 	};
-
 
 	const isEditing = (record) => record.id === editingKey;
 
@@ -239,7 +244,7 @@ const App = ({
 			const index = newData.findIndex((item) => record.id === item.id);
 			if (index > -1) {
 				const item = newData[index];
-				record.date = dayjs(record.date).format('YYYY-MM-DD');
+				record.date = dayjs(record.date).format("YYYY-MM-DD");
 				newData.splice(index, 1, {
 					...item,
 					...record,
@@ -248,7 +253,7 @@ const App = ({
 				setEditingKey("");
 			}
 		} catch (error) {
-			console.error('try refreshing', error);
+			console.error("try refreshing", error);
 		}
 	};
 
@@ -260,7 +265,7 @@ const App = ({
 
 			if (index > -1) {
 				const item = newData[index];
-				row.date = dayjs(row.date).format('YYYY-MM-DD');
+				row.date = dayjs(row.date).format("YYYY-MM-DD");
 				newData.splice(index, 1, {
 					...item,
 					...row,
@@ -273,10 +278,10 @@ const App = ({
 				setData(newData);
 				setEditingKey("");
 
-				message.success('Data updated successfully!');
+				message.success("Data updated successfully!");
 			}
 		} catch (errInfo) {
-			message.error("Validate Failed!")
+			message.error("Validate Failed!");
 			console.log("Validate Failed:", errInfo);
 		}
 	};
@@ -343,15 +348,24 @@ const App = ({
 						>
 							Save
 						</Typography.Link>
-						<Popconfirm title="Sure to cancel?" onConfirm={() => cancel(record)}>
+						<Popconfirm
+							title="Sure to cancel?"
+							onConfirm={() => cancel(record)}
+						>
 							<a>Cancel</a>
 						</Popconfirm>
 					</span>
 				) : (
 					<span className="gap-2 flex">
-						<Link href={`/admin/exam/${record.id}`}><Tag color="green">Attendance</Tag></Link>
-						<Tag color="orange" className="cursor-pointer" disabled={editingKey !== ""}
-							onClick={() => edit(record)}>
+						<Link href={`/admin/exam/${record.id}`}>
+							<Tag color="green">Attendance</Tag>
+						</Link>
+						<Tag
+							color="orange"
+							className="cursor-pointer"
+							disabled={editingKey !== ""}
+							onClick={() => edit(record)}
+						>
 							Edit
 						</Tag>
 						<Tag color="red" className="cursor-pointer">

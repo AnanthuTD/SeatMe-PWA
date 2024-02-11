@@ -28,26 +28,26 @@ const items = [
 		getItem("Insert", "/admin/staffs/insert", <FileAddOutlined />),
 	]),
 	getItem("Student", "/admin/student", <IdcardOutlined />, [
-		getItem(
-			"Student List",
-			"/admin/student",
-			<UnorderedListOutlined />,
-		),
+		getItem("Student List", "/admin/student", <UnorderedListOutlined />),
 		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
 	]),
-	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />,[
+	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />, [
 		getItem("Insert", "/admin/supplementary", <FileAddOutlined />),
 		getItem("List", "/admin/supplementary/view", <UnorderedListOutlined />),
 	]),
 	getItem("Exam", "/admin/exam", <CalendarOutlined />, [
-		getItem(
-			"Insert",
-			"/admin/exam/insert",
-			<FileAddOutlined />,
-		),
+		getItem("Insert", "/admin/exam/insert", <FileAddOutlined />),
 		getItem("View", "/admin/exam", <CalendarOutlined />),
-		getItem("Assign Seats", "/admin/exam/assign", <UnorderedListOutlined />),
-		getItem("Assign Staffs", "/admin/exam/assign/staffs", <UnorderedListOutlined />),
+		getItem(
+			"Assign Seats",
+			"/admin/exam/assign",
+			<UnorderedListOutlined />,
+		),
+		getItem(
+			"Assign Staffs",
+			"/admin/exam/assign/staffs",
+			<UnorderedListOutlined />,
+		),
 	]),
 	getItem("Forms", "/admin/forms", <FormOutlined />, [
 		getItem(
@@ -75,9 +75,21 @@ const App = () => {
 			return "/admin/staffs";
 		if (["/admin/student", "/admin/student/insert"].includes(pathname))
 			return "/admin/student";
-		if (["/admin/exam/insert", "/admin/exam", "/admin/exam/assign"].includes(pathname))
+		if (
+			[
+				"/admin/exam/insert",
+				"/admin/exam",
+				"/admin/exam/assign",
+			].includes(pathname)
+		)
 			return "/admin/exam";
-		if (["/admin/forms/department", "/admin/forms/program", "/admin/forms/course"].includes(pathname))
+		if (
+			[
+				"/admin/forms/department",
+				"/admin/forms/program",
+				"/admin/forms/course",
+			].includes(pathname)
+		)
 			return "/admin/forms";
 	}
 
