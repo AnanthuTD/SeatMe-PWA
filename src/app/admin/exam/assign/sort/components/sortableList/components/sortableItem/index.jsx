@@ -1,1 +1,3 @@
-export { DragHandle, SortableItem } from "./SortableItem";
+'use client'
+
+export { DragHandle, SortableItem } from "./sortableItem";

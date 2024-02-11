@@ -20,7 +20,7 @@ import Rooms from "./rooms";
 import CustomDatePicker from "../../components/datePicker";
 import DownloadZipButton from "../../components/downloadReport";
 import ProgramCountsDisplay from "./ProgramCountsDisplay";
-import SortableExam from "./sort/page";
+import SortableExam from "./sort";
 
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),

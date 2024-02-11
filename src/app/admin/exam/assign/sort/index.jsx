@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SortableList } from "./components/page";
+import { SortableList } from "./components";
 import "./styles.css";
 import axios from "@/lib/axiosPrivate";
 
