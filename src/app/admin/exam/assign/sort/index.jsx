@@ -4,18 +4,19 @@ import { SortableList } from "./components";
 import "./styles.css";
 import axios from "@/lib/axiosPrivate";
 
-export default function App({ date, onSort }) {
+export default function App({ date,timeCode, onSort }) {
 	const [items, setItems] = useState([]);
 
 	async function fetchExams() {
-		const response = await axios.get(`/api/admin/exams/`, {
+		const response = await axios.get(`/api/admin/exams/program`, {
 			params: {
-				query: date,
-				column: "date",
+				date,
+				timeCode,
 			},
 		});
 
 		const exams = response.data;
+		console.log(exams);
 		setItems(exams);
 	}
 
@@ -41,9 +42,9 @@ export default function App({ date, onSort }) {
 					>
 						<div className="flex items-center">
 							<span class="course">
-								{item["course.name"]} (
+								{item["courseName"]} (
 								<span class="text-gray-500 text-sm">
-									{item["course.id"]}
+									{item["courseId"]}
 								</span>
 								)
 							</span>

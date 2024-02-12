@@ -355,9 +355,11 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 										onCancel={() =>
 											setTriggerSortExam(false)
 										}
+										onOk={()=>setTriggerSortExam(false)}
 									>
-										<SortableExam date={date} onSort={(exams) => {
+										<SortableExam date={date} timeCode={timeCode} onSort={(exams) => {
 											const examIds = exams.map((exam) => exam.id)
+											console.log(examIds);
 											setExamOrder(examIds)
 										}} />
 									</Modal>

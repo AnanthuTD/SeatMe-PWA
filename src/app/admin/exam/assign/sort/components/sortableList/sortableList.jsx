@@ -50,6 +50,7 @@ export function SortableList({ items, onChange, renderItem }) {
 						activeIndex,
 						overIndex,
 					);
+					console.log(sortedItems);
 					onChange(sortedItems);
 				}
 				setActive(null);
