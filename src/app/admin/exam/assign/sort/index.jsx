@@ -5,7 +5,7 @@ import "./styles.css";
 import axios from "@/lib/axiosPrivate";
 
 export default function App({ date, onSort }) {
-	const [items, setItems] = useState(getMockItems());
+	const [items, setItems] = useState([]);
 
 	async function fetchExams() {
 		const response = await axios.get(`/api/admin/exams/`, {
