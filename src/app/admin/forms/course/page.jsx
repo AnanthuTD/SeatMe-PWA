@@ -4,7 +4,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from 'react-highlight-words';
 import { useRef } from "react";
 
-
 import React, { useState, useEffect } from "react";
 import {
 	Input,
@@ -23,7 +22,9 @@ import {
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
-import SelectProgram from "../../components/selectDepartment";
+// import SelectProgram from "../../components/selectDepartment";
+import SelectProgram from "../../components/selectProgram";
+
 import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 
@@ -36,6 +37,29 @@ const DynamicCourseForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 	const [programs, setPrograms] = useState([]); // State to store program data
+	const handleDelete = async (courseId) => {
+		try {
+		  // Assuming your server-side API endpoint for course deletion is /api/admin/courseentry/course/:courseId
+		  const result = await axios.delete(`/api/admin/courseentry/course/${courseId}`);
+		//   console.log(result);
+		  if (result.status === 200) {
+			// If deletion is successful, display a success message
+			const msg = "Course with id : "+ courseId + " deleted" ;
+			message.success(msg);
+	  
+			// Reload the courses after deletion
+			loadCourses(null, semesterOptions);
+		  } else {
+			// If deletion fails, display an error message
+			message.error("Delete failed");
+		  }
+		} catch (error) {
+		  // If an error occurs during the deletion process, log the error and display a generic error message
+		  console.error("Error deleting course: ", error);
+		  message.error("Something went wrong. Please try again.");
+		}
+	  };
+	  
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
@@ -197,7 +221,51 @@ const DynamicCourseForm = () => {
 		console.log("Semester Options:", semesterOptions);
 	  }, [semesterOptions]);
 	  
-	
+	// const columns = [
+	// 	{
+	// 	  title: 'ID',
+	// 	  dataIndex: 'id',
+	// 	  key: 'id',
+	// 	  ...getColumnSearchProps('id', 'Search ID'),
+	// 	},
+	// 	{
+	// 	  title: 'Name',
+	// 	  dataIndex: 'name',
+	// 	  key: 'name',
+	// 	  ...getColumnSearchProps('name', 'Search Name'),
+	// 	},
+	// 	 {
+	// 	 title: 'Semester',
+	// 	 dataIndex: 'semester',
+	// 	 key: 'semester',
+	// 	 ...getColumnSearchProps('semester', 'Search Semester'),
+	// 	 },
+	// 	 {
+	// 		 title: "Is Open Course",
+	// 		 dataIndex: "isOpenCourse",
+	// 		 key: "isOpenCourse",
+
+			 
+	// 		 render: (text, record) => (
+	// 		   <span style={{ color: text  ? 'green' : 'red' }}>
+	// 			 {text  ? 'Yes' : 'No'}
+	// 		   </span>
+	// 		 ),
+	// 	   },
+		//    {
+		// 	title: 'Operations',
+		// 	dataIndex: 'operations',
+		// 	fixed: 'right',
+		// 	key: 'operations',
+		// 	render: (_, record) => (
+		// 		<Button type="link" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>
+		// 		  Delete
+		// 		</Button>
+		// 	  ),
+		//   },
+		  
+
+	//  ]
 	return (
 		<div className="p-3">
 			<Link href={"/admin/forms/course/import"}>
@@ -309,23 +377,32 @@ const DynamicCourseForm = () => {
 												<Checkbox defaultChecked={false}/>
 											</Form.Item>
 										</Col>
+
 										<Col xs={24} md={24} lg={10} xxl={10}>
-											<Form.Item
-												name={[field.name, "program"]}
-												label="Program"
-												rules={[
-													{
-														required: true,
-														message:
-															"Please select the program",
-													},
-												]}
-											>
-												<SelectProgram
-													options={programs}
-													placeholder="Select Program"
-												/>
-											</Form.Item>
+										<Form.Item
+											name={[field.name, "program"]}
+											label="Program"
+											rules={[
+											{
+												required: true,
+												message: "Please select the program",
+											},
+											]}
+										>
+											<SelectProgram
+											options={programs}
+											placeholder="Select Program"
+											onChange={(value) => {
+												// Handle the change and update the form values
+												form.setFieldsValue({
+												courses: form.getFieldsValue().courses.map((course, index) => ({
+													...course,
+													program: index === field.name ? value : course.program,
+												})),
+												});
+											}}
+											/>
+										</Form.Item>
 										</Col>
 									</Row>
 								</Card>
@@ -369,38 +446,50 @@ const DynamicCourseForm = () => {
 				<Table
 				 dataSource={courses}
 				 columns={[
-				   {
-					 title: 'ID',
-					 dataIndex: 'id',
-					 key: 'id',
-					 ...getColumnSearchProps('id', 'Search ID'),
-				   },
-				   {
-					 title: 'Name',
-					 dataIndex: 'name',
-					 key: 'name',
-					 ...getColumnSearchProps('name', 'Search Name'),
-				   },
 					{
-					title: 'Semester',
-					dataIndex: 'semester',
-					key: 'semester',
-					...getColumnSearchProps('semester', 'Search Semester'),
+					  title: 'ID',
+					  dataIndex: 'id',
+					  key: 'id',
+					  ...getColumnSearchProps('id', 'Search ID'),
 					},
 					{
-						title: "Is Open Course",
-						dataIndex: "isOpenCourse",
-						key: "isOpenCourse",
-
-						
-						render: (text, record) => (
-						  <span style={{ color: text  ? 'green' : 'red' }}>
-							{text  ? 'Yes' : 'No'}
-						  </span>
-						),
+					  title: 'Name',
+					  dataIndex: 'name',
+					  key: 'name',
+					  ...getColumnSearchProps('name', 'Search Name'),
+					},
+					 {
+					 title: 'Semester',
+					 dataIndex: 'semester',
+					 key: 'semester',
+					 ...getColumnSearchProps('semester', 'Search Semester'),
+					 },
+					 {
+						 title: "Is Open Course",
+						 dataIndex: "isOpenCourse",
+						 key: "isOpenCourse",
+				
+						 
+						 render: (text, record) => (
+						   <span style={{ color: text  ? 'green' : 'red' }}>
+							 {text  ? 'Yes' : 'No'}
+						   </span>
+						 ),
+					   },
+					   {
+						title: 'Operations',
+						dataIndex: 'operations',
+						fixed: 'right',
+						key: 'operations',
+						render: (_, record) => (
+							<Button type="link" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>
+							  Delete
+							</Button>
+						  ),
 					  },
-
-				]}
+					  
+				
+				 ]}
 				pagination={false}
 				style={{ width: '100%' }}
 				/>
@@ -410,3 +499,54 @@ const DynamicCourseForm = () => {
 };
 
 export default DynamicCourseForm;
+
+
+
+
+
+
+// columns={[
+// 	{
+// 	  title: 'ID',
+// 	  dataIndex: 'id',
+// 	  key: 'id',
+// 	  ...getColumnSearchProps('id', 'Search ID'),
+// 	},
+// 	{
+// 	  title: 'Name',
+// 	  dataIndex: 'name',
+// 	  key: 'name',
+// 	  ...getColumnSearchProps('name', 'Search Name'),
+// 	},
+// 	 {
+// 	 title: 'Semester',
+// 	 dataIndex: 'semester',
+// 	 key: 'semester',
+// 	 ...getColumnSearchProps('semester', 'Search Semester'),
+// 	 },
+// 	 {
+// 		 title: "Is Open Course",
+// 		 dataIndex: "isOpenCourse",
+// 		 key: "isOpenCourse",
+
+		 
+// 		 render: (text, record) => (
+// 		   <span style={{ color: text  ? 'green' : 'red' }}>
+// 			 {text  ? 'Yes' : 'No'}
+// 		   </span>
+// 		 ),
+// 	   },
+// 	   {
+// 		title: 'Operations',
+// 		dataIndex: 'operations',
+// 		fixed: 'right',
+// 		key: 'operations',
+// 		render: (_, record) => (
+// 			<Button type="link" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>
+// 			  Delete
+// 			</Button>
+// 		  ),
+// 	  },
+	  
+
+//  ]}

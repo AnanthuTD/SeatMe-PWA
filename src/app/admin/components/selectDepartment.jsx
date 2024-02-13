@@ -28,6 +28,24 @@ const SelectDepartment = ({
 		}
 	};
 
+	const SelectProgram = ({ options, ...props }) => {
+		const handleChange = value => {
+		  console.log('Selected value:', value);
+		  // You may want to update the form field here
+		  // Example: props.onChange(value);
+		};
+	  
+		return (
+		  <Select {...props} onChange={handleChange}>
+			{options.map(option => (
+			  <Select.Option key={option.value} value={option.value}>
+				{option.label}
+			  </Select.Option>
+			))}
+		  </Select>
+		);
+	  };
+	
 	const handleSelectChange = (value, option) => {
 		const selectedOption = options.find((opt) => opt.code === value);
 		onChange(value, selectedOption);
