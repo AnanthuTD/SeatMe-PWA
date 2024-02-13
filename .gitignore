@@ -39,11 +39,10 @@ next-env.d.ts
 
 /analyze
 
-/public/sw.js
-/public/sw.js.map
-/public/workbox-*.js
-/public/workbox-*.js.map
-/public/manifest.json
-/public/precache-manifest-*
-/public/cache-storage/
-/public/static/
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
