@@ -14,7 +14,7 @@ import {
 	Select,
 	FloatButton,
 	Table,
-	Typography
+	Typography,
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -27,7 +27,6 @@ const DynamicProgramForm = () => {
 	const [error, setError] = useState(null); // State to store error messages
 	const [departments, setDepartments] = useState([]); // State to store department data
 	const [selectedDepartmentCode, setSelectedDepartmentCode] = useState(null);
-
 	const handleDelete = async (record) => {
 		try {
 		  // Make an API call or perform the necessary logic to delete the program
@@ -49,7 +48,7 @@ const DynamicProgramForm = () => {
 	const loadDepartments = async () => {
 		try {
 			const result = await axios.get("/api/admin/departments");
-			console.log("departments data",result.data);
+			console.log("departments data", result.data);
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -247,7 +246,10 @@ const DynamicProgramForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
-												name={[field.name, "abbreviation"]}
+												name={[
+													field.name,
+													"abbreviation",
+												]}
 												label="Name abbreviation"
 												rules={[
 													{
@@ -345,35 +347,47 @@ const DynamicProgramForm = () => {
 				</Row>
 			</Form>
 			<div>
-			<Title level={4} style={{ color: "black", fontWeight: "bold", marginTop: "20px" }}>
-				Programs
-			</Title>
-			<Select
-				style={{ width: 200, marginBottom: 16 }}
-				placeholder="Select Department"
-				onChange={(value) => setSelectedDepartmentCode(value)}
-			>
-				<Select.Option value={null}>All Departments</Select.Option>
-				{departments.map((dept) => (
-				<Select.Option key={dept.code} value={dept.code}>
-					{dept.name}
-				</Select.Option>
-				))}
-			</Select>
-			<Table
-				dataSource={programs.filter((program) => {
-					console.log('Program Department Code:', program.departmentCode);
-					console.log('Selected Department Code:', selectedDepartmentCode);
-				
-					return selectedDepartmentCode
-					  ? program.departmentCode.toLowerCase() === selectedDepartmentCode.toLowerCase()
-					  : true;
-				  })}
-				  columns={columns}
-				  pagination={false}
-			/>
+				<Title
+					level={4}
+					style={{
+						color: "black",
+						fontWeight: "bold",
+						marginTop: "20px",
+					}}
+				>
+					Programs
+				</Title>
+				<Select
+					style={{ width: 200, marginBottom: 16 }}
+					placeholder="Select Department"
+					onChange={(value) => setSelectedDepartmentCode(value)}
+				>
+					<Select.Option value={null}>All Departments</Select.Option>
+					{departments.map((dept) => (
+						<Select.Option key={dept.code} value={dept.code}>
+							{dept.name}
+						</Select.Option>
+					))}
+				</Select>
+				<Table
+					dataSource={programs.filter((program) => {
+						console.log(
+							"Program Department Code:",
+							program.departmentCode,
+						);
+						console.log(
+							"Selected Department Code:",
+							selectedDepartmentCode,
+						);
 
-				
+						return selectedDepartmentCode
+							? program.departmentCode.toLowerCase() ===
+									selectedDepartmentCode.toLowerCase()
+							: true;
+					})}
+					columns={columns}
+					pagination={false}
+				/>
 			</div>
 		</div>
 	);
@@ -381,53 +395,51 @@ const DynamicProgramForm = () => {
 
 export default DynamicProgramForm;
 
-
-
-
-{/* <Table
+{
+	/* <Table
 					dataSource={programs}
 					columns={columns}
 					
 					pagination={false}
-				/> */}
-
+				/> */
+}
 
 //   					columns={[
-					//   						{
-					//   						title: "ID",
-					//   						dataIndex: "id",
-					//   						key: "id",
-					//   						},
-					//   						{
-					//   						title: "Name",
-					//   						dataIndex: "name",
-					//   						key: "name",
-					//   						},
-					//   						{
-					//   						title: "Duration",
-					//   						dataIndex: "duration",
-					//   						key: "duration",
-					//   						},
-					//   						{
-					//   						title: "Level",
-					//   						dataIndex: "level",
-					//   						key: "level",
-					//   						},
-					//   						{
-					//   						title: "Department ID",
-					//   						dataIndex: "departmentCode",
-					//   						key: "departmentCode",
+//   						{
+//   						title: "ID",
+//   						dataIndex: "id",
+//   						key: "id",
+//   						},
+//   						{
+//   						title: "Name",
+//   						dataIndex: "name",
+//   						key: "name",
+//   						},
+//   						{
+//   						title: "Duration",
+//   						dataIndex: "duration",
+//   						key: "duration",
+//   						},
+//   						{
+//   						title: "Level",
+//   						dataIndex: "level",
+//   						key: "level",
+//   						},
+//   						{
+//   						title: "Department ID",
+//   						dataIndex: "departmentCode",
+//   						key: "departmentCode",
 
-					//   						},
-					//     {
-					//       title: "Is Aided",
-					//       dataIndex: "isAided",
-					//       key: "isAided",
-					//       render: (text) => (
-					//         <span style={{ color: text  ? "green" : "red" }}>
-					//           {text  ? "Yes" : "No"}
-					//         </span>
-					//       ),
-					//     },
-					//     // Add more columns as needed
-					//   ]}
+//   						},
+//     {
+//       title: "Is Aided",
+//       dataIndex: "isAided",
+//       key: "isAided",
+//       render: (text) => (
+//         <span style={{ color: text  ? "green" : "red" }}>
+//           {text  ? "Yes" : "No"}
+//         </span>
+//       ),
+//     },
+//     // Add more columns as needed
+//   ]}

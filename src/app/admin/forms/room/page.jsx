@@ -14,7 +14,7 @@ import {
 	FloatButton,
 	Checkbox,
 	Select,
-	Avatar
+	Avatar,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -108,7 +108,9 @@ const DynamicRoomForm = () => {
 				/>
 			)}
 			<div className="my-3">
-				<Link href={'/admin/rooms'}><Button type="primary">View Rooms</Button></Link>
+				<Link href={"/admin/rooms"}>
+					<Button type="primary">View Rooms</Button>
+				</Link>
 			</div>
 			<Form
 				name="main"
@@ -159,7 +161,10 @@ const DynamicRoomForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
-												name={[field.name, "internalCols"]}
+												name={[
+													field.name,
+													"internalCols",
+												]}
 												label="Internal Columns"
 												rules={[
 													{
@@ -174,7 +179,10 @@ const DynamicRoomForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={10} xxl={10}>
 											<Form.Item
-												name={[field.name, "internalRows"]}
+												name={[
+													field.name,
+													"internalRows",
+												]}
 												label="Internal Rows"
 												rules={[
 													{
@@ -219,7 +227,6 @@ const DynamicRoomForm = () => {
 										</Col>
 									</Row>
 									<Row gutter={16}>
-
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
 												name={[
@@ -230,7 +237,9 @@ const DynamicRoomForm = () => {
 												initialValue={false}
 												valuePropName="checked"
 											>
-												<Checkbox defaultChecked={false} />
+												<Checkbox
+													defaultChecked={false}
+												/>
 											</Form.Item>
 										</Col>
 										<Col xs={24} md={24} lg={7} xxl={7}>
@@ -271,7 +280,9 @@ const DynamicRoomForm = () => {
 															value={block.id}
 															label={block.id}
 														>
-															<div>{block.id}</div>
+															<div>
+																{block.id}
+															</div>
 														</Option>
 													))}
 												</Select>
@@ -295,7 +306,7 @@ const DynamicRoomForm = () => {
 					</Col>
 				</Row>
 			</Form>
-		</div >
+		</div>
 	);
 };
 

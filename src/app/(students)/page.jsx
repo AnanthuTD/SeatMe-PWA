@@ -29,11 +29,11 @@ const App = () => {
 			examsData,
 		};
 
-		localStorage.setItem('upcomingExams', JSON.stringify(storageData));
+		localStorage.setItem("upcomingExams", JSON.stringify(storageData));
 	};
 
 	const getUpcomingExamsFromLocalStorage = () => {
-		const storedData = localStorage.getItem('upcomingExams');
+		const storedData = localStorage.getItem("upcomingExams");
 		if (!storedData) {
 			return null;
 		}
@@ -41,7 +41,7 @@ const App = () => {
 		const { expirationTime, examsData } = JSON.parse(storedData);
 
 		if (expirationTime && new Date().getTime() > expirationTime) {
-			localStorage.removeItem('upcomingExams');
+			localStorage.removeItem("upcomingExams");
 			return null;
 		}
 
@@ -61,7 +61,7 @@ const App = () => {
 
 			return seatingInfo;
 		} catch (error) {
-			console.error('Error fetching seating info:', error);
+			console.error("Error fetching seating info:", error);
 			return undefined;
 		}
 	};
@@ -71,22 +71,24 @@ const App = () => {
 			const examsResponse = await axios.get("api/exams");
 
 			const examsData = examsResponse.data;
-			const sortedExams = examsData.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+			const sortedExams = examsData
+				.slice()
+				.sort((a, b) => new Date(a.date) - new Date(b.date));
 			return sortedExams;
 		} catch (error) {
-			console.error('Error fetching upcoming exams:', error);
+			console.error("Error fetching upcoming exams:", error);
 			return [];
 		}
 	};
 
 	const onFinish = async (values) => {
 		const studentId = values.studentId;
-		const existingStudentId = parseInt(getCookie('studentId'));
+		const existingStudentId = parseInt(getCookie("studentId"));
 		let upcomingExamLength = upcomingExams.length;
 
 		if (studentId !== existingStudentId) {
-			localStorage.removeItem('upcomingExams');
-			setUpcomingExams([])
+			localStorage.removeItem("upcomingExams");
+			setUpcomingExams([]);
 			upcomingExamLength = 0;
 		}
 
@@ -116,28 +118,29 @@ const App = () => {
 				setUpcomingExams(cachedExams);
 			}
 		} catch (error) {
-			console.error('Error retrieving cached exams from localStorage:', error);
+			console.error(
+				"Error retrieving cached exams from localStorage:",
+				error,
+			);
 		}
 	}, []);
 
 	useEffect(() => {
 		try {
-			const studentId = getCookie('studentId');
+			const studentId = getCookie("studentId");
 
 			if (studentId) {
 				form.setFieldsValue({ studentId: parseInt(studentId) });
 				form.submit();
 			}
-
 		} catch (error) {
-			console.error('Error in useEffect:', error.message);
+			console.error("Error in useEffect:", error.message);
 		}
 	}, [form]);
 
-
 	const onReset = () => {
-		deleteCookie('studentId');
-		localStorage.removeItem('upcomingExams');
+		deleteCookie("studentId");
+		localStorage.removeItem("upcomingExams");
 		form.resetFields();
 		setSeatingInfo(undefined);
 		setUpcomingExams([]);
@@ -145,10 +148,9 @@ const App = () => {
 
 	return (
 		<>
-
 			<Studentnav />
 
-			<section className="w-full mt-8 ml-3  lg:ml-40   "   >
+			<section className="w-full mt-8 ml-3  lg:ml-40   ">
 				<Instruction />
 			</section>
 			<div className="flex h-screen flex-col w-full  overflow-hidden">
@@ -188,16 +190,18 @@ const App = () => {
 									Reset
 								</Button>
 							</Form.Item>
-
 						</Form>
 					</div>
-				</section >
+				</section>
 				<section className="w-full h-[60%]">
 					<div className="mx-auto w-full h-full">
-						<Segment seatingInfo={seatingInfo} upcomingExams={upcomingExams} />
+						<Segment
+							seatingInfo={seatingInfo}
+							upcomingExams={upcomingExams}
+						/>
 					</div>
 				</section>
-			</div >
+			</div>
 		</>
 	);
 };

@@ -5,7 +5,7 @@ import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton } from "antd";
 import axios from "@/lib/axiosPrivate";
 import ErrorModel from "@/app/admin/components/errorModel";
-import {FormOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 const requiredFields = [
@@ -16,7 +16,7 @@ const requiredFields = [
 
 function DepartmentPage() {
 	const [data, setData] = useState([]);
-	const [fileName, setFileName] = useState('courses')
+	const [fileName, setFileName] = useState("courses");
 
 	const handleSubmission = async (departments) => {
 		setData([]);
@@ -37,9 +37,12 @@ function DepartmentPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/departmententry/department", {
-				departments,
-			});
+			const result = await axios.post(
+				"/api/admin/departmententry/department",
+				{
+					departments,
+				},
+			);
 			if (result.status === 200) {
 				message.success("Successfully submitted");
 				setData(result.data);
@@ -68,7 +71,9 @@ function DepartmentPage() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{data.length ? <ErrorModel data={data} setData={setData} fileName={fileName}/> : null}
+			{data.length ? (
+				<ErrorModel data={data} setData={setData} fileName={fileName} />
+			) : null}
 		</div>
 	);
 }

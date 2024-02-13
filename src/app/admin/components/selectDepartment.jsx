@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Select } from "antd";
 
 const SelectDepartment = ({
@@ -6,14 +6,8 @@ const SelectDepartment = ({
 	onChange,
 	onClick,
 	sortByValue = false,
-	defaultValue = undefined
+	defaultValue = undefined,
 }) => {
-	useEffect(() => {
-		setValue([]);
-	}, [options]);
-
-	const [value, setValue] = useState([]);
-
 	const customSort = (optionA, optionB) => {
 		if (sortByValue) {
 			// Sort by code
@@ -22,8 +16,8 @@ const SelectDepartment = ({
 			return valueA - valueB;
 		} else {
 			// Sort by label (default)
-			const labelA = optionA?.label || '';
-			const labelB = optionB?.label || '';
+			const labelA = optionA?.label || "";
+			const labelB = optionB?.label || "";
 			return labelA.localeCompare(labelB);
 		}
 	};
@@ -51,6 +45,17 @@ const SelectDepartment = ({
 		onChange(value, selectedOption);
 	};
 
+	const customFilter = (input, option) => {
+		const codeMatches = (option?.code?.toLowerCase() ?? "").includes(
+			input.toLowerCase(),
+		);
+		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(
+			input.toLowerCase(),
+		);
+
+		return codeMatches || nameMatches;
+	};
+
 	return (
 		<Select
 			showSearch
@@ -59,19 +64,14 @@ const SelectDepartment = ({
 				width: 200,
 			}}
 			placeholder="Search to Select"
-			filterOption={(input, option) =>
-				(option?.label?.toLowerCase() ?? "").includes(
-					input.toLowerCase(),
-				)
-			}
+			filterOption={customFilter}
 			filterSort={customSort}
 			onChange={handleSelectChange}
 			onClick={onClick}
 			defaultValue={defaultValue}
-			fieldNames={{ label: 'name', value: 'code', key: 'code' }}
+			fieldNames={{ label: "name", value: "code", key: "code" }}
 			options={options}
 		/>
-
 	);
 };
 

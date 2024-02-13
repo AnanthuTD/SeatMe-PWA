@@ -6,7 +6,12 @@ import * as XLSX from "xlsx";
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const DragDrop = ({ requiredFields, records = (records) => { }, loading = false, fileName: name }) => {
+const DragDrop = ({
+	requiredFields,
+	records = (records) => {},
+	loading = false,
+	fileName: name,
+}) => {
 	const [fileData, setFileData] = useState([]);
 	const [mappedFields, setMappedFields] = useState({});
 	const [fileName, setFileName] = useState("");
@@ -18,9 +23,8 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 	};
 
 	useEffect(() => {
-		name(fileName)
-	}, [fileName])
-
+		name(fileName);
+	}, [fileName]);
 
 	const handleFieldMapping = (field, column) => {
 		const newMappedFields = { ...mappedFields };
@@ -76,7 +80,9 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 				console.log(dataArr[0]);
 
 				requiredFields.forEach((field) => {
-					const column = dataArr[0].find((col) => col === field.value || col === field.key);
+					const column = dataArr[0].find(
+						(col) => col === field.value || col === field.key,
+					);
 					if (column) {
 						newMappedFields[field.key] = column;
 					}
@@ -97,8 +103,7 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 		const selectedFields = Object.values(mappedFields);
 		// console.log('selectedFields', selectedFields);
 		const options = fileData[0].filter(
-			(field) =>
-				!selectedFields.includes(field)
+			(field) => !selectedFields.includes(field),
 		);
 		// console.log(options);
 		return options;
@@ -133,7 +138,9 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 				<p className="ant-upload-hint">
 					{fileName && (
 						<>
-							<FileExcelOutlined style={{ marginRight: "8px", color: "green", }} />
+							<FileExcelOutlined
+								style={{ marginRight: "8px", color: "green" }}
+							/>
 							{fileName}
 						</>
 					)}
@@ -143,22 +150,26 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 			{fileData.length > 0 && (
 				<div className="mt-4">
 					<h2 className="text-lg font-semibold">Field Mapping</h2>
-					{fileData.length > 0 && (
+					{fileData.length > 0 &&
 						requiredFields.map((field, index) => (
 							<div key={index} className="mt-2 flex items-center">
 								<span>{field.value}</span>
 								<Select
 									defaultValue={
-										fileData[0].includes(field.key) ? field.key : fileData[0].includes(field.value) ?
-											field.value
-											: "Select Field"
+										fileData[0].includes(field.key)
+											? field.key
+											: fileData[0].includes(field.value)
+												? field.value
+												: "Select Field"
 									}
 									className="w-48 ml-2"
 									onChange={(value, opt) => {
 										handleFieldMapping(field.key, value);
 									}}
 								>
-									<Option value="Select Field">Select Field</Option>
+									<Option value="Select Field">
+										Select Field
+									</Option>
 									{getAvailableFields().map((column) => (
 										<Option key={column} value={column}>
 											{column}
@@ -166,9 +177,8 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 									))}
 								</Select>
 							</div>
-						))
-					)}
-					< Button
+						))}
+					<Button
 						type="primary"
 						className="mt-4"
 						onClick={() => {
@@ -179,9 +189,8 @@ const DragDrop = ({ requiredFields, records = (records) => { }, loading = false,
 						Save Mapping
 					</Button>
 				</div>
-			)
-			}
-		</div >
+			)}
+		</div>
 	);
 };
 

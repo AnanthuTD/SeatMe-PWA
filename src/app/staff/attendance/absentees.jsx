@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import { message, Button } from "antd";
@@ -6,7 +6,7 @@ import axios from "@/lib/axiosPrivate";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-function Absentees({ data, conform, setConform, teacherSeatId , submitted}) {
+function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 	const absentees = data.filter((std) => !std.isPresent);
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
@@ -17,28 +17,34 @@ function Absentees({ data, conform, setConform, teacherSeatId , submitted}) {
 
 	useEffect(() => {
 		try {
-			if (typeof window !== 'undefined') {
+			if (typeof window !== "undefined") {
 				const submitted = localStorage.getItem("Submitted") || false;
 				console.log(submitted);
 			}
-		} catch (error) {
-		}
+		} catch (error) {}
 	}, []);
 
 	const finished = async (absentees) => {
 		setLoading(true);
 		try {
-			const result = await axios.post(`/api/staff/attendance/${teacherSeatId}`, absentees);
-			
-			if (result.status === 200 || result.status === 201 || result.status === 204) {
-				if (typeof window !== 'undefined') {
+			const result = await axios.post(
+				`/api/staff/attendance/${teacherSeatId}`,
+				absentees,
+			);
+
+			if (
+				result.status === 200 ||
+				result.status === 201 ||
+				result.status === 204
+			) {
+				if (typeof window !== "undefined") {
 					localStorage.setItem("Submitted", true);
 				}
 				setLoading(false);
-				message.success('Attendance submitted successfully!');
-				router.replace('/staff/');
+				message.success("Attendance submitted successfully!");
+				router.replace("/staff/");
 			} else {
-				message.error('Failed Updation');
+				message.error("Failed Updation");
 			}
 		} catch (error) {
 			message.error(`Error while making the request: ${error.message}`);
@@ -52,10 +58,11 @@ function Absentees({ data, conform, setConform, teacherSeatId , submitted}) {
 				{absentees.length ? (
 					absentees.map((student, index) => (
 						<div
-							className={` m-4 p-2 rounded-lg ${student.isPresent
-								? "bg-green-800"
-								: "bg-red-800"
-								}`}
+							className={` m-4 p-2 rounded-lg ${
+								student.isPresent
+									? "bg-green-800"
+									: "bg-red-800"
+							}`}
 							key={index}
 						>
 							<div className="text-white font-serif ">
@@ -82,16 +89,26 @@ function Absentees({ data, conform, setConform, teacherSeatId , submitted}) {
 				)}
 			</div>
 
-			{submitted ? (<>
-				<h1 className="text-2xl text-center font-bold  "   >Attendance marked and Submitted Succesfully  !!  </h1>
-			</>) : (
+			{submitted ? (
+				<>
+					<h1 className="text-2xl text-center font-bold  ">
+						Attendance marked and Submitted Succesfully !!{" "}
+					</h1>
+				</>
+			) : (
 				<>
 					<div className="flex flex-row justify-between m-8 ">
 						<Button onClick={() => handleConfirm()}> back</Button>
-						<Button loading={loading} onClick={() => finished(absentees)}> Finish </Button>
+						<Button
+							loading={loading}
+							onClick={() => finished(absentees)}
+						>
+							{" "}
+							Finish{" "}
+						</Button>
 					</div>
-				</>)
-			}
+				</>
+			)}
 		</>
 	);
 }

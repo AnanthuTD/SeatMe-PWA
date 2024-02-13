@@ -18,7 +18,10 @@ export default function BasicTable({ examDetails }) {
 		createData("Room Number", examDetails.roomId),
 		createData("Building", examDetails.room.block.name),
 		createData("Floor Number", examDetails.room.floor),
-		createData("Attendance", examDetails.attendanceSubmitted ? "Submitted" : "Not submitted")
+		createData(
+			"Attendance",
+			examDetails.attendanceSubmitted ? "Submitted" : "Not submitted",
+		),
 	];
 
 	return (

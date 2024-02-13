@@ -1,7 +1,7 @@
 "use client";
 
 import { SearchOutlined } from "@ant-design/icons";
-import Highlighter from 'react-highlight-words';
+import Highlighter from "react-highlight-words";
 import { useRef } from "react";
 
 import React, { useState, useEffect } from "react";
@@ -16,9 +16,9 @@ import {
 	message,
 	Alert,
 	Select,
-    FloatButton,
+	FloatButton,
 	Table,
-	Checkbox
+	Checkbox,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -29,11 +29,10 @@ import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 
 const DynamicCourseForm = () => {
-
 	const [searchText, setSearchText] = useState(""); // State to store the search text
 	const [searchedColumn, setSearchedColumn] = useState(""); // State to store the column being searched
 	const searchInputRef = useRef(null);
-	
+
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 	const [programs, setPrograms] = useState([]); // State to store program data
@@ -65,67 +64,93 @@ const DynamicCourseForm = () => {
 		confirm();
 		setSearchText(selectedKeys[0]);
 		setSearchedColumn(dataIndex);
-	  };
-	  
-	  const handleReset = (clearFilters) => {
+	};
+
+	const handleReset = (clearFilters) => {
 		clearFilters();
 		setSearchText("");
-	  };
-	  <Input
+	};
+	<Input
 		ref={(node) => {
 			setSearchInputRef(node);
 		}}
 		// ...
-		/>
-	  const getColumnSearchProps = (dataIndex, placeholder) => ({
-		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-		  <div style={{ padding: 8 }}>
-			<Input
-			  placeholder={placeholder}
-			  value={selectedKeys[0]}
-			  onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-			  onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-			  style={{ width: 188, marginBottom: 8, display: "block" }}
-			/>
-			<Button
-			  type="primary"
-			  onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-			  icon={<SearchOutlined />}
-			  size="small"
-			  style={{ width: 90, marginRight: 8 }}
-			>
-			  Search
-			</Button>
-			<Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-			  Reset
-			</Button>
-		  </div>
+	/>;
+	const getColumnSearchProps = (dataIndex, placeholder) => ({
+		filterDropdown: ({
+			setSelectedKeys,
+			selectedKeys,
+			confirm,
+			clearFilters,
+		}) => (
+			<div style={{ padding: 8 }}>
+				<Input
+					placeholder={placeholder}
+					value={selectedKeys[0]}
+					onChange={(e) =>
+						setSelectedKeys(e.target.value ? [e.target.value] : [])
+					}
+					onPressEnter={() =>
+						handleSearch(selectedKeys, confirm, dataIndex)
+					}
+					style={{ width: 188, marginBottom: 8, display: "block" }}
+				/>
+				<Button
+					type="primary"
+					onClick={() =>
+						handleSearch(selectedKeys, confirm, dataIndex)
+					}
+					icon={<SearchOutlined />}
+					size="small"
+					style={{ width: 90, marginRight: 8 }}
+				>
+					Search
+				</Button>
+				<Button
+					onClick={() => handleReset(clearFilters)}
+					size="small"
+					style={{ width: 90 }}
+				>
+					Reset
+				</Button>
+			</div>
 		),
-		filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />,
-		onFilter: (value, record) =>
-		  record[dataIndex] ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()) : "",
-		  onFilterDropdownVisibleChange: (visible) => {
-			if (visible) {
-			  setTimeout(() => {
-				if (searchInputRef.current && searchInputRef.current.select) {
-				  searchInputRef.current.select();
-				}
-			  }, 100);
-			}
-		  },
-		render: (text) =>
-		  searchedColumn === dataIndex ? (
-			<Highlighter
-			  highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-			  searchWords={[searchText]}
-			  autoEscape
-			  textToHighlight={text ? text.toString() : ""}
+		filterIcon: (filtered) => (
+			<SearchOutlined
+				style={{ color: filtered ? "#1890ff" : undefined }}
 			/>
-		  ) : (
-			text
-		  ),
-	  });
-	  
+		),
+		onFilter: (value, record) =>
+			record[dataIndex]
+				? record[dataIndex]
+						.toString()
+						.toLowerCase()
+						.includes(value.toLowerCase())
+				: "",
+		onFilterDropdownVisibleChange: (visible) => {
+			if (visible) {
+				setTimeout(() => {
+					if (
+						searchInputRef.current &&
+						searchInputRef.current.select
+					) {
+						searchInputRef.current.select();
+					}
+				}, 100);
+			}
+		},
+		render: (text) =>
+			searchedColumn === dataIndex ? (
+				<Highlighter
+					highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+					searchWords={[searchText]}
+					autoEscape
+					textToHighlight={text ? text.toString() : ""}
+				/>
+			) : (
+				text
+			),
+	});
 
 	const loadPrograms = async () => {
 		try {
@@ -157,13 +182,11 @@ const DynamicCourseForm = () => {
 				message.error(
 					`Course with ID '${error.response.data.value}' already exists`,
 				);
-			} 
-			else if(error.response.status ===500) {
+			} else if (error.response.status === 500) {
 				message.error(
 					`Course with ID '${error.response.data.value}' already exists`,
 				);
-
-			}else {
+			} else {
 				setError("Something went wrong. Please try again."); // Set the error message
 			}
 		}
@@ -181,15 +204,17 @@ const DynamicCourseForm = () => {
 	const [courses, setCourses] = useState([]);
 	// let [semesterOptions, setSemesterOptions] = useState([]);
 	const [selectedSemester, setSelectedSemester] = useState(null);
-	const [semesterOptions, setSemesterOptions] = useState([1, 2, 3, 4, 5, 6, 7, 8,9,10]);
+	const [semesterOptions, setSemesterOptions] = useState([
+		1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	]);
 	const loadSemesterOptions = async () => {
 		try {
-		  const result = await axios.get("/api/admin/courses");
-		  //setSemesterOptions(result.data.map(course => course.semester));
+			const result = await axios.get("/api/admin/courses");
+			//setSemesterOptions(result.data.map(course => course.semester));
 		} catch (error) {
-		  console.error("Error fetching semesters: ", error);
+			console.error("Error fetching semesters: ", error);
 		}
-	  };
+	};
 
 	const loadCourses = async (programId, semester) => {
 		try {
@@ -204,7 +229,7 @@ const DynamicCourseForm = () => {
 	// useEffect(() => {
 	// 	// Load departments when the component mounts
 	// 	loadSemesterOptions();
-	// 	loadCourses(null,semesterOptions);	
+	// 	loadCourses(null,semesterOptions);
 	//   }, [semesterOptions]);
 
 	useEffect(() => {
@@ -212,60 +237,16 @@ const DynamicCourseForm = () => {
 	}, [form]);
 	useEffect(() => {
 		loadSemesterOptions();
-	  }, []);
-	  useEffect(() => {
+	}, []);
+	useEffect(() => {
 		loadCourses(null, semesterOptions); // Load courses initially with a null programId
-	  }, [semesterOptions]);
-	  
-	  useEffect(() => {
+	}, [semesterOptions]);
+
+	useEffect(() => {
 		console.log("Semester Options:", semesterOptions);
 	  }, [semesterOptions]);
 	  
-	// const columns = [
-	// 	{
-	// 	  title: 'ID',
-	// 	  dataIndex: 'id',
-	// 	  key: 'id',
-	// 	  ...getColumnSearchProps('id', 'Search ID'),
-	// 	},
-	// 	{
-	// 	  title: 'Name',
-	// 	  dataIndex: 'name',
-	// 	  key: 'name',
-	// 	  ...getColumnSearchProps('name', 'Search Name'),
-	// 	},
-	// 	 {
-	// 	 title: 'Semester',
-	// 	 dataIndex: 'semester',
-	// 	 key: 'semester',
-	// 	 ...getColumnSearchProps('semester', 'Search Semester'),
-	// 	 },
-	// 	 {
-	// 		 title: "Is Open Course",
-	// 		 dataIndex: "isOpenCourse",
-	// 		 key: "isOpenCourse",
-
-			 
-	// 		 render: (text, record) => (
-	// 		   <span style={{ color: text  ? 'green' : 'red' }}>
-	// 			 {text  ? 'Yes' : 'No'}
-	// 		   </span>
-	// 		 ),
-	// 	   },
-		//    {
-		// 	title: 'Operations',
-		// 	dataIndex: 'operations',
-		// 	fixed: 'right',
-		// 	key: 'operations',
-		// 	render: (_, record) => (
-		// 		<Button type="link" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>
-		// 		  Delete
-		// 		</Button>
-		// 	  ),
-		//   },
-		  
-
-	//  ]
+	
 	return (
 		<div className="p-3">
 			<Link href={"/admin/forms/course/import"}>
@@ -374,7 +355,9 @@ const DynamicCourseForm = () => {
 												initialValue={false}
 												valuePropName="checked"
 											>
-												<Checkbox defaultChecked={false}/>
+												<Checkbox
+													defaultChecked={false}
+												/>
 											</Form.Item>
 										</Col>
 
@@ -423,25 +406,25 @@ const DynamicCourseForm = () => {
 				</Row>
 			</Form>
 			<Card size="small" title="Courses" style={{ marginTop: 16 }}>
-			{
-		// 	semesterOptions ? (
-		// 	<Select
-		// 	// style={{ width: 200, marginBottom: 16 }}
-		// 	// placeholder="Select Semester"
-		// 	// onChange={(value) => setSelectedSemester(value)}
-		// 	// value={selectedSemester}
-		//   >
-		// 	{/* <Select.Option value={null}>All Semesters</Select.Option>
-		// 	{semesterOptions.map((semester) => (
-		// 	  <Select.Option key={semester} value={semester}>
-		// 		{semester}
-		// 	  </Select.Option>
-		// 	))} */}
-		//   </Select>
-		// 	) : (
-		// 	<span>Loading semesters...</span>
-		// 	)
-			}
+				{
+					// 	semesterOptions ? (
+					// 	<Select
+					// 	// style={{ width: 200, marginBottom: 16 }}
+					// 	// placeholder="Select Semester"
+					// 	// onChange={(value) => setSelectedSemester(value)}
+					// 	// value={selectedSemester}
+					//   >
+					// 	{/* <Select.Option value={null}>All Semesters</Select.Option>
+					// 	{semesterOptions.map((semester) => (
+					// 	  <Select.Option key={semester} value={semester}>
+					// 		{semester}
+					// 	  </Select.Option>
+					// 	))} */}
+					//   </Select>
+					// 	) : (
+					// 	<span>Loading semesters...</span>
+					// 	)
+				}
 
 				<Table
 				 dataSource={courses}

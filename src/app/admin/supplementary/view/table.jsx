@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {
-	Button,
-	Input,
-	Table,
-	Space,
-	Popconfirm,
-	message,
-	Tag
-} from "antd";
+import { Button, Input, Table, Space, Popconfirm, message, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
@@ -18,11 +10,11 @@ import Highlighter from "react-highlight-words";
 
 const StudentList = ({
 	dataSource,
-	setDataSource = () => { },
+	setDataSource = () => {},
 	loading = false,
 }) => {
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
+	const [searchText, setSearchText] = useState("");
+	const [searchedColumn, setSearchedColumn] = useState("");
 	const searchInput = useRef(null);
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -32,10 +24,16 @@ const StudentList = ({
 	};
 	const handleReset = (clearFilters) => {
 		clearFilters();
-		setSearchText('');
+		setSearchText("");
 	};
 	const getColumnSearchProps = (dataIndex) => ({
-		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+		filterDropdown: ({
+			setSelectedKeys,
+			selectedKeys,
+			confirm,
+			clearFilters,
+			close,
+		}) => (
 			<div
 				style={{
 					padding: 8,
@@ -46,17 +44,23 @@ const StudentList = ({
 					ref={searchInput}
 					placeholder={`Search ${dataIndex}`}
 					value={selectedKeys[0]}
-					onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-					onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+					onChange={(e) =>
+						setSelectedKeys(e.target.value ? [e.target.value] : [])
+					}
+					onPressEnter={() =>
+						handleSearch(selectedKeys, confirm, dataIndex)
+					}
 					style={{
 						marginBottom: 8,
-						display: 'block',
+						display: "block",
 					}}
 				/>
 				<Space>
 					<Button
 						type="primary"
-						onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+						onClick={() =>
+							handleSearch(selectedKeys, confirm, dataIndex)
+						}
 						icon={<SearchOutlined />}
 						size="small"
 						style={{
@@ -66,7 +70,9 @@ const StudentList = ({
 						Search
 					</Button>
 					<Button
-						onClick={() => clearFilters && handleReset(clearFilters)}
+						onClick={() =>
+							clearFilters && handleReset(clearFilters)
+						}
 						size="small"
 						style={{
 							width: 90,
@@ -102,12 +108,15 @@ const StudentList = ({
 		filterIcon: (filtered) => (
 			<SearchOutlined
 				style={{
-					color: filtered ? '#1677ff' : undefined,
+					color: filtered ? "#1677ff" : undefined,
 				}}
 			/>
 		),
 		onFilter: (value, record) =>
-			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+			record[dataIndex]
+				.toString()
+				.toLowerCase()
+				.includes(value.toLowerCase()),
 		onFilterDropdownOpenChange: (visible) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
@@ -117,12 +126,12 @@ const StudentList = ({
 			searchedColumn === dataIndex ? (
 				<Highlighter
 					highlightStyle={{
-						backgroundColor: '#ffc069',
+						backgroundColor: "#ffc069",
 						padding: 0,
 					}}
 					searchWords={[searchText]}
 					autoEscape
-					textToHighlight={text ? text.toString() : ''}
+					textToHighlight={text ? text.toString() : ""}
 				/>
 			) : (
 				text
@@ -137,12 +146,17 @@ const StudentList = ({
 			supplyId = item.supplementaries[0].id;
 		});
 
-		if (!supplyId) { message.error('Unable to process this req!(supplyId no found)'); return }
+		if (!supplyId) {
+			message.error("Unable to process this req!(supplyId no found)");
+			return;
+		}
 
 		try {
-			const response = await axios.delete(`/api/admin/student/supplementary/${supplyId}`);
+			const response = await axios.delete(
+				`/api/admin/student/supplementary/${supplyId}`,
+			);
 			setDataSource(newData);
-			message.success(response.data.message || 'Deleted successfully!'); // Assuming your response has a "message" field
+			message.success(response.data.message || "Deleted successfully!"); // Assuming your response has a "message" field
 		} catch (error) {
 			console.error(error);
 			message.error(error.response.data.error || "Deletion failed!");
@@ -157,7 +171,7 @@ const StudentList = ({
 			width: "10%",
 			sorter: (a, b) => a.id - b.id,
 			...getColumnSearchProps("id"),
-			fixed: 'left',
+			fixed: "left",
 		},
 		{
 			title: "Name",
@@ -189,10 +203,8 @@ const StudentList = ({
 			width: "20%",
 			sorter: (a, b) => a.programId - b.programId,
 			render: (_, record) => (
-				<span>
-					{record.program.name + `-(${record.programId})`}
-				</span>
-			)
+				<span>{record.program.name + `-(${record.programId})`}</span>
+			),
 		},
 		{
 			title: "Open Course",
@@ -216,7 +228,7 @@ const StudentList = ({
 		{
 			title: "operation",
 			dataIndex: "operation",
-			fixed: 'right',
+			fixed: "right",
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
 					<Tag color="red" className="cursor-pointer">
@@ -231,7 +243,7 @@ const StudentList = ({
 		},
 	];
 
-	const [programs, setPrograms] = useState([])
+	const [programs, setPrograms] = useState([]);
 
 	const loadPrograms = async () => {
 		try {
@@ -244,8 +256,7 @@ const StudentList = ({
 
 	useEffect(() => {
 		loadPrograms();
-	}, [])
-
+	}, []);
 
 	const components = {
 		body: {
@@ -266,7 +277,7 @@ const StudentList = ({
 				dataIndex: col.dataIndex,
 				title: col.title,
 				handleSave,
-				programs: programs
+				programs: programs,
 			}),
 		};
 	});
@@ -282,7 +293,9 @@ const StudentList = ({
 					...item,
 					...row,
 				});
-				row.exams = row.exams.filter(exam => row.courses.includes(exam.courseId));
+				row.exams = row.exams.filter((exam) =>
+					row.courses.includes(exam.courseId),
+				);
 				await axios.patch("/api/admin/student", row);
 				await axios.patch("/api/admin/student/supplementary", row);
 				message.success("Updated successfully");
@@ -290,10 +303,10 @@ const StudentList = ({
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 404) {
-				message.error('Student not found!');
+				message.error("Student not found!");
 			} else {
-				console.error('Error updating student:', error);
-				message.error('Something went wrong! Unable to update.');
+				console.error("Error updating student:", error);
+				message.error("Something went wrong! Unable to update.");
 			}
 		}
 	};

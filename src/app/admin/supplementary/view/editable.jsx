@@ -85,12 +85,23 @@ const EditableCell = ({
 			>
 				{dataIndex === "openCourseId" || dataIndex === "programId" ? (
 					<Select
-						options={dataIndex === "openCourseId" ? openCourses : programs}
+						options={
+							dataIndex === "openCourseId"
+								? openCourses
+								: programs
+						}
 						ref={inputRef}
 						onSelect={save}
-						fieldNames={{ label: 'name', value: 'id' }}
+						fieldNames={{ label: "name", value: "id" }}
 					/>
-				) : dataIndex === "courses" ? <Select mode="multiple" open={false} onDeselect={save} ref={inputRef}/> : (
+				) : dataIndex === "courses" ? (
+					<Select
+						mode="multiple"
+						open={false}
+						onDeselect={save}
+						ref={inputRef}
+					/>
+				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />
 				)}
 			</Form.Item>

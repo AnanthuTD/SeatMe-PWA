@@ -45,17 +45,20 @@ function Page() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/exams/timetable", formData);
+			const result = await axios.post(
+				"/api/admin/exams/timetable",
+				formData,
+			);
 			if (result.status >= 200 && result.status < 300) {
-				message.success(result.data)
+				message.success(result.data);
 				return true;
 			} else {
-				message.error(result.data)
+				message.error(result.data);
 				return false;
 			}
 		} catch (error) {
 			if (error.response) {
-				message.error(error.response.data)
+				message.error(error.response.data);
 			} else if (error.request) {
 				message.warning("No response received from the server.");
 			} else {

@@ -10,7 +10,48 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-	title: "Seating Arrangement",
+	title: "SeatMe",
+	description: "Examination Seating Arrangement",
+	manifest: "/manifest.json",
+	keywords: [
+		"MES College Marampally",
+		"SeatMe",
+		"SeatMe MES",
+		"MES SeatMe",
+		"Seating arrangement",
+		"Seating arrangement MES",
+		"Classroom management",
+		"Student seating",
+		"Academic seating",
+		"College seating",
+		"Seat allocation",
+		"Seating plan",
+		"Educational technology",
+		"Classroom organization",
+		"Campus seating",
+		"Student management system",
+		"Classroom layout",
+		"Seat assignment",
+		"Digital seating chart",
+		"College administration",
+		"Education technology solution",
+		"Academic scheduling",
+		"Student seating solution",
+	],
+	icons: [
+		{ rel: "apple-touch-icon", href: "/seatme.svg" },
+		{ rel: "icon", href: "/seatme.svg", type: "image/svg+xml" },
+	],
+	orientation: "portrait",
+	lang: "en-US",
+	categories: ["Education", "Productivity"],
+	developers: [
+		{
+			name: "Ananthu TD",
+			email: "ananthutd@gmai.com",
+			url: "https://github.com/AnanthuTD",
+		},
+	],
 };
 
 import { AccountProvider } from "@/context/accountContext";
@@ -29,7 +70,8 @@ const RootLayout = ({ children }) => {
         `}
 			</Script>
 			{/* <link rel="manifest" href="/manifest.json" /> */}
-			<link rel="apple-touch-icon" href="/next.svg"></link>
+			<link rel="apple-touch-icon" href="/seatme.svg"></link>
+			<link rel="icon" href="/seatme.svg" />
 			<meta name="theme-color" content="#fff" />
 			<body className={[inter.className, "h-screen"].join(" ")}>
 				<StyledComponentsRegistry>

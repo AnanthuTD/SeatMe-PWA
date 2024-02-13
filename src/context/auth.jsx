@@ -8,7 +8,7 @@ import { Spin, Alert, Button } from "antd";
 export const AuthProvider = ({ children, api }) => {
 	const [loading, setLoading] = useState(true);
 
-	const router = useRouter()
+	const router = useRouter();
 
 	useEffect(() => {
 		axios
@@ -18,11 +18,11 @@ export const AuthProvider = ({ children, api }) => {
 			})
 			.catch((error) => {
 				if (error.response && error.response.status === 401) {
-					router.push('/login')
+					router.push("/login");
 				} else {
 					setLoading(false); // Set loading to false for non-401 errors.
 					console.error("API call error:", error);
-					setError('Unexpected error occurred'); // Set the error message.
+					setError("Unexpected error occurred"); // Set the error message.
 				}
 			});
 	}, [api, router]);
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children, api }) => {
 				<div className="mx-auto mt-8 aspect-square flex justify-center items-center h-full">
 					<div
 						className="bg-white p-4 border border-gray-300 rounded shadow w-1/2"
-						style={{ width: "50%"}}
+						style={{ width: "50%" }}
 					>
 						<Alert
 							message="Error"

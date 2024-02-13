@@ -22,7 +22,7 @@ const requiredFields = [
 
 function RoomsPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
-	const [fileName, setFileName] = useState('room')
+	const [fileName, setFileName] = useState("room");
 
 	const handleSubmission = async (rooms) => {
 		const missingRooms = rooms.filter((room) => {
@@ -75,7 +75,13 @@ function RoomsPage() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={setFileName}/> : null}
+			{failedRecords.length ? (
+				<ErrorModel
+					failedRecords={failedRecords}
+					setFailedRecords={setFailedRecords}
+					fileName={setFileName}
+				/>
+			) : null}
 		</div>
 	);
 }

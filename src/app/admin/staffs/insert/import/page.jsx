@@ -21,9 +21,9 @@ const requiredFields = [
 function Page() {
 	const [failedRecords, setFailedRecords] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [fileName, setFileName] = useState('staffs')
+	const [fileName, setFileName] = useState("staffs");
 
-		const handleSubmission = async (staffs) => {
+	const handleSubmission = async (staffs) => {
 		setLoading(true);
 		const missingStudents = staffs.filter((staff) => {
 			// Check if any of the required fields are missing for a student
@@ -36,7 +36,7 @@ function Page() {
 		});
 
 		if (missingStudents.length > 0) {
-			setLoading(false)
+			setLoading(false);
 			message.error(
 				`The following fields are required (Department Id, Register Number, Name)`,
 			);
@@ -66,8 +66,7 @@ function Page() {
 				message.error("Something went wrong.");
 				console.error(error);
 			}
-		}
-		finally{
+		} finally {
 			setLoading(false);
 		}
 	};
@@ -85,10 +84,16 @@ function Page() {
 				<DragDrop
 					requiredFields={requiredFields}
 					records={handleSubmission}
-					loading = {loading}
+					loading={loading}
 					fileName={setFileName}
 				/>
-				{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
+				{failedRecords.length ? (
+					<ErrorModel
+						failedRecords={failedRecords}
+						setFailedRecords={setFailedRecords}
+						fileName={fileName}
+					/>
+				) : null}
 			</div>
 		</>
 	);

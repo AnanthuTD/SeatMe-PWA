@@ -101,11 +101,10 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if(courses.length > 0){
-			setSearchedColumn(['courses']);
+		if (courses.length > 0) {
+			setSearchedColumn(["courses"]);
 			setSearchText(courses);
-		}
-		else if (program && (semester || semester === 0)) {
+		} else if (program && (semester || semester === 0)) {
 			setSearchedColumn(["programId", "semester"]);
 			setSearchText([program, semester]);
 		} else if (program) {
@@ -128,7 +127,9 @@ const App = () => {
 						setSemester(value.semester);
 					}
 					if (value.courses) {
-						const courseIds = value.courses.map(course =>course.id);
+						const courseIds = value.courses.map(
+							(course) => course.id,
+						);
 						setCourses(courseIds);
 					}
 				}}

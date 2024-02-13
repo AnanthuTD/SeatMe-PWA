@@ -15,12 +15,12 @@ module.exports = {
 			colors: {
 				maincolor: {
 					50: "#1976d2",
-					100: "#1640D6"
+					100: "#1640D6",
 				},
 			},
 		},
 		screens: {
-			 sm: "320px",
+			sm: "320px",
 			// => @media (min-width: 640px) { ... }
 			lg: "1024px",
 		},

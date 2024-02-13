@@ -58,7 +58,7 @@ const App = ({ children }) => {
 							}}
 						/>
 					</div>
-					<div style={{ marginInline: '1rem' }}>
+					<div style={{ marginInline: "1rem" }}>
 						<SettingsButton />
 					</div>
 				</Header>

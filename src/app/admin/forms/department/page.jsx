@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -11,8 +11,8 @@ import {
 	Card,
 	message,
 	Alert,
-    FloatButton,
-	Table
+	FloatButton,
+	Table,
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -43,9 +43,12 @@ const DynamicDepartmentForm = () => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/departmententry/department", {
-				departments: values.departments,
-			});
+			const result = await axios.post(
+				"/api/admin/departmententry/department",
+				{
+					departments: values.departments,
+				},
+			);
 			if (result.status === 200) {
 				message.success(result.message);
 				setError(null); // Clear any previous errors
@@ -73,24 +76,23 @@ const DynamicDepartmentForm = () => {
 
 	const loadDepartments = async () => {
 		try {
-		const result = await axios.get("/api/admin/departments");
-		setDepartments(result.data);
+			const result = await axios.get("/api/admin/departments");
+			setDepartments(result.data);
 		} catch (error) {
-		console.error("Error fetching departments: ", error);
+			console.error("Error fetching departments: ", error);
 		}
 	};
 	useEffect(() => {
 		// Load departments when the component mounts
 		loadDepartments();
-	  }, []);
+	}, []);
 	useEffect(() => {
 		form.setFieldsValue({ departments: [{}] });
 	}, [form]);
 
-
 	return (
 		<div className="p-3">
-            <Link href={"/admin/forms/department/import"}>
+			<Link href={"/admin/forms/department/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -203,6 +205,7 @@ const DynamicDepartmentForm = () => {
 				</Row>
 			</Form>
 			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
+<<<<<<< HEAD
 			<Table
 				dataSource={departments}
 				columns={[
@@ -234,13 +237,33 @@ const DynamicDepartmentForm = () => {
 				pagination={false}
 				style={{ width: '100%' }}
 			/>
+=======
+				<Table
+					dataSource={departments}
+					columns={[
+						{
+							title: "ID",
+							dataIndex: "id",
+							key: "id",
+						},
+						{
+							title: "Code",
+							dataIndex: "code",
+							key: "code",
+						},
+						{
+							title: "Name",
+							dataIndex: "name",
+							key: "name",
+						},
+					]}
+					pagination={false}
+					style={{ width: "100%" }}
+				/>
+>>>>>>> 7ade08f570348305db8aa7663ce568ae2ed17704
 			</Card>
-
 		</div>
-		
 	);
 };
 
 export default DynamicDepartmentForm;
-
-
