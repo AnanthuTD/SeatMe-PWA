@@ -1,15 +1,11 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { Collapse, Button, message, Divider, Descriptions } from "antd";
 import axios from "@/lib/axiosPrivate";
 import DownloadButton from "../../../components/downloadReport";
 import RoomPanel from "./roomPanel";
 
-function TeacherAssignment({
-	rooms = [],
-	date = new Date(),
-	timeCode = "AN",
-}) {
+function TeacherAssignment({ rooms = [], date = new Date(), timeCode = "AN" }) {
 	const [departments, setDepartments] = useState([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [dateTimeId, setDateTimeId] = useState(false);
@@ -64,7 +60,7 @@ function TeacherAssignment({
 				...roomTeachers,
 				dateTimeId: dateTimeId,
 			};
-			
+
 			const response = await axios.post(
 				"/api/admin/staff/assign",
 				reqData,
@@ -81,9 +77,9 @@ function TeacherAssignment({
 				message.success("Teachers assigned successfully!");
 			}
 
-			const { fileName } = response.data
+			const { fileName } = response.data;
 
-			setFileName(fileName)
+			setFileName(fileName);
 
 			setVisibleDownloadButton(true);
 		} catch (error) {
@@ -97,34 +93,40 @@ function TeacherAssignment({
 	return (
 		<div className="p-4">
 			<h2 className="text-xl font-bold mb-4">Teacher Assignment</h2>
-			<Collapse accordion collapsible="icon" items={rooms.map((room) => {
-				return {
-					key: room.id,
-					label: (
-						<RoomPanel
-							room={room}
-							departments={departments}
-							handleTeacherSelect={handleTeacherSelect}
-							roomTeachers={roomTeachers}
-							isFailed={failedAssignments.length
-								? failedAssignments.includes(room.id)
-								: false}
-						/>
-					),
-					children: (
-						<div className="mb-4 p-4 border rounded-lg shadow">
-							<Descriptions bordered column={1}>
-								<Descriptions.Item label="Block ID">
-									{room.blockId}
-								</Descriptions.Item>
-								<Descriptions.Item label="Floor">
-									{room.floor}
-								</Descriptions.Item>
-							</Descriptions>
-						</div>
-					),
-				};
-			})} />
+			<Collapse
+				accordion
+				collapsible="icon"
+				items={rooms.map((room) => {
+					return {
+						key: room.id,
+						label: (
+							<RoomPanel
+								room={room}
+								departments={departments}
+								handleTeacherSelect={handleTeacherSelect}
+								roomTeachers={roomTeachers}
+								isFailed={
+									failedAssignments.length
+										? failedAssignments.includes(room.id)
+										: false
+								}
+							/>
+						),
+						children: (
+							<div className="mb-4 p-4 border rounded-lg shadow">
+								<Descriptions bordered column={1}>
+									<Descriptions.Item label="Block ID">
+										{room.blockId}
+									</Descriptions.Item>
+									<Descriptions.Item label="Floor">
+										{room.floor}
+									</Descriptions.Item>
+								</Descriptions>
+							</div>
+						),
+					};
+				})}
+			/>
 			<Divider />
 			<div className="flex gap-3">
 				<Button

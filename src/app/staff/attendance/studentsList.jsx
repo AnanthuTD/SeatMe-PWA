@@ -11,8 +11,9 @@ function StudentsList({ data, setData, submitted = true }) {
 			<div className="flex lg:flex-row gap-4  sm:flex-col lg:mt-14 flex-wrap sm:mt-8">
 				{data.map((student, index) => (
 					<div
-						className={` m-4 p-2 rounded-lg ${student.isPresent ? "bg-green-800" : "bg-red-800"
-							}`}
+						className={` m-4 p-2 rounded-lg ${
+							student.isPresent ? "bg-green-800" : "bg-red-800"
+						}`}
 						key={index}
 					>
 						<div className="flex flex-row items-center  justify-between">
@@ -30,7 +31,7 @@ function StudentsList({ data, setData, submitted = true }) {
 								</p>
 								<p> Course: {student.exam.course.name} </p>
 							</div>
-							{!submitted ?
+							{!submitted ? (
 								student.isPresent ? (
 									<button
 										className="bg-white text-green-600 py-1.5  px-2  rounded "
@@ -46,7 +47,7 @@ function StudentsList({ data, setData, submitted = true }) {
 										present
 									</button>
 								)
-								: null}
+							) : null}
 						</div>
 					</div>
 				))}

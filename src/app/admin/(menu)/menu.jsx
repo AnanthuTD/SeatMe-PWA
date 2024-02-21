@@ -24,30 +24,36 @@ function getItem(label, key, icon, children, type) {
 const items = [
 	getItem("Home", "/admin", <HomeOutlined />),
 	getItem("Staff", "/admin/staffs", <UsergroupAddOutlined />, [
-		getItem("Staffs List", "/admin/staffs", <UnorderedListOutlined />),
+		getItem("Staffs List", "/admin/staffs/view", <UnorderedListOutlined />),
 		getItem("Insert", "/admin/staffs/insert", <FileAddOutlined />),
 	]),
 	getItem("Student", "/admin/student", <IdcardOutlined />, [
-		getItem(
-			"Student List",
-			"/admin/student",
-			<UnorderedListOutlined />,
-		),
+		getItem("Student List", "/admin/student/view", <UnorderedListOutlined />),
 		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
+		getItem("Semester", "/admin/student/semester", <IdcardOutlined />),
 	]),
-	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />,[
-		getItem("Insert", "/admin/supplementary", <FileAddOutlined />),
+	getItem("Supplementary", "/admin/supplementary", <IdcardOutlined />, [
+		getItem("Insert", "/admin/supplementary/insert", <FileAddOutlined />),
 		getItem("List", "/admin/supplementary/view", <UnorderedListOutlined />),
 	]),
 	getItem("Exam", "/admin/exam", <CalendarOutlined />, [
+		getItem("Insert", "/admin/exam/insert", <FileAddOutlined />),
+		getItem("View", "/admin/exam/view", <CalendarOutlined />),
 		getItem(
-			"Insert",
-			"/admin/exam/insert",
-			<FileAddOutlined />,
+			"Assign Seats",
+			"/admin/exam/assign/students",
+			<UnorderedListOutlined />,
 		),
-		getItem("View", "/admin/exam", <CalendarOutlined />),
-		getItem("Assign Seats", "/admin/exam/assign", <UnorderedListOutlined />),
-		getItem("Assign Staffs", "/admin/exam/assign/staffs", <UnorderedListOutlined />),
+		getItem(
+			"Assign Staffs",
+			"/admin/exam/assign/staffs",
+			<UnorderedListOutlined />,
+		),
+		getItem(
+			"Ban",
+			"/admin/exam/ban",
+			<UnorderedListOutlined />,
+		),
 	]),
 	getItem("Forms", "/admin/forms", <FormOutlined />, [
 		getItem(
@@ -75,9 +81,21 @@ const App = () => {
 			return "/admin/staffs";
 		if (["/admin/student", "/admin/student/insert"].includes(pathname))
 			return "/admin/student";
-		if (["/admin/exam/insert", "/admin/exam", "/admin/exam/assign"].includes(pathname))
+		if (
+			[
+				"/admin/exam/insert",
+				"/admin/exam",
+				"/admin/exam/assign",
+			].includes(pathname)
+		)
 			return "/admin/exam";
-		if (["/admin/forms/department", "/admin/forms/program", "/admin/forms/course"].includes(pathname))
+		if (
+			[
+				"/admin/forms/department",
+				"/admin/forms/program",
+				"/admin/forms/course",
+			].includes(pathname)
+		)
 			return "/admin/forms";
 	}
 
@@ -87,16 +105,27 @@ const App = () => {
 
 	const routeMapping = {
 		"/admin": "/admin",
-		"/admin/staffs": "/admin/staffs",
+
+		"/admin/staffs/view": "/admin/staffs/view",
+		"/admin/staffs": "/admin/staffs/view",
 		"/admin/staffs/insert": "/admin/staffs/insert",
-		"/admin/student": "/admin/student",
+
+		"/admin/student/view": "/admin/student/view",
+		"/admin/student": "/admin/student/view",
 		"/admin/student/insert": "/admin/student/insert",
-		"/admin/supplementary": "/admin/supplementary",
+		"/admin/student/semester": "/admin/student/semester",
+
+		"/admin/supplementary/insert": "/admin/supplementary/insert",
+		"/admin/supplementary": "/admin/supplementary/insert",
 		"/admin/supplementary/view": "/admin/supplementary/view",
+
 		"/admin/exam/insert": "/admin/exam/insert",
-		"/admin/exam": "/admin/exam",
-		"/admin/exam/assign": "/admin/exam/assign",
+		"/admin/exam": "/admin/exam/view",
+		"/admin/exam/view": "/admin/exam/view",
+		"/admin/exam/assign/students": "/admin/exam/assign/students",
 		"/admin/exam/assign/staffs": "/admin/exam/assign/staffs",
+		"/admin/exam/ban": "/admin/exam/ban",
+
 		"/admin/forms/department": "/admin/forms/department",
 		"/admin/forms/program": "/admin/forms/program",
 		"/admin/forms/course": "/admin/forms/course",

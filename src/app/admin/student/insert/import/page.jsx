@@ -16,11 +16,13 @@ const requiredFields = [
 	{ key: "name", value: "name" },
 	{ key: "phone", value: "phone" },
 	{ key: "email", value: "email" },
+	{ key: "secondLang_1", value: "Second Language Sem 1" },
+	{ key: "secondLang_2", value: "Second Language Sem 2" },
 ];
 
 function Page() {
 	const [failedRecords, setFailedRecords] = useState([]);
-	const [fileName, setFileName] = useState('students')
+	const [fileName, setFileName] = useState("students");
 
 	const handleSubmission = async (students) => {
 		const missingStudents = students.filter((student) => {
@@ -44,7 +46,7 @@ function Page() {
 			if (result.status === 200) {
 				message.success("Import Success");
 				console.error("failedRecords: ", result.data);
-				const { failedRecords } = result.data
+				const { failedRecords } = result.data;
 				setFailedRecords(failedRecords);
 			}
 		} catch (error) {
@@ -67,7 +69,13 @@ function Page() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName} /> : null}
+			{failedRecords.length ? (
+				<ErrorModel
+					failedRecords={failedRecords}
+					setFailedRecords={setFailedRecords}
+					fileName={fileName}
+				/>
+			) : null}
 		</div>
 	);
 }

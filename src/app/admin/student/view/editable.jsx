@@ -1,17 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Form, Input } from "antd";
+import { Form, Input, Select } from "antd";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
-import SelectDepartment from "../components/selectDepartment";
 
-const loadDepartments = async () => {
+async function fetchOpenCourses(programId) {
+	const apiUrl = "/api/admin/open-courses";
+
+	let openCourses = [];
 	try {
-		const result = await axios.get("/api/admin/departments");
-		return (result.data);
-	} catch (error) {
-		console.error("Error fetching departments: ", error);
+		const response = await axios.get(apiUrl, {
+			params: { programId },
+		});
+		openCourses = response.data;
+	} catch (err) {
+		console.error("Error fetching open courses: ", err);
 	}
-};
+
+	return openCourses || [];
+}
 
 const EditableContext = React.createContext(null);
 
@@ -33,10 +39,11 @@ const EditableCell = ({
 	dataIndex,
 	record,
 	handleSave,
+	programs,
 	...restProps
 }) => {
 	const [editing, setEditing] = useState(false);
-	const [departments, setDepartments] = useState([]);
+	const [openCourses, setOpenCourses] = useState([]);
 	const inputRef = useRef(null);
 	const form = useContext(EditableContext);
 
@@ -49,10 +56,10 @@ const EditableCell = ({
 	}, [editing]);
 
 	useEffect(() => {
-		if (dataIndex === "departmentCode") {
+		if (dataIndex === "openCourseId") {
 			const fun = async () => {
-				const departments = await loadDepartments();
-				setDepartments(departments);
+				const openCourses = await fetchOpenCourses(record.programId);
+				setOpenCourses(openCourses);
 			};
 			fun();
 		}
@@ -94,8 +101,17 @@ const EditableCell = ({
 					},
 				]}
 			>
-				{dataIndex === "departmentCode" ? (
-					<SelectDepartment options={departments} onChange={save} />
+				{dataIndex === "openCourseId" || dataIndex === "programId" ? (
+					<Select
+						options={
+							dataIndex === "openCourseId"
+								? openCourses
+								: programs
+						}
+						ref={inputRef}
+						onSelect={save}
+						fieldNames={{ label: "name", value: "id" }}
+					/>
 				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />
 				)}

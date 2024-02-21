@@ -1,23 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Form, Input, Select } from "antd";
+import { Form, Input } from "antd";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
+import SelectDepartment from "../../components/selectDepartment";
 
-async function fetchOpenCourses(programId) {
-	const apiUrl = "/api/admin/open-courses";
-
-	let openCourses = [];
+const loadDepartments = async () => {
 	try {
-		const response = await axios.get(apiUrl, {
-			params: { programId },
-		});
-		openCourses = response.data;
-	} catch (err) {
-		console.error("Error fetching open courses: ", err);
+		const result = await axios.get("/api/admin/departments");
+		return result.data;
+	} catch (error) {
+		console.error("Error fetching departments: ", error);
 	}
-
-	return openCourses || [];
-}
+};
 
 const EditableContext = React.createContext(null);
 
@@ -39,11 +33,10 @@ const EditableCell = ({
 	dataIndex,
 	record,
 	handleSave,
-	programs,
 	...restProps
 }) => {
 	const [editing, setEditing] = useState(false);
-	const [openCourses, setOpenCourses] = useState([]);
+	const [departments, setDepartments] = useState([]);
 	const inputRef = useRef(null);
 	const form = useContext(EditableContext);
 
@@ -56,14 +49,13 @@ const EditableCell = ({
 	}, [editing]);
 
 	useEffect(() => {
-		if (dataIndex === "openCourseId") {
+		if (dataIndex === "departmentCode") {
 			const fun = async () => {
-				const openCourses = await fetchOpenCourses(record.programId);
-				setOpenCourses(openCourses);
+				const departments = await loadDepartments();
+				setDepartments(departments);
 			};
 			fun();
 		}
-
 	}, []);
 
 	const toggleEdit = () => {
@@ -102,13 +94,8 @@ const EditableCell = ({
 					},
 				]}
 			>
-				{dataIndex === "openCourseId" || dataIndex === "programId" ? (
-					<Select
-						options={dataIndex === "openCourseId" ? openCourses : programs}
-						ref={inputRef}
-						onSelect={save}
-						fieldNames={{ label: 'name', value: 'id' }}
-					/>
+				{dataIndex === "departmentCode" ? (
+					<SelectDepartment options={departments} onChange={save} />
 				) : (
 					<Input ref={inputRef} onPressEnter={save} onBlur={save} />
 				)}

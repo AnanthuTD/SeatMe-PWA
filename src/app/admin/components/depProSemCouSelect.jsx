@@ -7,7 +7,11 @@ import axios from "@/lib/axiosPrivate";
 import CourseSelect from "./courseSelect";
 import { Row, Col, Divider, Select } from "antd";
 
-function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset = false }) {
+function DepProSemCouSelect({
+	value = ({department, program, courses, semester}) => {},
+	courseField = true,
+	reset = false,
+}) {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
 	const [selectedProgram, setSelectedProgram] = useState(null);
@@ -69,10 +73,10 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 			{ length: totalSemesters + 1 },
 			(_, index) => ({
 				id: index,
-				name: index===0?'Pass Out':`Semester ${index}`,
+				name: index === 0 ? "Pass Out" : `Semester ${index}`,
 			}),
 		);
-		setSemesters(semesterOptions); 
+		setSemesters(semesterOptions);
 	};
 
 	const loadCourses = async (programId, semester) => {
@@ -131,7 +135,7 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 
 	useEffect(() => {
 		handleReset();
-	}, [reset])
+	}, [reset]);
 
 	return (
 		<>
@@ -166,7 +170,7 @@ function DepProSemCouSelect({ value = (values) => { }, courseField = true, reset
 						options={semesters}
 						onChange={handleSemesterChange}
 						placeholder="Select Semester"
-						fieldNames={{ label: 'name', value: 'id', key: 'id' }}
+						fieldNames={{ label: "name", value: "id", key: "id" }}
 						value={selectedSemester}
 					/>
 				</Col>

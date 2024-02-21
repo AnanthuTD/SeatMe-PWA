@@ -32,10 +32,14 @@ function Page() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/student/supplementary", { students });
+			const result = await axios.post(
+				"/api/admin/student/supplementary",
+				{ students },
+			);
 			if (result.status === 200) {
 				const { failedRecords } = result.data;
-				if (failedRecords.length > 0) message.warning("Failed to import some records!")
+				if (failedRecords.length > 0)
+					message.warning("Failed to import some records!");
 				else message.success("Import Success");
 				setFailedRecords(result.data.failedRecords);
 			}
@@ -58,7 +62,12 @@ function Page() {
 				requiredFields={requiredFields}
 				records={handleSubmission}
 			/>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
+			{failedRecords.length ? (
+				<ErrorModel
+					failedRecords={failedRecords}
+					setFailedRecords={setFailedRecords}
+				/>
+			) : null}
 		</div>
 	);
 }

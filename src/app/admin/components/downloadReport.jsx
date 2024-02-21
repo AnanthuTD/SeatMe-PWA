@@ -1,19 +1,21 @@
-import React from 'react';
-import { Button } from 'antd';
-import axios from '@/lib/axiosPrivate';
+import React from "react";
+import { Button } from "antd";
+import axios from "@/lib/axiosPrivate";
 
 const DownloadZipButton = ({ fileName }) => {
 	console.log(fileName);
 	const handleDownload = () => {
 		axios({
-			method: 'get',
+			method: "get",
 			url: `/api/admin/download/report/${fileName}`,
-			responseType: 'blob',
+			responseType: "blob",
 		})
 			.then((response) => {
-				const blob = new Blob([response.data], { type: 'application/zip' });
+				const blob = new Blob([response.data], {
+					type: "application/zip",
+				});
 
-				const link = document.createElement('a');
+				const link = document.createElement("a");
 				link.href = window.URL.createObjectURL(blob);
 				link.download = fileName;
 
@@ -23,7 +25,7 @@ const DownloadZipButton = ({ fileName }) => {
 				document.body.removeChild(link);
 			})
 			.catch((error) => {
-				console.error('Download failed:', error);
+				console.error("Download failed:", error);
 			});
 	};
 

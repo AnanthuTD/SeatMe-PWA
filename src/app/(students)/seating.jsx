@@ -11,28 +11,11 @@ const Seating = ({ seatingInfo }) => {
 	const [item, setItem] = useState([]);
 
 	useEffect(() => {
-		if (seatingInfo)
-			fetchItems();
-		else
-			setItem([]);
+		if (seatingInfo) fetchItems();
+		else setItem([]);
 	}, [seatingInfo]);
 
 	const fetchItems = () => {
-		/* {
-				id: 62,
-				seatNumber: 23,
-				examId: 11,
-				roomId: 16,
-				floor: 1,
-				blockId: 2,
-				blockName: 'Block_2',
-				student: {
-				id: 100030614890,
-				name: 'Student_61',
-				rollNumber: 210161,
-				programId: 1
-				}
-		}*/
 		const children = [
 			{
 				label: "Course",
@@ -48,7 +31,9 @@ const Seating = ({ seatingInfo }) => {
 			},
 			{
 				label: "Room",
-				children: seatingInfo.roomName?.toString() || seatingInfo.roomId.toString(),
+				children:
+					seatingInfo.roomName?.toString() ||
+					seatingInfo.roomId.toString(),
 			},
 			{
 				label: "Seat Number",
@@ -59,18 +44,17 @@ const Seating = ({ seatingInfo }) => {
 		setItem(children);
 	};
 
-	// console.log("data: ", items);
-
 	return (
 		<>
-			{item.length ?
+			{item.length ? (
 				<Descriptions
 					bordered
 					column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
 					items={item}
 				/>
-				: "Nothing"}
-
+			) : (
+				"Nothing"
+			)}
 		</>
 	);
 };

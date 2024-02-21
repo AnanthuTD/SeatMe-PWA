@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {
-	Button,
-	Input,
-	Table,
-	Space,
-	Popconfirm,
-	message,
-	Tag
-} from "antd";
+import { Button, Input, Table, Space, Popconfirm, message, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
@@ -18,15 +10,15 @@ import Highlighter from "react-highlight-words";
 
 const EditableTable = ({
 	dataSource,
-	setDataSource = () => { },
+	setDataSource = () => {},
 	loading = false,
-	setSorterField = () => { },
-	setSorterOrder = () => { },
+	setSorterField = () => {},
+	setSorterOrder = () => {},
 	searchedColumn = [""],
-	setSearchedColumn = () => { },
+	setSearchedColumn = () => {},
 	searchText = [""],
-	setSearchText = () => { },
-	handleReset = () => { },
+	setSearchText = () => {},
+	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
 
@@ -177,7 +169,7 @@ const EditableTable = ({
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
-			message.success(response.data.message || 'Deleted successfully!'); // Assuming your response has a "message" field
+			message.success(response.data.message || "Deleted successfully!"); // Assuming your response has a "message" field
 		} catch (error) {
 			console.error(error);
 			message.error(error.response.data.error || "Deletion failed!");
@@ -192,7 +184,7 @@ const EditableTable = ({
 			width: "10%",
 			sorter: (a, b) => a.id - b.id,
 			...getColumnSearchProps("id"),
-			fixed: 'left',
+			fixed: "left",
 		},
 		{
 			title: "Name",
@@ -227,11 +219,7 @@ const EditableTable = ({
 			width: "20%",
 			editable: true,
 			sorter: (a, b) => a.programId - b.programId,
-			render: (_, record) => (
-				<span>
-					{record.programName}
-				</span>
-			)
+			render: (_, record) => <span>{record.programName}</span>,
 		},
 		{
 			title: "aided",
@@ -263,7 +251,7 @@ const EditableTable = ({
 		{
 			title: "operation",
 			dataIndex: "operation",
-			fixed: 'right',
+			fixed: "right",
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
 					<Tag color="red" className="cursor-pointer">
@@ -278,7 +266,7 @@ const EditableTable = ({
 		},
 	];
 
-	const [programs, setPrograms] = useState([])
+	const [programs, setPrograms] = useState([]);
 
 	const loadPrograms = async () => {
 		try {
@@ -291,8 +279,7 @@ const EditableTable = ({
 
 	useEffect(() => {
 		loadPrograms();
-	}, [])
-
+	}, []);
 
 	const components = {
 		body: {
@@ -313,14 +300,13 @@ const EditableTable = ({
 				dataIndex: col.dataIndex,
 				title: col.title,
 				handleSave,
-				programs: programs
+				programs: programs,
 			}),
 		};
 	});
 
 	const handleSave = async (row) => {
 		try {
-
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => row.id === item.id);
 
@@ -336,10 +322,10 @@ const EditableTable = ({
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 404) {
-				message.error('Student not found!');
+				message.error("Student not found!");
 			} else {
-				console.error('Error updating student:', error);
-				message.error('Something went wrong! Unable to update.');
+				console.error("Error updating student:", error);
+				message.error("Something went wrong! Unable to update.");
 			}
 		}
 	};

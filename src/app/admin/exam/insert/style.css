@@ -1,30 +1,30 @@
 .idle {
-    /* background: #f0f0f0; Light grayish-blue for idle status */
-    background-color: white;
+	/* background: #f0f0f0; Light grayish-blue for idle status */
+	background-color: white;
 }
 
 .error {
-    background: #ffe6e6; /* Light pink for error status */
-    border-color: #ff8080; /* Border color for error status */
+	background: #ffe6e6; /* Light pink for error status */
+	border-color: #ff8080; /* Border color for error status */
 }
 
 .success {
-    background: #e6fffb; /* Light green for success status */
-    border-color: #87e8de; /* Border color for success status */
+	background: #e6fffb; /* Light green for success status */
+	border-color: #87e8de; /* Border color for success status */
 }
 
-.submit-button.idle{
-    background: #1677ff; /* Light green for success status */
-    box-shadow: 0 2px 0 rgba(5,145,255,.1);
-    color: #fff;
+.submit-button.idle {
+	background: #1677ff; /* Light green for success status */
+	box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+	color: #fff;
 }
 
-.submit-button.success{
-    background: #e6fffb; /* Light green for success status */
-    border-color: #87e8de; /* Border color for success status */
+.submit-button.success {
+	background: #e6fffb; /* Light green for success status */
+	border-color: #87e8de; /* Border color for success status */
 }
 
 .submit-button.error {
-    background: #ff8080; /* Light pink for error status */
-    border-color: #ff8080; /* Border color for error status */
+	background: #ff8080; /* Light pink for error status */
+	border-color: #ff8080; /* Border color for error status */
 }

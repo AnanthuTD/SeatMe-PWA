@@ -40,13 +40,12 @@ function page() {
 	}, [onDuty]);
 
 	useEffect(() => {
-		localStorage.setItem('examDetails', JSON.stringify(examDetails));
+		localStorage.setItem("examDetails", JSON.stringify(examDetails));
 	}, [examDetails]);
-
 
 	return (
 		<div>
-			<Navbar examinees={onDuty}/>
+			<Navbar examinees={onDuty} />
 
 			{onDuty ? (
 				<div className="lg:flex flex-row gap-3 justify-center align-middle">

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -11,8 +11,8 @@ import {
 	Card,
 	message,
 	Alert,
-    FloatButton,
-	Table
+	FloatButton,
+	Table,
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -22,13 +22,33 @@ const DynamicDepartmentForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 
+	const handleDelete = async (departmentId) => {
+		try {
+			const result = await axios.delete(`/api/admin/departmententry/department/${departmentId}`);
+			if (result.status === 200) {
+				message.success(result.message);
+				// Reload departments after deletion
+				loadDepartments();
+			} else {
+				message.error("Delete failed");
+			}
+		} catch (error) {
+			console.error(error);
+			message.error("Something went wrong. Please try again.");
+		}
+	};
+	
+
 	const handleSubmission = async (values) => {
 		console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/departmententry/department", {
-				departments: values.departments,
-			});
+			const result = await axios.post(
+				"/api/admin/departmententry/department",
+				{
+					departments: values.departments,
+				},
+			);
 			if (result.status === 200) {
 				message.success(result.message);
 				setError(null); // Clear any previous errors
@@ -56,24 +76,23 @@ const DynamicDepartmentForm = () => {
 
 	const loadDepartments = async () => {
 		try {
-		const result = await axios.get("/api/admin/departments");
-		setDepartments(result.data);
+			const result = await axios.get("/api/admin/departments");
+			setDepartments(result.data);
 		} catch (error) {
-		console.error("Error fetching departments: ", error);
+			console.error("Error fetching departments: ", error);
 		}
 	};
 	useEffect(() => {
 		// Load departments when the component mounts
 		loadDepartments();
-	  }, []);
+	}, []);
 	useEffect(() => {
 		form.setFieldsValue({ departments: [{}] });
 	}, [form]);
 
-
 	return (
 		<div className="p-3">
-            <Link href={"/admin/forms/department/import"}>
+			<Link href={"/admin/forms/department/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -187,34 +206,30 @@ const DynamicDepartmentForm = () => {
 			</Form>
 			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
 				<Table
-				dataSource={departments}
-				columns={[
-					{
-					title: 'ID',
-					dataIndex: 'id',
-					key: 'id',
-					},
-					{
-					title: 'Code',
-					dataIndex: 'code',
-					key: 'code',
-					},
-					{
-					title: 'Name',
-					dataIndex: 'name',
-					key: 'name',
-					},
-				]}
-				pagination={false}
-				style={{ width: '100%' }}
+					dataSource={departments}
+					columns={[
+						{
+							title: "ID",
+							dataIndex: "id",
+							key: "id",
+						},
+						{
+							title: "Code",
+							dataIndex: "code",
+							key: "code",
+						},
+						{
+							title: "Name",
+							dataIndex: "name",
+							key: "name",
+						},
+					]}
+					pagination={false}
+					style={{ width: "100%" }}
 				/>
 			</Card>
-
 		</div>
-		
 	);
 };
 
 export default DynamicDepartmentForm;
-
-

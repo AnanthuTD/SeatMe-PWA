@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import {
-	Button,
-	Input,
-	Table,
-	Space,
-	Popconfirm,
-	message,
-	Tag
-} from "antd";
+import { Button, Input, Table, Space, Popconfirm, message, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import Highlighter from "react-highlight-words";
@@ -19,15 +11,15 @@ import PasswordUpdateModal from "./passwordUpdateModel";
 
 const EditableTable = ({
 	dataSource,
-	setDataSource = () => { },
+	setDataSource = () => {},
 	loading = false,
-	setSorterField = () => { },
-	setSorterOrder = () => { },
+	setSorterField = () => {},
+	setSorterOrder = () => {},
 	searchedColumn = [""],
-	setSearchedColumn = () => { },
+	setSearchedColumn = () => {},
 	searchText = [""],
-	setSearchText = () => { },
-	handleReset = () => { },
+	setSearchText = () => {},
+	handleReset = () => {},
 }) => {
 	const searchInput = useRef(null);
 
@@ -161,7 +153,7 @@ const EditableTable = ({
 		try {
 			await axios.delete(`/api/admin/staff/${id}`);
 			setDataSource(newData);
-			message.success('Deleted successfully!');
+			message.success("Deleted successfully!");
 		} catch (error) {
 			console.error(error);
 			message.error("Deletion failed!");
@@ -175,7 +167,7 @@ const EditableTable = ({
 			key: "id",
 			...getColumnSearchProps("id"),
 			sorter: true,
-			fixed: 'left',
+			fixed: "left",
 		},
 		{
 			title: "Name",
@@ -194,9 +186,7 @@ const EditableTable = ({
 			sorter: true,
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
-					<span className="flex gap-1">
-						{record.departmentName}
-					</span>
+					<span className="flex gap-1">{record.departmentName}</span>
 				) : null,
 		},
 		{
@@ -230,7 +220,7 @@ const EditableTable = ({
 		{
 			title: "Operation",
 			dataIndex: "operation",
-			fixed: 'right',
+			fixed: "right",
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
 					<span className="flex gap-1">
@@ -244,7 +234,13 @@ const EditableTable = ({
 								</Popconfirm>
 							</Tag>
 						)}
-						<Tag color="gold" className="cursor-pointer" onClick={() => showPasswordUpdateModal(record.id)}>Password</Tag>
+						<Tag
+							color="gold"
+							className="cursor-pointer"
+							onClick={() => showPasswordUpdateModal(record.id)}
+						>
+							Password
+						</Tag>
 					</span>
 				) : null,
 		},
@@ -290,15 +286,16 @@ const EditableTable = ({
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 404) {
-				message.error('Staff not found!');
+				message.error("Staff not found!");
 			} else {
-				console.error('Error updating staff:', error);
-				message.error('Something went wrong! Unable to update.');
+				console.error("Error updating staff:", error);
+				message.error("Something went wrong! Unable to update.");
 			}
 		}
 	};
 
-	const [passwordUpdateModalVisible, setPasswordUpdateModalVisible] = useState(false);
+	const [passwordUpdateModalVisible, setPasswordUpdateModalVisible] =
+		useState(false);
 	const [selectedStaffId, setSelectedStaffId] = useState(null);
 
 	const showPasswordUpdateModal = (staffId) => {
@@ -313,17 +310,21 @@ const EditableTable = ({
 
 	const handlePasswordUpdate = async (newPassword) => {
 		try {
-			const response = await axios.patch(`/api/admin/staff/update-password`, {
-				staffId: selectedStaffId,
-				newPassword: newPassword,
-			});
+			const response = await axios.patch(
+				`/api/admin/staff/update-password`,
+				{
+					staffId: selectedStaffId,
+					newPassword: newPassword,
+				},
+			);
 
-			if (response.status === 200)
-				message.success(response.data.message)
+			if (response.status === 200) message.success(response.data.message);
 			else message.warning(response.data.message);
 		} catch (error) {
-			console.error('Error:', error);
-			message.error(error.response.data.message || 'Something went wrong!');
+			console.error("Error:", error);
+			message.error(
+				error.response.data.message || "Something went wrong!",
+			);
 		}
 	};
 

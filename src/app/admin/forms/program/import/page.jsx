@@ -20,7 +20,7 @@ const requiredFields = [
 
 function ProgramsPage() {
 	const [failedRecords, setFailedRecords] = useState([]);
-	const [fileName, setFileName] = useState('program')
+	const [fileName, setFileName] = useState("program");
 
 	const handleSubmission = async (programs) => {
 		const missingPrograms = programs.filter((program) => {
@@ -44,7 +44,9 @@ function ProgramsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/programentry/program", { programs });
+			const result = await axios.post("/api/admin/programentry/program", {
+				programs,
+			});
 			if (result.status === 200) {
 				message.success("Import Success");
 				setFailedRecords(result.data.failedRecords);
@@ -57,7 +59,6 @@ function ProgramsPage() {
 			console.error(error.response.data);
 			message.error("Something went wrong at the server! ");
 		}
-
 	};
 
 	return (
@@ -74,7 +75,13 @@ function ProgramsPage() {
 				records={handleSubmission}
 				fileName={setFileName}
 			/>
-			{failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} fileName={fileName}/> : null}
+			{failedRecords.length ? (
+				<ErrorModel
+					failedRecords={failedRecords}
+					setFailedRecords={setFailedRecords}
+					fileName={fileName}
+				/>
+			) : null}
 		</div>
 	);
 }

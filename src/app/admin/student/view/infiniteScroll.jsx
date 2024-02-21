@@ -6,7 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, Skeleton, Statistic, Card, Row, Col } from "antd";
 import Table from "./table";
 import axios from "@/lib/axiosPrivate";
-import DepProSemCouSelect from "../components/depProSemCouSelect";
+import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);
@@ -27,8 +27,8 @@ const App = () => {
 		const result = await axios.get("/api/admin/student/count", {
 			params: {
 				programId: program,
-				semester
-			}
+				semester,
+			},
 		});
 		setTotalDataCount(result.data);
 	};
@@ -41,7 +41,7 @@ const App = () => {
 
 		setLoading(true);
 
-		getTotalDataCount()
+		getTotalDataCount();
 
 		axios
 			.get(`/api/admin/student/list`, {
@@ -141,7 +141,7 @@ const App = () => {
 						<Statistic
 							title="Total Students"
 							value={totalDataCount}
-							valueStyle={{ color: 'green' }}
+							valueStyle={{ color: "green" }}
 						/>
 					</Card>
 				</Col>

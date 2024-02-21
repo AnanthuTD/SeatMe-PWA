@@ -11,10 +11,7 @@ import {
 	Descriptions,
 	Divider,
 } from "antd";
-import {
-	LogoutOutlined,
-	SettingFilled,
-} from "@ant-design/icons";
+import { LogoutOutlined, SettingFilled } from "@ant-design/icons";
 import axios from "axios";
 import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import { useRouter } from "next/navigation";
@@ -27,7 +24,7 @@ const SettingsButton = () => {
 	const [visible, setVisible] = useState(false);
 	const [descriptionItems, setDescriptionItems] = useState([]);
 	const { user, setUser } = useAccount();
-	const [updateSchedule, triggerUpdateSchedule] = useState(false)
+	const [updateSchedule, triggerUpdateSchedule] = useState(false);
 
 	const router = useRouter();
 
@@ -54,14 +51,13 @@ const SettingsButton = () => {
 
 	const onFinish = async (values) => {
 		try {
-			const response = await axios.patch('/api/admin/profile', values);
+			const response = await axios.patch("/api/admin/profile", values);
 			const { user } = response.data;
 			setUser(user);
-			message.success('Profile updated successfully')
+			message.success("Profile updated successfully");
 		} catch (error) {
-			message.error('Profile update failed');
+			message.error("Profile update failed");
 		}
-
 	};
 
 	const items = [
@@ -118,8 +114,8 @@ const SettingsButton = () => {
 				children: user?.phone || "Empty",
 			},
 		];
-		setDescriptionItems(descriptionItems)
-	}, [user])
+		setDescriptionItems(descriptionItems);
+	}, [user]);
 
 	return (
 		<>
@@ -156,12 +152,7 @@ const SettingsButton = () => {
 					style={{ maxHeight: "400px", overflowY: "auto" }}
 				>
 					<Col span={6}>
-						<Anchor
-							affix={false}
-							items={items}
-
-							replace={true}
-						/>
+						<Anchor affix={false} items={items} replace={true} />
 					</Col>
 					<Col
 						span={18}
@@ -209,7 +200,9 @@ const SettingsButton = () => {
 									{
 										validator: async (_, value) => {
 											if (!value) {
-												throw new Error('Please provide Password');
+												throw new Error(
+													"Please provide Password",
+												);
 											}
 										},
 									},
@@ -217,10 +210,7 @@ const SettingsButton = () => {
 							>
 								<Input.Password />
 							</Form.Item>
-							<Form.Item
-								label="New Password"
-								name="newPassword"
-							>
+							<Form.Item label="New Password" name="newPassword">
 								<Input.Password />
 							</Form.Item>
 							<Form.Item
@@ -240,8 +230,13 @@ const SettingsButton = () => {
 						<Divider />
 
 						<div id="seatingAvailableTimeConfig">
-							<Title level={4}>Schedule Seating Availability</Title>
-							<ScheduleSeatingAvailabilityForm triggerUpdateSchedule={triggerUpdateSchedule} updateSchedule={updateSchedule} />
+							<Title level={4}>
+								Schedule Seating Availability
+							</Title>
+							<ScheduleSeatingAvailabilityForm
+								triggerUpdateSchedule={triggerUpdateSchedule}
+								updateSchedule={updateSchedule}
+							/>
 							<ViewSchedules updateSchedule={updateSchedule} />
 						</div>
 					</Col>

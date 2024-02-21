@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -11,8 +11,8 @@ import {
 	Card,
 	message,
 	Alert,
-    FloatButton,
-	Table
+	FloatButton,
+	Table,
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -21,6 +21,28 @@ import Link from "next/link";
 const DynamicBlockForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
+	// ...
+	const [editingBlockIndex, setEditingBlockIndex] = useState(null);
+// ...
+
+
+	const handleDelete = async (blockId) => {
+		try {
+			const result = await axios.delete(`/api/admin/blockentry/block/${blockId}`);
+			if (result.status === 200) {
+				const msg = blockId + " Deleted";
+				message.success(msg);
+				// Reload blocks after deletion
+				loadBlocks();
+			} else {
+				message.error("Delete failed");
+			}
+		} catch (error) {
+			console.error(error);
+			message.error("Something went wrong. Please try again.");
+		}
+	};
+	
 
 	const handleSubmission = async (values) => {
 		console.log("Submitted values:", values);
@@ -56,24 +78,23 @@ const DynamicBlockForm = () => {
 
 	const loadBlocks = async () => {
 		try {
-		const result = await axios.get("/api/admin/blocks");
-		setBlocks(result.data);
+			const result = await axios.get("/api/admin/blocks");
+			setBlocks(result.data);
 		} catch (error) {
-		console.error("Error fetching blocks: ", error);
+			console.error("Error fetching blocks: ", error);
 		}
 	};
 	useEffect(() => {
 		// Load blocks when the component mounts
 		loadBlocks();
-	  }, []);
+	}, []);
 	useEffect(() => {
 		form.setFieldsValue({ blocks: [{}] });
 	}, [form]);
 
-
 	return (
 		<div className="p-3">
-            <Link href={"/admin/forms/block/import"}>
+			<Link href={"/admin/forms/block/import"}>
 				<FloatButton
 					tooltip={<div>Import</div>}
 					icon={<FileExcelOutlined />}
@@ -196,9 +217,7 @@ const DynamicBlockForm = () => {
 				style={{ width: '100%' }}
 				/>
 			</Card>
-
 		</div>
-		
 	);
 };
 
