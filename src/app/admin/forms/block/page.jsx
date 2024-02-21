@@ -21,6 +21,28 @@ import Link from "next/link";
 const DynamicBlockForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
+	// ...
+	const [editingBlockIndex, setEditingBlockIndex] = useState(null);
+// ...
+
+
+	const handleDelete = async (blockId) => {
+		try {
+			const result = await axios.delete(`/api/admin/blockentry/block/${blockId}`);
+			if (result.status === 200) {
+				const msg = blockId + " Deleted";
+				message.success(msg);
+				// Reload blocks after deletion
+				loadBlocks();
+			} else {
+				message.error("Delete failed");
+			}
+		} catch (error) {
+			console.error(error);
+			message.error("Something went wrong. Please try again.");
+		}
+	};
+	
 
 	const handleSubmission = async (values) => {
 		console.log("Submitted values:", values);
@@ -171,28 +193,28 @@ const DynamicBlockForm = () => {
 			</Form>
 			<Card size="small" title="Blocks" style={{ marginTop: 16 }}>
 				<Table
-					dataSource={blocks}
-					columns={[
-						{
-							title: "ID",
-							dataIndex: "id",
-							key: "id",
-						},
-						{
-							title: "Name",
-							dataIndex: "name",
-							key: "name",
-						},
-					]}
-					onRow={(record) => {
-						return {
-							onClick: () => {
-								console.log("Block Details:", record);
-							},
-						};
-					}}
-					pagination={false}
-					style={{ width: "100%" }}
+				dataSource={blocks}
+				columns={[
+					{
+					title: 'ID',
+					dataIndex: 'id',
+					key: 'id',
+					},
+					{
+					title: 'Name',
+					dataIndex: 'name',
+					key: 'name',
+					},
+				]}
+				onRow={(record) => {
+					return {
+					  onClick: () => {
+						console.log('Block Details:', record);
+					  },
+					};
+				  }}
+				pagination={false}
+				style={{ width: '100%' }}
 				/>
 			</Card>
 		</div>

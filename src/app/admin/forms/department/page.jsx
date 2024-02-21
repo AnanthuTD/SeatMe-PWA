@@ -22,6 +22,23 @@ const DynamicDepartmentForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
 
+	const handleDelete = async (departmentId) => {
+		try {
+			const result = await axios.delete(`/api/admin/departmententry/department/${departmentId}`);
+			if (result.status === 200) {
+				message.success(result.message);
+				// Reload departments after deletion
+				loadDepartments();
+			} else {
+				message.error("Delete failed");
+			}
+		} catch (error) {
+			console.error(error);
+			message.error("Something went wrong. Please try again.");
+		}
+	};
+	
+
 	const handleSubmission = async (values) => {
 		console.log("Submitted values:", values);
 
@@ -188,6 +205,39 @@ const DynamicDepartmentForm = () => {
 				</Row>
 			</Form>
 			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
+<<<<<<< HEAD
+			<Table
+				dataSource={departments}
+				columns={[
+					{
+						title: 'ID',
+						dataIndex: 'id',
+						key: 'id',
+					},
+					{
+						title: 'Code',
+						dataIndex: 'code',
+						key: 'code',
+					},
+					{
+						title: 'Name',
+						dataIndex: 'name',
+						key: 'name',
+					},
+					{
+						title: 'Action',
+						key: 'action',
+						render: (text, record) => (
+							<Button type="link" danger onClick={() => handleDelete(record.id)}>
+								Delete
+							</Button>
+						),
+					},
+				]}
+				pagination={false}
+				style={{ width: '100%' }}
+			/>
+=======
 				<Table
 					dataSource={departments}
 					columns={[
@@ -210,6 +260,7 @@ const DynamicDepartmentForm = () => {
 					pagination={false}
 					style={{ width: "100%" }}
 				/>
+>>>>>>> 7ade08f570348305db8aa7663ce568ae2ed17704
 			</Card>
 		</div>
 	);

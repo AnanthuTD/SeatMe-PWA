@@ -27,7 +27,24 @@ const DynamicProgramForm = () => {
 	const [error, setError] = useState(null); // State to store error messages
 	const [departments, setDepartments] = useState([]); // State to store department data
 	const [selectedDepartmentCode, setSelectedDepartmentCode] = useState(null);
-
+	const handleDelete = async (record) => {
+		try {
+		  // Make an API call or perform the necessary logic to delete the program
+		  // You can use axios or any other method for API calls
+		  const result = await axios.delete(`/api/admin/programentry/program/${record.id}`);
+		  if (result.status === 200) {
+			const msg= "Program with id "+record.id+" deleted";
+			message.success(msg);
+			// Reload the programs after deletion
+			loadPrograms();
+		  } else {
+			message.error("Delete failed");
+		  }
+		} catch (error) {
+		  console.error(error);
+		  message.error("Something went wrong. Please try again.");
+		}
+	  };
 	const loadDepartments = async () => {
 		try {
 			const result = await axios.get("/api/admin/departments");
@@ -135,6 +152,15 @@ const DynamicProgramForm = () => {
 				</span>
 			),
 		},
+		{
+			title: "Actions",
+			key: "actions",
+			render: (_, record) => (
+			  <Button type="link" danger onClick={() => handleDelete(record)}>
+				Delete
+			  </Button>
+			),
+		  },
 	];
 
 	return (
