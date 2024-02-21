@@ -1,7 +1,7 @@
 'use client';
-import React, { useState } from 'react';
-import { Form, InputNumber, Button, Space, Divider, ConfigProvider, Row, Col, message } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Form, InputNumber, Button, Space, Divider, ConfigProvider, Row, Col, message, FloatButton } from 'antd';
+import { MinusCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import axios from '@/lib/axiosPrivate';
 import DepProSemExaSelect from '../components/depProSemExaSelect';
 import ErrorModel from './errorModel';
@@ -27,15 +27,27 @@ const DynamicForm = () => {
     const [failedRecords, setFailedRecords] = useState([])
     const [studentIds, setStudentIds] = useState([])
     const [displayImport, setDisplayImport] = useState(false)
+    const [reset, toggleReset] = useState(false);
 
     const handleCourseId = (values) => {
         const courseIds = values.courses.map(c => c.id);
+        form.resetFields()
         setCourseIds(courseIds);
     }
 
+    useEffect(() => {
+        if (reset) {
+            form.resetFields()
+            setCourseIds([]);
+            setFailedRecords([]);
+            setStudentIds([])
+            toggleReset(false)
+        }
+    }, [reset])
+
     return (
         <>
-            <DepProSemExaSelect value={handleCourseId} />
+            <DepProSemExaSelect value={handleCourseId} reset={reset} />
             <Divider />
             <Form
                 name="dynamic_form_nest_item"
@@ -77,9 +89,13 @@ const DynamicForm = () => {
                                     Add Students
                                 </Button>
                             </Form.Item>
+
+                            <Divider />
+
                             <Form.Item>
                                 <Button
-                                    type="dashed"
+                                    type="primary"
+                                    ghost
                                     onClick={() => setDisplayImport(true)}
                                     icon={<PlusOutlined />}
                                 >
@@ -90,14 +106,30 @@ const DynamicForm = () => {
                     )}
                 </Form.List>
 
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
-                </Form.Item>
-            </Form>
+                <Divider />
 
-            {displayImport ? <ImportModel setDisplayImport={setDisplayImport} onFinish={setStudentIds} /> : null}
+                <Row justify={'center'}>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Row>
+            </Form >
+
+            <FloatButton
+                onClick={() => toggleReset(!reset)}
+                type="default"
+                style={{
+                    backgroundColor: "#ffe6e6",
+                    border: "solid #ff8080",
+                }}
+                icon={<ReloadOutlined style={{ color: "#ff8080" }} />}
+            />
+
+            {displayImport ? <ImportModel setDisplayImport={setDisplayImport} onFinish={setStudentIds} /> : null
+            }
+
             {failedRecords.length ? <ErrorModel failedRecords={failedRecords} setFailedRecords={setFailedRecords} /> : null}
         </>
     );

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Select } from "antd";
 
-const SelectDepartment = ({
+const SelectProgram = ({
 	options,
 	onChange,
-	onClick,
+	onClick = () => { },
 	sortByValue = false,
 }) => {
 	useEffect(() => {
@@ -32,20 +32,25 @@ const SelectDepartment = ({
 		onChange(value, selectedOption);
 	};
 
+	const customFilter = (input, option) => {
+		console.log(option);
+		const codeMatches = (option?.children?.toLowerCase() ?? "").includes(input.toLowerCase());
+		const nameMatches = (option?.name?.toLowerCase() ?? "").includes(input.toLowerCase());
+
+		return codeMatches || nameMatches;
+	}
+
+
 	return (
 		<Select
 			showSearch
 			allowClear
 			style={{
-				width: 200,
+				width: 300,
 			}}
 			placeholder="Search to Select"
 			optionFilterProp="children"
-			filterOption={(input, option) =>
-				(option?.label?.toLowerCase() ?? "").includes(
-					input.toLowerCase(),
-				)
-			}
+			filterOption={customFilter}
 			filterSort={customSort}
 			onChange={handleSelectChange}
 			onClick={onClick}
@@ -58,11 +63,11 @@ const SelectDepartment = ({
 					value={option.id}
 					label={option.name}
 				>
-					{option.name}
+					{option.name + " ( " + option.id + " )"+ " ( " + option.abbreviation + " )"}
 				</Select.Option>
 			))}
 		</Select>
 	);
 };
 
-export default SelectDepartment;
+export default SelectProgram;

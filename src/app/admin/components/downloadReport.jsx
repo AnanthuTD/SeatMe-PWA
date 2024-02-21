@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import axios from '@/lib/axiosPrivate';
 
 const DownloadZipButton = ({ fileName }) => {
+	console.log(fileName);
 	const handleDownload = () => {
 		axios({
 			method: 'get',
