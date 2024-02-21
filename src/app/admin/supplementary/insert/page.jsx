@@ -18,7 +18,7 @@ import {
 	ReloadOutlined,
 } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
-import DepProSemExaSelect from "../components/depProSemExaSelect";
+import DepProSemExaSelect from "../../components/depProSemExaSelect";
 import ErrorModel from "./errorModel";
 import ImportModel from "./import";
 

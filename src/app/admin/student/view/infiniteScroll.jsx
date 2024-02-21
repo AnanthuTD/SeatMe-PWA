@@ -6,7 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, Skeleton, Statistic, Card, Row, Col } from "antd";
 import Table from "./table";
 import axios from "@/lib/axiosPrivate";
-import DepProSemCouSelect from "../components/depProSemCouSelect";
+import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 const App = () => {
 	const [loading, setLoading] = useState(false);

@@ -8,7 +8,7 @@ import CourseSelect from "./courseSelect";
 import { Row, Col, Divider, Select } from "antd";
 
 function DepProSemCouSelect({
-	value = (values) => {},
+	value = ({department, program, courses, semester}) => {},
 	courseField = true,
 	reset = false,
 }) {

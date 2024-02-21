@@ -16,21 +16,6 @@ const Seating = ({ seatingInfo }) => {
 	}, [seatingInfo]);
 
 	const fetchItems = () => {
-		/* {
-				id: 62,
-				seatNumber: 23,
-				examId: 11,
-				roomId: 16,
-				floor: 1,
-				blockId: 2,
-				blockName: 'Block_2',
-				student: {
-				id: 100030614890,
-				name: 'Student_61',
-				rollNumber: 210161,
-				programId: 1
-				}
-		}*/
 		const children = [
 			{
 				label: "Course",
@@ -58,8 +43,6 @@ const Seating = ({ seatingInfo }) => {
 
 		setItem(children);
 	};
-
-	// console.log("data: ", items);
 
 	return (
 		<>

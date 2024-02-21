@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { message, Modal } from "antd";
 import ImportErrorModel from "./errorModel";
-import DragDrop from "../components/dragDropXLSX";
+import DragDrop from "../../components/dragDropXLSX";
 
 const requiredFields = [{ key: "id", value: "register number" }];
 
