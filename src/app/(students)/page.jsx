@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
 import Studentnav from "./studentnav";
-import Instruction from "./Instruction";
+import Instruction from "./instruction";
 import axios from "@/lib/axiosPublic";
 import { deleteCookie, getCookie } from "cookies-next";
+import Container from "./container";
 
 const layout = {
 	labelCol: { span: 8 },
@@ -148,60 +149,57 @@ const App = () => {
 
 	return (
 		<>
-			<Studentnav />
-
-			<section className="w-full mt-8 ml-3  lg:ml-40   ">
-				<Instruction />
-			</section>
-			<div className="flex h-screen flex-col w-full  overflow-hidden">
-				<section className="h-[40%] flex justify-center items-center w-full">
-					<div className="min-w-[50%]">
-						<Form
-							{...layout}
-							form={form}
-							name="control-hooks"
-							onFinish={onFinish}
-							style={{ maxWidth: 600 }}
-						>
-							<Form.Item
-								name="studentId"
-								label="Register Number"
-								rules={[
-									{
-										required: true,
-										type: "number",
-										min: 100000000000,
-										max: 999999999999,
-										message: "Invalid Register number",
-									},
-								]}
+			<Container>
+			<div className="flex h-screen flex-col w-full overflow-hidden" /* style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} */>
+					<section className="h-[40%] flex justify-center items-center w-full">
+						<div className="min-w-[50%]">
+							<Form
+								{...layout}
+								form={form}
+								name="control-hooks"
+								onFinish={onFinish}
+								style={{ maxWidth: 600 }}
 							>
-								<InputNumber style={{ width: "100%" }} />
-							</Form.Item>
-							<Form.Item {...tailLayout}>
-								<Button type="primary" htmlType="submit">
-									Submit
-								</Button>
-								<Button
-									htmlType="button"
-									onClick={onReset}
-									className="m-1"
+								<Form.Item
+									name="studentId"
+									label="Register Number"
+									rules={[
+										{
+											required: true,
+											type: "number",
+											min: 100000000000,
+											max: 999999999999,
+											message: "Invalid Register number",
+										},
+									]}
 								>
-									Reset
-								</Button>
-							</Form.Item>
-						</Form>
-					</div>
-				</section>
-				<section className="w-full h-[60%]">
-					<div className="mx-auto w-full h-full">
-						<Segment
-							seatingInfo={seatingInfo}
-							upcomingExams={upcomingExams}
-						/>
-					</div>
-				</section>
-			</div>
+									<InputNumber style={{ width: "100%" }} />
+								</Form.Item>
+								<Form.Item {...tailLayout}>
+									<Button type="primary" htmlType="submit">
+										Submit
+									</Button>
+									<Button
+										htmlType="button"
+										onClick={onReset}
+										className="m-1"
+									>
+										Reset
+									</Button>
+								</Form.Item>
+							</Form>
+						</div>
+					</section>
+					<section className="w-full h-[60%]">
+						<div className="mx-auto w-full h-full">
+							<Segment
+								seatingInfo={seatingInfo}
+								upcomingExams={upcomingExams}
+							/>
+						</div>
+					</section>
+				</div>
+			</Container>
 		</>
 	);
 };

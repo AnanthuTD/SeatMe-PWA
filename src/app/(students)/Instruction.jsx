@@ -4,49 +4,41 @@ import { MdGTranslate } from "react-icons/md";
 
 function Instruction() {
 	const [translate, setTranslate] = useState(false);
-	const [dispinfo, setdispinfo] = useState(false);
+	const [displayInfo, setDisplayInfo] = useState(true);
 
-	const translater = () => {
+	const translator = () => {
 		setTranslate(!translate);
 		console.log(translate);
 	};
 
-	const showinfo = () => {
-		setdispinfo(!dispinfo);
+	const showInfo = () => {
+		setDisplayInfo(!displayInfo);
 	};
 
 	return (
 		<>
-			<button
-				className="p-3 border-none flex gap-2 bg-white text-lg items-center"
-				onClick={showinfo}
-			>
-				<IoInformationCircleSharp />
-				instruction
-			</button>
-			{dispinfo ? (
+			{displayInfo ? (
 				<button
 					className=" p-2 border-none bg-blue-700 text-white  rounded-md flex gap-2 text-sm"
-					onClick={translater}
+					onClick={translator}
 				>
 					<MdGTranslate />
 					Translate
 				</button>
 			) : null}
 
-			{dispinfo ? (
+			{displayInfo ? (
 				translate ? (
 					<div className="p-3">
 						<h1 className="  align-middle lg:text-xl text-red-500 text-sm ">
-							യൂണിവേഴ്സിറ്റി പരീക്ഷ എഴുതുന്ന േിദ്യാർത്ഥികൾക്കുള്ള
+							യൂണിവേഴ്സിറ്റി പരീക്ഷ എഴുതുന്ന വിദ്യാർത്ഥികൾക്കുള്ള
 							നിർവേശങ്ങൾ.
 						</h1>
-						<p className="sm:text-xs ">
-							ഹാൾ ടിക്കറ്റിൽ നൽകിയിരിക്കുന്ന എല്ലാ നിർദ്ദേശങ്ങള ും
-							നിയമങ്ങള ും പരീക്ഷാ ഹാളിൽ കയറുന്നതിന്
-							മുൻപ്വായിക്കുക. പ്രദ്ദയേകിച്ച് നിർദ്ദേശങ്ങൾ :
+						<ul className="list-disc sm:text-xs">
+							ഹാൾ ടിക്കറ്റിൽ നൽകിയിരിക്കുന്ന എല്ലാ നിർദ്ദേശങ്ങള ും നിയമങ്ങള ും പരീക്ഷാ ഹാളിൽ കയറുന്നതിന
+							മുൻപ വായിക്കുക. പ്രദ്ദയേകിച്ച് നിർദ്ദേശങ്ങൾ :
 							6,7,9,10 &12 <br /> <br />
-							• വിദ്യാർത്ഥികൾക്ക്അവരുടെഹാൾ െിക്കറ്റില ാ ല
+							• വിദ്യാർത്ഥികൾക്ക് അവരുടെ ഹാൾ  െിക്കറ്റില ാ ല
 							ാദ്യലേപ്പറില ാ ഒന്ുുംഎഴുതാൻ അനുവാദ്മില്ല. എഴുതിയാൽ
 							മാൽപ്ോക്റ്റിസായി കണക്കാക്കുും. <br /> <br />
 							(എന്ാൽ ല ാദ്യലേപ്പറിൽ ലേരുും രജിസ്റ്റർ നമ്പറുും
@@ -74,7 +66,7 @@ function Instruction() {
 							ഉള്ളവിദ്യോർത്ഥികതെ മോ്െടമ പരീക്ഷഎഴ െ വോന ള്ളഅന
 							വോദ്ും ഉെോയിരിക്ക കയ ള്ളൂ. ടകോടെജ് െട്ടങ്ങൾഅന സരിച്ച
 							ള്ളെോയിരിക്കണും <br /> <br />
-						</p>
+						</ul>
 						<h5 className="ml-24">
 							{" "}
 							- Chief Superintendent / Principal{" "}

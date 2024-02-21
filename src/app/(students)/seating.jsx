@@ -37,7 +37,7 @@ const Seating = ({ seatingInfo }) => {
 			},
 			{
 				label: "Seat Number",
-				children: seatingInfo.seatNumber.toString(), // Convert to string
+				children: <Text className="bold-text">{seatingInfo.seatNumber.toString()}</Text>,
 			},
 		];
 
