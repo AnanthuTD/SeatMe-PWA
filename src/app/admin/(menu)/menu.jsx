@@ -49,6 +49,11 @@ const items = [
 			"/admin/exam/assign/staffs",
 			<UnorderedListOutlined />,
 		),
+		getItem(
+			"Ban",
+			"/admin/exam/ban",
+			<UnorderedListOutlined />,
+		),
 	]),
 	getItem("Forms", "/admin/forms", <FormOutlined />, [
 		getItem(
@@ -119,6 +124,7 @@ const App = () => {
 		"/admin/exam/view": "/admin/exam/view",
 		"/admin/exam/assign": "/admin/exam/assign",
 		"/admin/exam/assign/staffs": "/admin/exam/assign/staffs",
+		"/admin/exam/ban": "/admin/exam/ban",
 
 		"/admin/forms/department": "/admin/forms/department",
 		"/admin/forms/program": "/admin/forms/program",
