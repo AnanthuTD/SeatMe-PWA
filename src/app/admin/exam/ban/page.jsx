@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, message, Table } from 'antd';
+import { Form, Input, Button, message, } from 'antd';
 import axios from 'axios';
 import { StopOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import BannedTable from './bannedTable';
 
 const BanUnbanStudents = () => {
     const [form] = Form.useForm();
@@ -20,16 +21,6 @@ const BanUnbanStudents = () => {
         }
     };
 
-    const unbanStudent = async (studentId) => {
-        try {
-            const response = await axios.patch(`/api/admin/student/unban/${studentId}`);
-            message.success(response.data.message);
-            fetchBannedStudents();
-        } catch (error) {
-            message.error('Failed to unban student');
-        }
-    };
-
     const fetchBannedStudents = async () => {
         try {
             const response = await axios.get('/api/admin/student/banned');
@@ -43,23 +34,6 @@ const BanUnbanStudents = () => {
     useEffect(() => {
      fetchBannedStudents()
     }, [])
-    
-
-    const columns = [
-        { title: 'Student ID', dataIndex: 'studentId', key: 'studentId' },
-        {
-            title: 'Action',
-            dataIndex: '',
-            key: 'action',
-            render: (_, record) => (
-                <div>
-                        <Button type="link" icon={<CheckCircleOutlined style={{color:'green'}}/>} onClick={() => unbanStudent(record.studentId)}>
-                            Unban
-                        </Button>
-                </div>
-            ),
-        },
-    ];
 
     return (
         <div className='pt-3'>
@@ -73,7 +47,7 @@ const BanUnbanStudents = () => {
                     </Button>
                 </Form.Item>
             </Form>
-            <Table dataSource={bannedStudents} columns={columns} />
+            <BannedTable bannedStudents={bannedStudents} setBannedStudents={setBannedStudents}/>
         </div>
     );
 };

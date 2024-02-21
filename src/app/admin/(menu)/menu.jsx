@@ -41,7 +41,7 @@ const items = [
 		getItem("View", "/admin/exam/view", <CalendarOutlined />),
 		getItem(
 			"Assign Seats",
-			"/admin/exam/assign",
+			"/admin/exam/assign/students",
 			<UnorderedListOutlined />,
 		),
 		getItem(
@@ -122,7 +122,7 @@ const App = () => {
 		"/admin/exam/insert": "/admin/exam/insert",
 		"/admin/exam": "/admin/exam/view",
 		"/admin/exam/view": "/admin/exam/view",
-		"/admin/exam/assign": "/admin/exam/assign",
+		"/admin/exam/assign/students": "/admin/exam/assign/students",
 		"/admin/exam/assign/staffs": "/admin/exam/assign/staffs",
 		"/admin/exam/ban": "/admin/exam/ban",
 

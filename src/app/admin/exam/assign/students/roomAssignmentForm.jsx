@@ -17,10 +17,11 @@ import { usePathname, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Rooms from "./rooms";
-import CustomDatePicker from "../../components/datePicker";
-import DownloadZipButton from "../../components/downloadReport";
+import CustomDatePicker from "../../../components/datePicker";
+import DownloadZipButton from "../../../components/downloadReport";
 import ProgramCountsDisplay from "./ProgramCountsDisplay";
-import SortableExam from "./sort";
+import SortableExam from "../sort";
+import BannedStudentsModal from "./bannedStudentsModal";
 
 const Row = dynamic(() =>
 	import("antd").then((module) => ({ default: module.Row })),
@@ -46,7 +47,7 @@ const Alert = dynamic(() =>
 
 const timeOptions = ["AN", "FN"];
 
-const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
+const RoomAssignmentForm = () => {
 	const [loading, setLoading] = useState(false);
 	const [loadingRooms, setLoadingRooms] = useState(false);
 	const [selectedRooms, setSelectedRooms] = useState([]);
@@ -63,6 +64,7 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 	const [visible, setVisible] = useState(false);
 	const [triggerSortExam, setTriggerSortExam] = useState(false);
 	const [examOrder, setExamOrder] = useState(undefined)
+	const [bannedStudentsModal, setBannedStudents] = useState(false)
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const [form] = Form.useForm();
@@ -194,7 +196,7 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 		if (examType) loadSelectedRooms(examType);
 	}, [examType]);
 
-	const assign = async (values) => {
+	const assign = async () => {
 		try {
 			setLoading(true);
 			const {
@@ -204,7 +206,7 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 				optimize,
 				timeCode,
 				examName,
-			} = values;
+			} = form.getFieldsValue();
 			const result = await axios.get("/api/admin/exams/assign", {
 				params: {
 					orderBy,
@@ -264,7 +266,7 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 				<Form
 					name="exam-assignment"
 					layout="vertical"
-					onFinish={assign}
+					onFinish={() => { setBannedStudents(true) }}
 					form={form}
 				>
 					<Row gutter={16}>
@@ -355,7 +357,7 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 										onCancel={() =>
 											setTriggerSortExam(false)
 										}
-										onOk={()=>setTriggerSortExam(false)}
+										onOk={() => setTriggerSortExam(false)}
 									>
 										<SortableExam date={date} timeCode={timeCode} onSort={(exams) => {
 											const examIds = exams.map((exam) => exam.id)
@@ -540,6 +542,9 @@ const RoomAssignmentForm = ({ setAssignTeachers = () => { } }) => {
 					</Col>
 				</Row>
 			</Modal>
+			{bannedStudentsModal ?
+				<BannedStudentsModal handleModalClose={() => { assign(); setBannedStudents(false) }} />
+				: null}
 		</div>
 	);
 };
