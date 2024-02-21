@@ -205,39 +205,6 @@ const DynamicDepartmentForm = () => {
 				</Row>
 			</Form>
 			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
-<<<<<<< HEAD
-			<Table
-				dataSource={departments}
-				columns={[
-					{
-						title: 'ID',
-						dataIndex: 'id',
-						key: 'id',
-					},
-					{
-						title: 'Code',
-						dataIndex: 'code',
-						key: 'code',
-					},
-					{
-						title: 'Name',
-						dataIndex: 'name',
-						key: 'name',
-					},
-					{
-						title: 'Action',
-						key: 'action',
-						render: (text, record) => (
-							<Button type="link" danger onClick={() => handleDelete(record.id)}>
-								Delete
-							</Button>
-						),
-					},
-				]}
-				pagination={false}
-				style={{ width: '100%' }}
-			/>
-=======
 				<Table
 					dataSource={departments}
 					columns={[
@@ -260,7 +227,6 @@ const DynamicDepartmentForm = () => {
 					pagination={false}
 					style={{ width: "100%" }}
 				/>
->>>>>>> 7ade08f570348305db8aa7663ce568ae2ed17704
 			</Card>
 		</div>
 	);

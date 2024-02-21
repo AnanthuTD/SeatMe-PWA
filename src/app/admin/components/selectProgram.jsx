@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-// SelectProgram.js
-import React from 'react';
-import { Select } from 'antd';
-
-const SelectProgram = ({ options, placeholder, onChange, value }) => {
-  return (
-    <Select
-      showSearch
-      placeholder={placeholder}
-      optionFilterProp="label"
-      onChange={onChange}
-      value={value}
-      filterOption={(input, option) =>
-        option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      }
-    >
-      {options.map((program) => (
-        <Select.Option key={program.id} value={program.id} label={program.name}>
-          {program.name}
-        </Select.Option>
-      ))}
-    </Select>
-  );
-=======
 import React, { useEffect, useState } from "react";
 import { Select } from "antd";
 
@@ -102,7 +77,6 @@ const SelectProgram = ({
 			))}
 		</Select>
 	);
->>>>>>> 7ade08f570348305db8aa7663ce568ae2ed17704
 };
 
 export default SelectProgram;
