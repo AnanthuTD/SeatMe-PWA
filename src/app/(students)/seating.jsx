@@ -19,25 +19,25 @@ const Seating = ({ seatingInfo }) => {
 		const children = [
 			{
 				label: <Text strong>{"Course"}</Text>,
-				children: <Text strong>{seatingInfo.courseName.toString()}</Text>,
+				children: <Text strong italic>{seatingInfo.courseName.toString()}</Text>,
 			},
 			{
 				label: <Text strong>{"Block"}</Text>,
-				children: <Text strong>{seatingInfo.blockId.toString().toUpperCase()}</Text>,
+				children: <Text strong italic>{seatingInfo.blockId.toString().toUpperCase()}</Text>,
 			},
 			{
 				label: <Text strong>{"Floor Number"}</Text>,
-				children: <Text strong>{seatingInfo.floor.toString()}</Text>,
+				children: <Text strong italic>{seatingInfo.floor.toString()}</Text>,
 			},
 			{
 				label: <Text strong>{"Room"}</Text>,
 				children:
-					<Text strong>{seatingInfo.roomName?.toString() ||
+					<Text strong italic>{seatingInfo.roomName?.toString() ||
 						seatingInfo.roomId.toString()}</Text>,
 			},
 			{
 				label: <Text strong>{"Seat Number"}</Text>,
-				children: <Text strong>{seatingInfo.seatNumber.toString()}</Text>,
+				children: <Text strong italic>{seatingInfo.seatNumber.toString()}</Text>,
 			},
 		];
 
@@ -47,15 +47,11 @@ const Seating = ({ seatingInfo }) => {
 	return (
 		<>
 			{item.length ? (
-
-				
 					<Descriptions
 						bordered
 						column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
 						items={item}
 					/>
-				
-
 			) : (
 				"Nothing"
 			)}
