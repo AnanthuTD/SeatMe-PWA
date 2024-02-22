@@ -1,13 +1,14 @@
 import React from 'react'
 import {Table, Button, message} from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons';
+import axios from '@/lib/axiosPrivate';
 
 function BannedTable({bannedStudents, setBannedStudents}) {
-    const unbanStudent = async (studentId) => {
+    const unBanStudent = async (studentId) => {
         try {
             const response = await axios.patch(`/api/admin/student/unban/${studentId}`);
             message.success(response.data.message);
-            let newList = bannedStudents.filter((value) => value !== studentId)
+            let newList = bannedStudents.filter((value) => value.id !== studentId)
             setBannedStudents(newList)
         } catch (error) {
             message.error('Failed to unban student');
@@ -23,7 +24,7 @@ function BannedTable({bannedStudents, setBannedStudents}) {
             dataIndex: '',
             key: 'action',
             render: (_, record) => (
-                <Button type="link" icon={<CheckCircleOutlined style={{ color: 'green' }} />} onClick={() => unbanStudent(record.studentId)}>
+                <Button type="link" icon={<CheckCircleOutlined style={{ color: 'green' }} />} onClick={() => unBanStudent(record.id)}>
                     Unban
                 </Button>
             ),

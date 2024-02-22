@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Form, Input, Button, message, } from 'antd';
-import axios from 'axios';
-import { StopOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import axios from '@/lib/axiosPrivate';
+import { StopOutlined} from '@ant-design/icons';
 import BannedTable from './bannedTable';
 
 const BanUnbanStudents = () => {
