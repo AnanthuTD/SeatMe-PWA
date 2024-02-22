@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Descriptions } from "antd";
-
+import { Descriptions, Typography } from "antd";
+const { Text } = Typography
 /**
  * Data items for the description list.
  * @type {Array<import('antd').DescriptionsItemProps>}
@@ -19,25 +19,25 @@ const Seating = ({ seatingInfo }) => {
 		const children = [
 			{
 				label: "Course",
-				children: seatingInfo.courseName.toString(),
+				children: <Text strong>{seatingInfo.courseName.toString()}</Text>,
 			},
 			{
 				label: "Block",
-				children: seatingInfo.blockId.toString(),
+				children: <Text strong>{seatingInfo.blockId.toString()}</Text>,
 			},
 			{
 				label: "Floor Number",
-				children: seatingInfo.floor.toString(),
+				children: <Text strong>{seatingInfo.floor.toString()}</Text>,
 			},
 			{
 				label: "Room",
 				children:
-					seatingInfo.roomName?.toString() ||
-					seatingInfo.roomId.toString(),
+					<Text strong>{seatingInfo.roomName?.toString() ||
+						seatingInfo.roomId.toString()}</Text>,
 			},
 			{
 				label: "Seat Number",
-				children: <Text className="bold-text">{seatingInfo.seatNumber.toString()}</Text>,
+				children: <Text strong>{seatingInfo.seatNumber.toString()}</Text>,
 			},
 		];
 
