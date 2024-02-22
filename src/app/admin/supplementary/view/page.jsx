@@ -18,7 +18,7 @@ function Page() {
 				params: { query: date, column: "date" },
 			});
 			const { data } = result;
-			console.log(result.data.length);
+			// console.log(result.data.length);
 			const courses = data.map((course) => {
 				return {
 					id: course["course.id"],
@@ -32,7 +32,7 @@ function Page() {
 	};
 
 	useEffect(() => {
-		console.log(date);
+		// console.log(date);
 		if (date) loadCourses(date);
 	}, [date]);
 
@@ -55,7 +55,7 @@ function Page() {
 				},
 			})
 			.then((res) => {
-				console.log(res.data);
+				// console.log(res.data);
 				setStudents(res.data);
 			})
 			.catch((err) => message.error("Failed to load students!"));

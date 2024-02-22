@@ -361,7 +361,7 @@ const RoomAssignmentForm = () => {
 									>
 										<SortableExam date={date} timeCode={timeCode} onSort={(exams) => {
 											const examIds = exams.map((exam) => exam.id)
-											console.log(examIds);
+											// console.log(examIds);
 											setExamOrder(examIds)
 										}} />
 									</Modal>

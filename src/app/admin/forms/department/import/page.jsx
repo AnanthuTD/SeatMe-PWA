@@ -48,7 +48,7 @@ function DepartmentPage() {
 				setData(result.data);
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Record with Department ID '${error.response.data.value}' already exists`,

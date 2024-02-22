@@ -271,7 +271,7 @@ const App = ({
 					...row,
 				});
 
-				console.log(JSON.stringify(newData));
+				// console.log(JSON.stringify(newData));
 
 				await axios.put(`/api/admin/exams/${id}`, row);
 
@@ -282,7 +282,7 @@ const App = ({
 			}
 		} catch (errInfo) {
 			message.error("Validate Failed!");
-			console.log("Validate Failed:", errInfo);
+			// console.log("Validate Failed:", errInfo);
 		}
 	};
 

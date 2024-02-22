@@ -17,7 +17,7 @@ function page() {
 			.get("/api/staff")
 			.then((response) => {
 				let staff = response.data;
-				console.log(staff);
+				// console.log(staff);
 				setExamDetails(staff.examDetails[0]);
 				const onDutyValue = staff.onDuty;
 				setOnDuty(onDutyValue);

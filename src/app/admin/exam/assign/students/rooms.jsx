@@ -70,7 +70,7 @@ const EditableCell = ({
 				form,
 			);
 		} catch (errInfo) {
-			console.log("Save failed:", errInfo);
+			// console.log("Save failed:", errInfo);
 		}
 	};
 	let childNode = children;

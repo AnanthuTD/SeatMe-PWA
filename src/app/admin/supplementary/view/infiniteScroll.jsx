@@ -33,7 +33,7 @@ const App = () => {
 		if (loading) {
 			return;
 		}
-		console.log("loading data");
+		// console.log("loading data");
 		const resultsPerPage = 50;
 		setLoading(true);
 		axios

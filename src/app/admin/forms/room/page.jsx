@@ -44,13 +44,13 @@ const DynamicRoomForm = () => {
 			const result = await axios.post("/api/admin/roomentry/room", {
 				rooms: values.rooms,
 			});
-			console.log(values.rooms);
+			// console.log(values.rooms);
 			if (result.status === 200) {
 				message.success(result.message);
 				setError(null); // Clear any previous errors
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Room with ID '${error.response.data.value}' already exists`,

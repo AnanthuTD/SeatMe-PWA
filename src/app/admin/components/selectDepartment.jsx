@@ -24,7 +24,7 @@ const SelectDepartment = ({
 
 	const SelectProgram = ({ options, ...props }) => {
 		const handleChange = value => {
-		  console.log('Selected value:', value);
+		  // console.log('Selected value:', value);
 		  // You may want to update the form field here
 		  // Example: props.onChange(value);
 		};

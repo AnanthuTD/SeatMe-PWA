@@ -40,7 +40,7 @@ const DynamicCourseForm = () => {
 		try {
 		  // Assuming your server-side API endpoint for course deletion is /api/admin/courseentry/course/:courseId
 		  const result = await axios.delete(`/api/admin/courseentry/course/${courseId}`);
-		//   console.log(result);
+		//   // console.log(result);
 		  if (result.status === 200) {
 			// If deletion is successful, display a success message
 			const msg = "Course with id : "+ courseId + " deleted" ;
@@ -166,7 +166,7 @@ const DynamicCourseForm = () => {
 	}, []);
 
 	const handleSubmission = async (values) => {
-		console.log("Submitted values:", values);
+		// console.log("Submitted values:", values);
 
 		try {
 			const result = await axios.post("/api/admin/courseentry/course", {
@@ -177,7 +177,7 @@ const DynamicCourseForm = () => {
 				setError(null); // Clear any previous errors
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Course with ID '${error.response.data.value}' already exists`,
@@ -243,7 +243,7 @@ const DynamicCourseForm = () => {
 	}, [semesterOptions]);
 
 	useEffect(() => {
-		console.log("Semester Options:", semesterOptions);
+		// console.log("Semester Options:", semesterOptions);
 	  }, [semesterOptions]);
 	  
 	

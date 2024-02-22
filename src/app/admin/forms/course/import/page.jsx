@@ -50,7 +50,7 @@ function CoursesPage() {
 			return course || null;
 		});
 
-		console.log(processedCourses);
+		// console.log(processedCourses);
 
 		try {
 			const result = await axios.post("/api/admin/courseentry/course", {
@@ -58,11 +58,11 @@ function CoursesPage() {
 			});
 			if (result.status === 200) {
 				message.success("Successfully submitted");
-				console.log(result.data);
+				// console.log(result.data);
 				setFailedRecords(result.data.failedRecords);
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Record with Course ID '${error.response.data.value}' already exists`,

@@ -8,7 +8,7 @@ function Instruction() {
 
 	const translator = () => {
 		setTranslate(!translate);
-		console.log(translate);
+		// console.log(translate);
 	};
 
 	const showInfo = () => {

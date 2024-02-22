@@ -48,7 +48,7 @@ const DynamicProgramForm = () => {
 	const loadDepartments = async () => {
 		try {
 			const result = await axios.get("/api/admin/departments");
-			console.log("departments data", result.data);
+			// console.log("departments data", result.data);
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -60,7 +60,7 @@ const DynamicProgramForm = () => {
 	}, []);
 
 	const handleSubmission = async (values) => {
-		console.log("Submitted values:", values);
+		// console.log("Submitted values:", values);
 
 		try {
 			const result = await axios.post("/api/admin/programentry/program", {
@@ -71,7 +71,7 @@ const DynamicProgramForm = () => {
 				setError(null); // Clear any previous errors
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Program with ID '${error.response.data.value}' already exists`,
@@ -371,14 +371,14 @@ const DynamicProgramForm = () => {
 				</Select>
 				<Table
 					dataSource={programs.filter((program) => {
-						console.log(
+						/* console.log(
 							"Program Department Code:",
 							program.departmentCode,
 						);
 						console.log(
 							"Selected Department Code:",
 							selectedDepartmentCode,
-						);
+						); */
 
 						return selectedDepartmentCode
 							? program.departmentCode.toLowerCase() ===
@@ -394,52 +394,3 @@ const DynamicProgramForm = () => {
 };
 
 export default DynamicProgramForm;
-
-{
-	/* <Table
-					dataSource={programs}
-					columns={columns}
-					
-					pagination={false}
-				/> */
-}
-
-//   					columns={[
-//   						{
-//   						title: "ID",
-//   						dataIndex: "id",
-//   						key: "id",
-//   						},
-//   						{
-//   						title: "Name",
-//   						dataIndex: "name",
-//   						key: "name",
-//   						},
-//   						{
-//   						title: "Duration",
-//   						dataIndex: "duration",
-//   						key: "duration",
-//   						},
-//   						{
-//   						title: "Level",
-//   						dataIndex: "level",
-//   						key: "level",
-//   						},
-//   						{
-//   						title: "Department ID",
-//   						dataIndex: "departmentCode",
-//   						key: "departmentCode",
-
-//   						},
-//     {
-//       title: "Is Aided",
-//       dataIndex: "isAided",
-//       key: "isAided",
-//       render: (text) => (
-//         <span style={{ color: text  ? "green" : "red" }}>
-//           {text  ? "Yes" : "No"}
-//         </span>
-//       ),
-//     },
-//     // Add more columns as needed
-//   ]}

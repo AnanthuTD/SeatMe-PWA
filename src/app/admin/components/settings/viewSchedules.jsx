@@ -76,7 +76,7 @@ const ViewSchedules = ({ updateSchedule }) => {
 				setSchedules((prevSchedules) =>
 					prevSchedules.filter((schedule) => schedule.id !== id),
 				);
-				console.log(`Deleted record with ID ${id}`);
+				// console.log(`Deleted record with ID ${id}`);
 			})
 			.catch((error) =>
 				console.error(`Error deleting record with ID ${id}:`, error),

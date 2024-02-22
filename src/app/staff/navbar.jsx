@@ -54,7 +54,7 @@ useEffect(() => {
 	// Get current Indian time
 const currentIndianTime = dayjs().tz('Asia/Kolkata').format('HH:mm:ss');
 
-console.log(currentIndianTime);
+// console.log(currentIndianTime);
   // Check if the current time in India is between either of the two time ranges
   const isWithinRange =
 	(currentIndianTime > '09:30:00' && currentIndianTime < '10:30:00') ||

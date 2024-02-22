@@ -72,7 +72,7 @@ function TeacherAssignment({ rooms = [], date = new Date(), timeCode = "AN" }) {
 				setFailedAssignments(failedAssignments);
 				console.error("Error assigning teachers: ", error);
 				message.error("Failed to assign some teachers.");
-				console.log("Failed Assignments:", failedAssignments);
+				// console.log("Failed Assignments:", failedAssignments);
 			} else {
 				message.success("Teachers assigned successfully!");
 			}

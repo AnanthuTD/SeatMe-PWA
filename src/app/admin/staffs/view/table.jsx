@@ -116,7 +116,7 @@ const EditableTable = ({
 			/>
 		),
 		onFilter: (value, record) => {
-			console.log(value, record);
+			// console.log(value, record);
 			return record[dataIndex]
 				?.toString()
 				.toLowerCase()

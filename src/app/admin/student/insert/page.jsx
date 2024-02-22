@@ -26,7 +26,7 @@ const DynamicStudentForm = () => {
 
 	const handleSubmission = async (values) => {
 		const { students } = values;
-		console.log("values: ", students);
+		// console.log("values: ", students);
 
 		try {
 			const result = await axios.post("/api/admin/student", { students });
@@ -42,7 +42,7 @@ const DynamicStudentForm = () => {
 				? message.warning(warnMessage)
 				: message.success(successMessage);
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			message.error("Something went wrong");
 		}
 	};
@@ -50,7 +50,7 @@ const DynamicStudentForm = () => {
 	const loadSecondLang = async () => {
 		const res = await axios.get("/api/admin/course/common2");
 		const { data } = res;
-		console.log(data);
+		// console.log(data);
 		setSecondLangs(data);
 	};
 

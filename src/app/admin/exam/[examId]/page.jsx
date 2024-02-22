@@ -21,7 +21,7 @@ export default function Page({ params }) {
 
 			setData({ programs, semester, courseName, courseId });
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			message.error("Something went wrong!");
 		}
 	};

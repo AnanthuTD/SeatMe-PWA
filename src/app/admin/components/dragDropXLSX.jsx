@@ -77,7 +77,7 @@ const DragDrop = ({
 
 				let newMappedFields = {};
 
-				console.log(dataArr[0]);
+				// console.log(dataArr[0]);
 
 				requiredFields.forEach((field) => {
 					const column = dataArr[0].find(
@@ -95,17 +95,17 @@ const DragDrop = ({
 			return false;
 		},
 		/* onDrop(e) {
-			console.log("Dropped files", e.dataTransfer.files);
+			// console.log("Dropped files", e.dataTransfer.files);
 		}, */
 	};
 
 	const getAvailableFields = () => {
 		const selectedFields = Object.values(mappedFields);
-		// console.log('selectedFields', selectedFields);
+		// // console.log('selectedFields', selectedFields);
 		const options = fileData[0].filter(
 			(field) => !selectedFields.includes(field),
 		);
-		// console.log(options);
+		// // console.log(options);
 		return options;
 	};
 

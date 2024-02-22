@@ -19,7 +19,7 @@ const ProgramList = ({ data, examId }) => {
 			);
 			return result.data || [];
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			message.error("Error fetching student data");
 			return [];
 		}

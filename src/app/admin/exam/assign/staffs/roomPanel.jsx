@@ -39,19 +39,19 @@ function RoomPanel({
 			);
 			const { data } = result;
 			if (!data.error) {
-				console.log(roomTeachers);
+				// console.log(roomTeachers);
 
 				const teachers = data.staffs.filter((teacher) => {
 					return !Object.values(roomTeachers).includes(teacher.id);
 				});
 
-				console.log(teachers);
+				// console.log(teachers);
 				setTeacherList(teachers);
 				return;
 			}
 			message.error(data.message);
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			const { data } = error?.response || { data: {} };
 			const errorMessage =
 				data.message || "Something went wrong on the server side.";

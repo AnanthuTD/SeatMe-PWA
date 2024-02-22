@@ -142,7 +142,7 @@ const StudentList = ({
 		let supplyId = undefined;
 		const newData = dataSource.filter((item) => {
 			if (item.id !== id) return true;
-			console.log(item);
+			// console.log(item);
 			supplyId = item.supplementaries[0].id;
 		});
 

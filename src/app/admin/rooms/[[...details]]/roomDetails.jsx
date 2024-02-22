@@ -200,7 +200,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 					...row,
 				});
 
-				console.log({ ...row, id: item.id });
+				// console.log({ ...row, id: item.id });
 				try {
 					const res = await axios.patch(url, { ...row, id: item.id });
 					const { updateCount } = res.data;
@@ -212,7 +212,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 				}
 			}
 		} catch (errInfo) {
-			console.log("Validate Failed:", errInfo);
+			// console.log("Validate Failed:", errInfo);
 		}
 	};
 
@@ -341,7 +341,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 	}, []);
 
 	const onSelectChange = (newSelectedRowKeys) => {
-		console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+		// console.log("selectedRowKeys changed: ", newSelectedRowKeys);
 		setSelectedRowKeys(newSelectedRowKeys);
 	};
 

@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
 
 				try {
 					// Request a new access token using the refresh token
-					console.log("Attempting to refresh token...");
+					// console.log("Attempting to refresh token...");
 					const refreshTokenResponse = await axiosInstance.post(
 						"api/auth/refresh-token",
 					);
@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
 					const newAccessToken =
 						refreshTokenResponse.data.accessToken;
 
-					console.log("new access token: ", newAccessToken);
+					// console.log("new access token: ", newAccessToken);
 
 					setAuthorizationToken(newAccessToken);
 
@@ -61,7 +61,7 @@ axiosInstance.interceptors.response.use(
 					// Clear the requestQueue
 					requestQueue = [];
 				} catch (refreshError) {
-					console.log("Refresh error:", refreshError);
+					// console.log("Refresh error:", refreshError);
 
 					if (
 						refreshError.response &&

@@ -8,7 +8,7 @@ import { useAccount } from "@/context/accountContext";
 import { useRouter } from "next/navigation";
 
 const onFinishFailed = (errorInfo) => {
-	console.log("Failed:", errorInfo);
+	// console.log("Failed:", errorInfo);
 };
 
 const Login = () => {
@@ -26,7 +26,7 @@ const Login = () => {
 
 			setAuthorizationToken(accessToken);
 
-			console.log("user: ", response.data);
+			// console.log("user: ", response.data);
 
 			setUser(user);
 

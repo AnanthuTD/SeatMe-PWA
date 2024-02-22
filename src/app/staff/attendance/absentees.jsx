@@ -19,7 +19,7 @@ function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 		try {
 			if (typeof window !== "undefined") {
 				const submitted = localStorage.getItem("Submitted") || false;
-				console.log(submitted);
+				// console.log(submitted);
 			}
 		} catch (error) {}
 	}, []);

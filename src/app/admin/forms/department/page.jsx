@@ -40,7 +40,7 @@ const DynamicDepartmentForm = () => {
 	
 
 	const handleSubmission = async (values) => {
-		console.log("Submitted values:", values);
+		// console.log("Submitted values:", values);
 
 		try {
 			const result = await axios.post(
@@ -54,7 +54,7 @@ const DynamicDepartmentForm = () => {
 				setError(null); // Clear any previous errors
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Department with ID '${error.response.data.value}' already exists`,

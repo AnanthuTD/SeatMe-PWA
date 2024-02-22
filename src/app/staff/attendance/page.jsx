@@ -23,7 +23,7 @@ function Page() {
 			typeof window !== "undefined"
 				? localStorage.getItem("examDetails")
 				: null;
-		console.log(onDuty, examInfo);
+		// console.log(onDuty, examInfo);
 
 		if (!onDuty || !examInfo || !examInfo.length) return;
 

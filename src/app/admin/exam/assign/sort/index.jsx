@@ -16,7 +16,7 @@ export default function App({ date,timeCode, onSort }) {
 		});
 
 		const exams = response.data;
-		console.log(exams);
+		// console.log(exams);
 		setItems(exams);
 	}
 

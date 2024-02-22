@@ -33,7 +33,7 @@ const SelectProgram = ({
 	};
 
 	const customFilter = (input, option) => {
-		console.log(option);
+		// console.log(option);
 		const codeMatches = (option?.children?.toLowerCase() ?? "").includes(
 			input.toLowerCase(),
 		);

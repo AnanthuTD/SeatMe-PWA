@@ -45,7 +45,7 @@ const DynamicBlockForm = () => {
 	
 
 	const handleSubmission = async (values) => {
-		console.log("Submitted values:", values);
+		// console.log("Submitted values:", values);
 
 		try {
 			const result = await axios.post("/api/admin/blockentry/block", {
@@ -56,7 +56,7 @@ const DynamicBlockForm = () => {
 				setError(null); // Clear any previous errors
 			} else message.error("Submit failed");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Block with ID '${error.response.data.value}' already exists`,
@@ -209,7 +209,7 @@ const DynamicBlockForm = () => {
 				onRow={(record) => {
 					return {
 					  onClick: () => {
-						console.log('Block Details:', record);
+						// console.log('Block Details:', record);
 					  },
 					};
 				  }}

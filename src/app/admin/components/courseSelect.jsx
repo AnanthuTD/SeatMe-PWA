@@ -21,7 +21,7 @@ const CoursesSelect = ({
 
 	// default selected options if less than 10 courses value
 	useEffect(() => {
-		console.log("options changed");
+		// console.log("options changed");
 		setCleared(false);
 		const option = isLessThan20 ? options.map((option) => option) : [];
 		const courseId = isLessThan20 ? options.map((option) => option.id) : [];
@@ -32,7 +32,7 @@ const CoursesSelect = ({
 	}, [options]);
 
 	useEffect(() => {
-		console.log("cleared");
+		// console.log("cleared");
 	}, [cleared]);
 
 	const customSort = (optionA, optionB) => {
@@ -66,7 +66,7 @@ const CoursesSelect = ({
 	};
 
 	const handleClear = () => {
-		console.log("Clear button clicked!");
+		// console.log("Clear button clicked!");
 		setSelectedCourses([]);
 		setValue([]);
 	};

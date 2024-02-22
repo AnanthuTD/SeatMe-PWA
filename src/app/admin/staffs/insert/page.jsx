@@ -42,7 +42,7 @@ const DynamicStudentForm = () => {
 			student.department = values.department;
 			return student;
 		});
-		console.log(staffs);
+		// console.log(staffs);
 
 		try {
 			const result = await axios.post("/api/admin/staff", {
@@ -81,7 +81,7 @@ const DynamicStudentForm = () => {
 	};
 
 	useEffect(() => {
-		// console.log(values);
+		// // console.log(values);
 		form.setFieldsValue({ department: selectedDepartment });
 	}, [selectedDepartment]);
 
