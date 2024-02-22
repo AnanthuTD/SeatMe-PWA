@@ -147,6 +147,13 @@ const App = () => {
 		setUpcomingExams([]);
 	};
 
+	const validateStudentId = (_, value) => {
+		if (!value || (value.toString().length !== 6 && value.toString().length !== 12)) {
+			return Promise.reject(new Error('Invalid Register number. It must be either 6 or 12 digits long.'));
+		}
+		return Promise.resolve();
+	};
+
 	return (
 		<>
 			<Container>
@@ -166,17 +173,14 @@ const App = () => {
 									rules={[
 										{
 											required: true,
-											type: "number",
-											min: 100000000000,
-											max: 999999999999,
-											message: "Invalid Register number",
+											validator: validateStudentId, // Custom validator function
 										},
 									]}
 								>
 									<InputNumber style={{ width: "100%" }} />
 								</Form.Item>
 								<Form.Item {...tailLayout}>
-									<Button type="primary" htmlType="submit" style={{backgroundColor:"brown"}}>
+									<Button type="primary" htmlType="submit" style={{ backgroundColor: "brown" }}>
 										Submit
 									</Button>
 									<Button
