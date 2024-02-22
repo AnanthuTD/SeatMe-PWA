@@ -24,8 +24,8 @@ const Container = ({ children }) => {
         if (layoutRendered) {
             const backgroundElement = document.getElementById('backgroundImage');
             if (backgroundElement) {
-                backgroundElement.style.filter = 'blur(5px)';
-                backgroundElement.style.WebkitFilter = 'blur(5px)';
+               /*  backgroundElement.style.filter = 'blur(1px)';
+                backgroundElement.style.WebkitFilter = 'blur(1px)'; */
             }
         }
     }, [layoutRendered]);

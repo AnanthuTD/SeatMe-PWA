@@ -7,7 +7,7 @@ const { Text } = Typography
  */
 
 const Seating = ({ seatingInfo }) => {
-	console.log(JSON.stringify(seatingInfo, null, 2));
+	// console.log(JSON.stringify(seatingInfo, null, 2));
 	const [item, setItem] = useState([]);
 
 	useEffect(() => {
@@ -18,25 +18,25 @@ const Seating = ({ seatingInfo }) => {
 	const fetchItems = () => {
 		const children = [
 			{
-				label: "Course",
+				label: <Text strong>{"Course"}</Text>,
 				children: <Text strong>{seatingInfo.courseName.toString()}</Text>,
 			},
 			{
-				label: "Block",
-				children: <Text strong>{seatingInfo.blockId.toString()}</Text>,
+				label: <Text strong>{"Block"}</Text>,
+				children: <Text strong>{seatingInfo.blockId.toString().toUpperCase()}</Text>,
 			},
 			{
-				label: "Floor Number",
+				label: <Text strong>{"Floor Number"}</Text>,
 				children: <Text strong>{seatingInfo.floor.toString()}</Text>,
 			},
 			{
-				label: "Room",
+				label: <Text strong>{"Room"}</Text>,
 				children:
 					<Text strong>{seatingInfo.roomName?.toString() ||
 						seatingInfo.roomId.toString()}</Text>,
 			},
 			{
-				label: "Seat Number",
+				label: <Text strong>{"Seat Number"}</Text>,
 				children: <Text strong>{seatingInfo.seatNumber.toString()}</Text>,
 			},
 		];
@@ -47,11 +47,15 @@ const Seating = ({ seatingInfo }) => {
 	return (
 		<>
 			{item.length ? (
-				<Descriptions
-					bordered
-					column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
-					items={item}
-				/>
+
+				
+					<Descriptions
+						bordered
+						column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+						items={item}
+					/>
+				
+
 			) : (
 				"Nothing"
 			)}

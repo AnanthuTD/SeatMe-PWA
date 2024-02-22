@@ -150,7 +150,7 @@ const App = () => {
 	return (
 		<>
 			<Container>
-			<div className="flex h-screen flex-col w-full overflow-hidden" /* style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} */>
+				<div className="flex h-screen flex-col w-full overflow-hidden" /* style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} */>
 					<section className="h-[40%] flex justify-center items-center w-full">
 						<div className="min-w-[50%]">
 							<Form
@@ -176,7 +176,7 @@ const App = () => {
 									<InputNumber style={{ width: "100%" }} />
 								</Form.Item>
 								<Form.Item {...tailLayout}>
-									<Button type="primary" htmlType="submit">
+									<Button type="primary" htmlType="submit" style={{backgroundColor:"brown"}}>
 										Submit
 									</Button>
 									<Button
@@ -192,10 +192,14 @@ const App = () => {
 					</section>
 					<section className="w-full h-[60%]">
 						<div className="mx-auto w-full h-full">
-							<Segment
-								seatingInfo={seatingInfo}
-								upcomingExams={upcomingExams}
-							/>
+							{
+								seatingInfo || upcomingExams.length ?
+									<Segment
+										seatingInfo={seatingInfo}
+										upcomingExams={upcomingExams}
+									/>
+									: null
+							}
 						</div>
 					</section>
 				</div>

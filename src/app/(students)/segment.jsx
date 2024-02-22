@@ -20,26 +20,40 @@ const Segment = ({ seatingInfo, upcomingExams }) => {
 					block
 					options={[tab1, tab2]}
 					onChange={(value) => {
-						console.log(value);
+						// console.log(value);
 						setTab(value);
 					}}
 					value={tab}
 				/>
 				<div className="flex-grow overflow-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-900 scrollbar-thumb-rounded-md">
-					{tab === tab1 ? (
-						seatingInfo ? (
-							<Seating seatingInfo={seatingInfo} />
-						) : (
-							<span>Not scheduled!</span>
-						)
-					) : null}
-					{tab === tab2 ? (
-						upcomingExams.length ? (
-							<TimeTable upcomingExams={upcomingExams} />
-						) : (
-							<span>No upcoming exams!</span>
-						)
-					) : null}
+					<div style={{ position: 'relative' }}>
+						<div
+							style={{
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								width: '100%',
+								height: '100%',
+								backdropFilter: 'blur(5px)',
+								backgroundColor: 'rgba(255, 255, 255, 0.5)', // Adjust the opacity as needed
+								zIndex: -1, // Move the background behind the content
+							}}
+						/>
+						{tab === tab1 ? (
+							seatingInfo ? (
+								<Seating seatingInfo={seatingInfo} />
+							) : (
+								<span>Not scheduled!</span>
+							)
+						) : null}
+						{tab === tab2 ? (
+							upcomingExams.length ? (
+								<TimeTable upcomingExams={upcomingExams} />
+							) : (
+								<span>No upcoming exams!</span>
+							)
+						) : null}
+					</div>
 				</div>
 			</div>
 		</>
