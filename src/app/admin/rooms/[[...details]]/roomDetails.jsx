@@ -396,7 +396,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 
 			if (response.status === 200) {
 				message.success("Room availability updated successfully");
-				router.push("/admin/exam/assign");
+				router.push("/admin/exam/assign/students");
 			} else {
 				message.error(
 					"Failed to update room availability :",
