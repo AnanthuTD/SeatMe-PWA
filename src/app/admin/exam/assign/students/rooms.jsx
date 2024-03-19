@@ -41,11 +41,13 @@ const EditableCell = ({
 	const [editing, setEditing] = useState(false);
 	const inputRef = useRef(null);
 	const form = useContext(EditableContext);
+
 	useEffect(() => {
 		if (editing) {
 			inputRef.current.focus();
 		}
 	}, [editing]);
+
 	const toggleEdit = () => {
 		setEditing(!editing);
 		const value =
@@ -56,6 +58,7 @@ const EditableCell = ({
 			[dataIndex]: value,
 		});
 	};
+
 	const save = async () => {
 		try {
 			const values = await form.validateFields();
@@ -156,7 +159,7 @@ const App = ({ data }) => {
 			dataIndex: "priority",
 			editable: true,
 			type: "select",
-			render: (_, record) => getPriorityLabel(record.priority),
+			render: (_, record) => getPriorityLabel(record?.priority),
 		},
 	];
 	const handleSave = async (row) => {
@@ -171,9 +174,11 @@ const App = ({ data }) => {
 					...row,
 				});
 				const { id, priority } = row;
-				await axios.patch("/api/admin/rooms", { id, priority });
-				message.success("Updated successfully");
-				setDataSource(newData);
+				if (priority) {
+					await axios.patch("/api/admin/rooms", { id, priority });
+					message.success("Updated successfully");
+					setDataSource(newData);
+				}
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 404) {
