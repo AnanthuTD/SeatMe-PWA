@@ -7,10 +7,6 @@ import { useAccount } from "@/context/accountContext";
 import { useRouter } from "next/navigation";
 import GoogleSignInButton from "./ui/GoogleSignInButton";
 
-const onFinishFailed = (errorInfo) => {
-	// console.log("Failed:", errorInfo);
-};
-
 const Login = () => {
 	const { setUser } = useAccount();
 	const router = useRouter();
