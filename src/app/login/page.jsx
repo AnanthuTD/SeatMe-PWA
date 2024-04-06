@@ -73,7 +73,6 @@ const Login = () => {
 							remember: true,
 						}}
 						onFinish={(value) => onFinish(value, setUser, router)}
-						onFinishFailed={onFinishFailed}
 						autoComplete="off"
 					>
 						<h1 className="text-4xl text-center mb-10 ">Login</h1>
