@@ -11,6 +11,12 @@ const GoogleSignInButton = () => {
 	const router = useRouter();
 
 	useEffect(() => {
+		// Set the boolean flag to enable FedCM
+		const initializeFedCM = async () => {
+			document.getElementById('g_id_onload').setAttribute('data-use_fedcm_for_prompt', 'true');
+		};
+		initializeFedCM();
+
 		// global function
 		window.login = async (response) => {
 			try {
@@ -47,6 +53,7 @@ const GoogleSignInButton = () => {
 
 	return (
 		<>
+				<Script src="https://accounts.google.com/gsi/client" />
 			<div
 				id="g_id_onload"
 				data-client_id={process.env.CLIENT_ID}
@@ -65,7 +72,6 @@ const GoogleSignInButton = () => {
 				data-logo_alignment="left"
 				data-width="400"
 			></div>
-			<Script src="https://accounts.google.com/gsi/client" />
 		</>
 	);
 };
