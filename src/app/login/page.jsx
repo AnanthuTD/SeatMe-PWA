@@ -1,11 +1,11 @@
 "use client";
 import axios from "@/lib/axiosPublic";
 import { setAuthorizationToken } from "@/lib/axiosPrivate";
-
 import React, { useState } from "react";
 import { Button, Checkbox, Form, Input, message } from "antd";
 import { useAccount } from "@/context/accountContext";
 import { useRouter } from "next/navigation";
+import GoogleSignInButton from "./ui/GoogleSignInButton";
 
 const onFinishFailed = (errorInfo) => {
 	// console.log("Failed:", errorInfo);
@@ -61,6 +61,7 @@ const Login = () => {
 							className="h-full w-full"
 						/>
 					</div>
+					<GoogleSignInButton/>
 					<Form
 						name="basic"
 						labelCol={{
