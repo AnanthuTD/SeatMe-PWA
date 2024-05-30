@@ -19,8 +19,10 @@ const ProgramList = ({ data, examId }) => {
 			);
 			return result.data || [];
 		} catch (error) {
-			// console.log(error);
-			message.error("Error fetching student data");
+			if (error.response && error.response.status !== 403) {
+				message.error("Something went wrong!");
+			}
+			console.error("API call failed:", error);
 			return [];
 		}
 	};

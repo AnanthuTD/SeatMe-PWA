@@ -21,8 +21,17 @@ const App = () => {
 	const [addedDataLength, setAddedDataLength] = useState(0);
 
 	const getTotalDataCount = async () => {
-		const result = await axios.get("/api/admin/exams/count");
-		setTotalDataCount(result.data);
+		axios
+			.get("/api/admin/exams/count")
+			.then((result) => {
+				setTotalDataCount(result.data);
+			})
+			.catch((error) => {
+				if (error.response && error.response.status !== 403) {
+					message.error("Something went wrong!");
+				}
+				console.error("API call failed:", error);
+			});
 	};
 
 	const loadMoreData = ({ search = false, reset = false }) => {
@@ -59,7 +68,8 @@ const App = () => {
 				return true;
 			})
 			.catch((error) => {
-				console.error("Error fetching data:", error);
+				if (error.response && error.response.status !== 403)
+					console.error("Error fetching data:", error);
 				setLoading(false);
 				return false;
 			});

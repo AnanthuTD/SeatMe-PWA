@@ -7,12 +7,14 @@ import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
+import { useAccount } from "@/context/accountContext";
 
 const StudentList = ({
 	dataSource,
 	setDataSource = () => {},
 	loading = false,
 }) => {
+	const { user } = useAccount();
 	const [searchText, setSearchText] = useState("");
 	const [searchedColumn, setSearchedColumn] = useState("");
 	const searchInput = useRef(null);
@@ -230,7 +232,7 @@ const StudentList = ({
 			dataIndex: "operation",
 			fixed: "right",
 			render: (_, record) =>
-				dataSource.length >= 1 ? (
+				dataSource.length >= 1 && user.role === "admin" ? (
 					<Tag color="red" className="cursor-pointer">
 						<Popconfirm
 							title="Sure to delete?"

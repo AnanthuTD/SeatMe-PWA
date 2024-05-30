@@ -27,7 +27,8 @@ function Page() {
 			});
 			setCourses(courses);
 		} catch (error) {
-			console.error("Error fetching courses: ", error);
+			if (error.response && error.response.status !== 403)
+				console.error("Error fetching courses: ", error);
 		}
 	};
 

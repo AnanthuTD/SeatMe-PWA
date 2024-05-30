@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { message } from 'antd';
 import { memoizedRefreshToken } from "./refreshToken";
 
 export function setAuthorizationToken(accessToken) {
@@ -29,6 +29,9 @@ axios.interceptors.response.use(
 			}
 
 			return axios(config);
+		}
+		else if(error?.response?.status === 403){
+			message.error('You are not authorized');
 		}
 		return Promise.reject(error);
 	},

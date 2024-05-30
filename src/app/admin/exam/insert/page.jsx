@@ -57,6 +57,9 @@ function Page() {
 				return false;
 			}
 		} catch (error) {
+			if (error.response && error.response.status !== 403) {
+				return false;
+			}
 			if (error.response) {
 				message.error(error.response.data);
 			} else if (error.request) {

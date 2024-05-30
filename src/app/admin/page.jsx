@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { List, Button, Modal, Input } from "antd";
 import axios from "@/lib/axiosPrivate";
 import DownloadButton from "./components/downloadReport";
+import { useAccount } from "@/context/accountContext";
 
 const PDFList = () => {
 	const [pdfs, setPDFs] = useState([]);
@@ -11,6 +12,7 @@ const PDFList = () => {
 	const [fileToDelete, setFileToDelete] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filteredPDFs, setFilteredPDFs] = useState([]);
+	const { user } = useAccount();
 
 	const handleDelete = (pdf) => {
 		setFileToDelete(pdf);
@@ -80,6 +82,7 @@ const PDFList = () => {
 									type="primary"
 									danger
 									onClick={() => handleDelete(pdf)}
+									disabled={user.role !== "admin"}
 								>
 									Delete
 								</Button>

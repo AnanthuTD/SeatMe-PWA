@@ -8,6 +8,7 @@ import Highlighter from "react-highlight-words";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import PasswordUpdateModal from "./passwordUpdateModel";
+import { useAccount } from "@/context/accountContext";
 
 const EditableTable = ({
 	dataSource,
@@ -21,6 +22,7 @@ const EditableTable = ({
 	setSearchText = () => {},
 	handleReset = () => {},
 }) => {
+	const { user } = useAccount();
 	const searchInput = useRef(null);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
@@ -224,7 +226,7 @@ const EditableTable = ({
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
 					<span className="flex gap-1">
-						{dataSource.length >= 1 && (
+						{user.role === "admin" && (
 							<Tag color="red" className="cursor-pointer">
 								<Popconfirm
 									title="Sure to delete?"

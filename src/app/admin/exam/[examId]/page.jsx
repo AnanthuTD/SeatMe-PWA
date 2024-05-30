@@ -21,8 +21,10 @@ export default function Page({ params }) {
 
 			setData({ programs, semester, courseName, courseId });
 		} catch (error) {
-			// console.log(error);
-			message.error("Something went wrong!");
+			if (error.response && error.response.status !== 403) {
+				message.error("Something went wrong!");
+			}
+			console.error("API call failed:", error);
 		}
 	};
 
