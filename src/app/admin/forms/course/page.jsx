@@ -245,7 +245,35 @@ const DynamicCourseForm = () => {
 	useEffect(() => {
 		// console.log("Semester Options:", semesterOptions);
 	  }, [semesterOptions]);
+	  const handleTableChange = (record, field, value) => {
+		console.log(`Changing ${field} of record with ID ${record.id} to ${value}`);
+		console.log(`Changing ${field} of record with sem ${record.semester} to ${value}`);
+
+		setCourses((prevCourses) =>
+		  prevCourses.map((item) =>
+			item.id === record.id ? { ...item, [field]: value } : item
+		  )
+		);
+	  };
 	  
+  const handleUpdate = async (updatedCourse) => {
+    console.log(`Updating record with ID ${updatedCourse.id}`);
+    try {
+      const result = await axios.patch(
+        "/api/admin/courseentry/courseupdate/",
+        [updatedCourse]
+      );
+      if (result.status === 200) {
+        message.success(result.data.message);
+        loadPrograms();
+      } else {
+        message.error("Update failed");
+      }
+    } catch (error) {
+      console.error("Error updating program:", error);
+      message.error("Something went wrong. Please try again.");
+    }
+  };
 	
 	return (
 		<div className="p-3">
@@ -434,31 +462,47 @@ const DynamicCourseForm = () => {
 					  dataIndex: 'id',
 					  key: 'id',
 					  ...getColumnSearchProps('id', 'Search ID'),
+					  
 					},
 					{
 					  title: 'Name',
 					  dataIndex: 'name',
 					  key: 'name',
 					  ...getColumnSearchProps('name', 'Search Name'),
+					  render: (text, record) => (
+						<Input
+							value={text}
+							onChange={(e) => handleTableChange(record, "name", e.target.value)}
+							onBlur={() => handleUpdate(record)}
+						/>
+					),
 					},
 					 {
-					 title: 'Semester',
-					 dataIndex: 'semester',
-					 key: 'semester',
-					 ...getColumnSearchProps('semester', 'Search Semester'),
+						title: 'Semester',
+						dataIndex: 'semester',
+						key: 'semester',
+						...getColumnSearchProps('semester', 'Search Semester'),
+						render: (text, record) => (
+							<Input
+								value={text}
+								onChange={(e) => handleTableChange(record, "semester", e.target.value)}
+								onBlur={() => handleUpdate(record)}
+							/>
+						),
 					 },
 					 {
-						 title: "Is Open Course",
-						 dataIndex: "isOpenCourse",
-						 key: "isOpenCourse",
-				
-						 
-						 render: (text, record) => (
-						   <span style={{ color: text  ? 'green' : 'red' }}>
-							 {text  ? 'Yes' : 'No'}
-						   </span>
-						 ),
-					   },
+						title: 'Type',
+						dataIndex: 'type',
+						key: 'type',
+						...getColumnSearchProps('type', 'Search Type'),
+						render: (text, record) => (
+							<Input
+								value={text}
+								onChange={(e) => handleTableChange(record, "type", e.target.value)}
+								onBlur={() => handleUpdate(record)}
+							/>
+						),
+					 },
 					   {
 						title: 'Operations',
 						dataIndex: 'operations',

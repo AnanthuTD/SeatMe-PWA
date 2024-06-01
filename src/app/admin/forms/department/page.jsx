@@ -21,12 +21,13 @@ import Link from "next/link";
 const DynamicDepartmentForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
+	const [departments, setDepartments] = useState([]);
 
 	const handleDelete = async (departmentId) => {
 		try {
 			const result = await axios.delete(`/api/admin/departmententry/department/${departmentId}`);
 			if (result.status === 200) {
-				message.success(result.message);
+				message.success(result.data.message);
 				// Reload departments after deletion
 				loadDepartments();
 			} else {
@@ -38,10 +39,23 @@ const DynamicDepartmentForm = () => {
 		}
 	};
 	
+	const handleUpdate = async (updatedDepartment) => {
+		try {
+			const result = await axios.patch("/api/admin/departmententry/departmentupdate/", [updatedDepartment]);
+			if (result.status === 200) {
+				message.success(result.data.message);
+				// Optionally, reload departments or update state with the new data
+				loadDepartments();
+			} else {
+				message.error("Update failed");
+			}
+		} catch (error) {
+			console.error("Error updating department:", error);
+			message.error("Something went wrong. Please try again.");
+		}
+	};
 
 	const handleSubmission = async (values) => {
-		// console.log("Submitted values:", values);
-
 		try {
 			const result = await axios.post(
 				"/api/admin/departmententry/department",
@@ -50,11 +64,12 @@ const DynamicDepartmentForm = () => {
 				},
 			);
 			if (result.status === 200) {
-				message.success(result.message);
+				message.success(result.data.message);
 				setError(null); // Clear any previous errors
+				// Reload departments after submission
+				loadDepartments();
 			} else message.error("Submit failed");
 		} catch (error) {
-			// console.log(error);
 			if (error.response.status === 400) {
 				message.error(
 					`Department with ID '${error.response.data.value}' already exists`,
@@ -72,7 +87,6 @@ const DynamicDepartmentForm = () => {
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
-	const [departments, setDepartments] = useState([]);
 
 	const loadDepartments = async () => {
 		try {
@@ -82,13 +96,71 @@ const DynamicDepartmentForm = () => {
 			console.error("Error fetching departments: ", error);
 		}
 	};
+
 	useEffect(() => {
 		// Load departments when the component mounts
 		loadDepartments();
 	}, []);
+	
 	useEffect(() => {
 		form.setFieldsValue({ departments: [{}] });
 	}, [form]);
+
+	const handleTableChange = (record, field, value) => {
+		const newDepartments = [...departments];
+		const index = newDepartments.findIndex(department => department.id === record.id);
+		if (index !== -1) {
+			newDepartments[index][field] = value;
+			setDepartments(newDepartments);
+			// Call the update function when the input loses focus
+			handleUpdate(newDepartments[index]);
+		}
+	};
+
+	const columns = [
+		{
+			title: "ID",
+			dataIndex: "id",
+			key: "id",
+		},
+		{
+			title: "Code",
+			dataIndex: "code",
+			key: "code",
+			render: (text, record) => (
+				<Input
+					value={text}
+					onChange={(e) => handleTableChange(record, "code", e.target.value)}
+					onBlur={() => handleUpdate(record)}
+				/>
+			),
+		},
+		{
+			title: "Name",
+			dataIndex: "name",
+			key: "name",
+			render: (text, record) => (
+				<Input
+					value={text}
+					onChange={(e) => handleTableChange(record, "name", e.target.value)}
+					onBlur={() => handleUpdate(record)}
+				/>
+			),
+		},
+		{
+			title: "Action",
+			key: "action",
+			render: (text, record) => (
+				<Button
+					type="link"
+					onClick={() => handleDelete(record.id)}
+					style={{ color: "red" }}
+				>
+					Delete
+				</Button>
+			),
+		},
+	];
 
 	return (
 		<div className="p-3">
@@ -207,25 +279,9 @@ const DynamicDepartmentForm = () => {
 			<Card size="small" title="Departments" style={{ marginTop: 16 }}>
 				<Table
 					dataSource={departments}
-					columns={[
-						{
-							title: "ID",
-							dataIndex: "id",
-							key: "id",
-						},
-						{
-							title: "Code",
-							dataIndex: "code",
-							key: "code",
-						},
-						{
-							title: "Name",
-							dataIndex: "name",
-							key: "name",
-						},
-					]}
+					columns={columns}
 					pagination={false}
-					style={{ width: "100%" }}
+					rowKey="id"
 				/>
 			</Card>
 		</div>
