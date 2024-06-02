@@ -17,9 +17,7 @@ const TimeTable = ({ upcomingExams }) => {
 								{item.date}
 							</Text>
 						</Descriptions.Item>
-						<Descriptions.Item
-							label={<Text strong>Course Name</Text>}
-						>
+						<Descriptions.Item label={<Text strong>Course Name</Text>}>
 							<Text strong italic>
 								{item.courseName}
 							</Text>

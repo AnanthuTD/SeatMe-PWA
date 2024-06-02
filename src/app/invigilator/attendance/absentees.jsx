@@ -42,7 +42,7 @@ function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 				}
 				setLoading(false);
 				message.success("Attendance submitted successfully!");
-				router.replace("/staff/");
+				router.replace("/invigilator/");
 			} else {
 				message.error("Failed Updation");
 			}
@@ -59,9 +59,7 @@ function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 					absentees.map((student, index) => (
 						<div
 							className={` m-4 p-2 rounded-lg ${
-								student.isPresent
-									? "bg-green-800"
-									: "bg-red-800"
+								student.isPresent ? "bg-green-800" : "bg-red-800"
 							}`}
 							key={index}
 						>
@@ -72,10 +70,7 @@ function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 								<p>SeatNumber: {student.seatNumber}</p>
 								<p>
 									Program:{" "}
-									{
-										student.exam.course.programCourses[0]
-											.program.name
-									}
+									{student.exam.course.programCourses[0].program.name}
 								</p>
 								<p> Course: {student.exam.course.name} </p>
 							</div>
@@ -99,10 +94,7 @@ function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 				<>
 					<div className="flex flex-row justify-between m-8 ">
 						<Button onClick={() => handleConfirm()}> back</Button>
-						<Button
-							loading={loading}
-							onClick={() => finished(absentees)}
-						>
+						<Button loading={loading} onClick={() => finished(absentees)}>
 							{" "}
 							Finish{" "}
 						</Button>

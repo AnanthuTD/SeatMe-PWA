@@ -16,9 +16,7 @@ function Page() {
 
 	useEffect(() => {
 		const onDuty =
-			typeof window !== "undefined"
-				? localStorage.getItem("onDuty")
-				: null;
+			typeof window !== "undefined" ? localStorage.getItem("onDuty") : null;
 		const examInfo =
 			typeof window !== "undefined"
 				? localStorage.getItem("examDetails")
@@ -56,10 +54,7 @@ function Page() {
 							"Server responded with status code:",
 							error.response.status,
 						);
-						console.error(
-							"Server response data:",
-							error.response.data,
-						);
+						console.error("Server response data:", error.response.data);
 					} else {
 						console.error("Request failed:", error.message);
 					}
@@ -79,8 +74,7 @@ function Page() {
 				<>
 					<Navbar attendance={!examDetails?.attendanceSubmitted} />
 					<h1 className="text-center text-2xl text-gray-700 mt-5 ">
-						Check and click{" "}
-						<span className="text-blue-500">finish</span>
+						Check and click <span className="text-blue-500">finish</span>
 					</h1>
 					<Absentees
 						data={data}

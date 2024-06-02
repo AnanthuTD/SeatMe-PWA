@@ -54,8 +54,7 @@ function Navbar({ examinees = false }) {
 		// console.log(currentIndianTime);
 		// Check if the current time in India is between either of the two time ranges
 		const isWithinRange =
-			(currentIndianTime > "09:30:00" &&
-				currentIndianTime < "10:30:00") ||
+			(currentIndianTime > "09:30:00" && currentIndianTime < "10:30:00") ||
 			(currentIndianTime > "13:30:00" && currentIndianTime < "14:45:00");
 		setAttendancetime(isWithinRange);
 	}, []);
@@ -205,15 +204,12 @@ function Navbar({ examinees = false }) {
 								}}
 							>
 								{pages.map((page) => (
-									<MenuItem
-										key={page}
-										onClick={handleCloseNavMenu}
-									>
+									<MenuItem key={page} onClick={handleCloseNavMenu}>
 										<Link
 											href={
 												page === "Schedule"
-													? "/staff"
-													: "/staff/attendance"
+													? "/invigilator"
+													: "/invigilator/attendance"
 											}
 											style={{ textDecoration: "none" }}
 										>
@@ -255,8 +251,8 @@ function Navbar({ examinees = false }) {
 									key={page}
 									href={
 										page === "Schedule"
-											? "/staff"
-											: "/staff/attendance"
+											? "/invigilator"
+											: "/invigilator/attendance"
 									}
 									style={{ textDecoration: "none" }}
 								>
@@ -276,10 +272,7 @@ function Navbar({ examinees = false }) {
 
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Open settings">
-								<IconButton
-									onClick={handleOpenUserMenu}
-									sx={{ p: 0 }}
-								>
+								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 									<Avatar src="/broken-image.jpg" />
 								</IconButton>
 							</Tooltip>
@@ -330,10 +323,7 @@ function Navbar({ examinees = false }) {
 				centered
 				width={1000}
 			>
-				<Row
-					gutter={16}
-					style={{ maxHeight: "400px", overflowY: "auto" }}
-				>
+				<Row gutter={16} style={{ maxHeight: "400px", overflowY: "auto" }}>
 					<Col
 						span={18}
 						style={{ maxHeight: "400px", overflowY: "auto" }}
@@ -364,9 +354,7 @@ function Navbar({ examinees = false }) {
 									{
 										validator: async (_, value) => {
 											if (!value) {
-												throw new Error(
-													"Please provide Password",
-												);
+												throw new Error("Please provide Password");
 											}
 										},
 									},

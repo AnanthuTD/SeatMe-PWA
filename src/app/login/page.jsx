@@ -27,7 +27,7 @@ const Login = () => {
 			setUser(user);
 
 			if (user.role == "admin" || user.role == "staff") {
-				router.push("/admin"); // Redirect to the admin page
+				router.push("/staff"); // Redirect to the admin page
 			} else if (user.role == "invigilator") {
 				router.push("/invigilator"); // Redirect to the staff page
 			}
@@ -51,11 +51,7 @@ const Login = () => {
 			<div className="grid mt-24 place-items-center">
 				<div className="border-3 border-black p-8 shadow-xl rounded-md">
 					<div className="h-36 w-36 m-auto  ">
-						<img
-							src="Admin-logo.png"
-							alt=""
-							className="h-full w-full"
-						/>
+						<img src="Admin-logo.png" alt="" className="h-full w-full" />
 					</div>
 					<GoogleSignInButton />
 					<Form
@@ -120,11 +116,7 @@ const Login = () => {
 								span: 16,
 							}}
 						>
-							<Button
-								type="primary"
-								htmlType="submit"
-								loading={loading}
-							>
+							<Button type="primary" htmlType="submit" loading={loading}>
 								Login
 							</Button>
 						</Form.Item>

@@ -22,7 +22,7 @@ const NavigationPage = () => {
 					</Link>
 				</Col>
 				<Col xs={24} sm={8}>
-					<Link href="/admin">
+					<Link href="/staff">
 						<Button
 							type="primary"
 							size="large"
@@ -34,7 +34,7 @@ const NavigationPage = () => {
 					</Link>
 				</Col>
 				<Col xs={24} sm={8}>
-					<Link href="/staff">
+					<Link href="/invigilator">
 						<Button
 							type="primary"
 							size="large"

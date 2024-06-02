@@ -32,9 +32,7 @@ function calender({ examDetails }) {
 					{" "}
 					{monthNames[d.getMonth()]}-{d.getFullYear()}{" "}
 				</p>
-				<p className="  text-lg ">
-					Time:{examDetails.dateTime.timeCode}
-				</p>
+				<p className="  text-lg ">Time:{examDetails.dateTime.timeCode}</p>
 			</div>
 		</div>
 	);

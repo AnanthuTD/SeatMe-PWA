@@ -22,8 +22,7 @@ const Container = ({ children }) => {
 	useEffect(() => {
 		// Apply blur effect after layout has been rendered
 		if (layoutRendered) {
-			const backgroundElement =
-				document.getElementById("backgroundImage");
+			const backgroundElement = document.getElementById("backgroundImage");
 			if (backgroundElement) {
 				/*  backgroundElement.style.filter = 'blur(1px)';
                 backgroundElement.style.WebkitFilter = 'blur(1px)'; */
@@ -39,8 +38,7 @@ const Container = ({ children }) => {
 					alignItems: "center",
 					justifyContent: "space-between",
 					padding: "10px 20px", // consistent padding
-					background:
-						"linear-gradient(to bottom right, #4E54C8, #8F94FB)", // simplified gradient
+					background: "linear-gradient(to bottom right, #4E54C8, #8F94FB)", // simplified gradient
 					borderBottom: "1px solid #ccc",
 					color: "white",
 					fontFamily: "Arial, sans-serif",
@@ -54,9 +52,7 @@ const Container = ({ children }) => {
 							height={40}
 							className="border border-solid border-white rounded-full mr-2"
 						/>
-						<span className="text-white text-lg font-bold">
-							SeatMe
-						</span>
+						<span className="text-white text-lg font-bold">SeatMe</span>
 					</div>
 				</div>
 
