@@ -1,13 +1,96 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Table, Space, Popconfirm, message, Tag } from "antd";
+import {
+	Button,
+	Input,
+	Table,
+	Space,
+	Popconfirm,
+	message,
+	Tag,
+	Form,
+	Select,
+	Typography,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
-import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
 import { useAccount } from "@/context/accountContext";
+
+async function fetchOpenCourses(programId) {
+	const apiUrl = "/api/staff/open-courses";
+
+	let openCourses = [];
+	try {
+		const response = await axios.get(apiUrl, {
+			params: { programId },
+		});
+		openCourses = response.data;
+	} catch (err) {
+		console.error("Error fetching open courses: ", err);
+	}
+
+	return openCourses || [];
+}
+
+const EditableCell = ({
+	editing,
+	dataIndex,
+	title,
+	inputType,
+	record,
+	index,
+	children,
+	programs,
+	required,
+	...restProps
+}) => {
+	const [openCourses, setOpenCourses] = useState([]);
+
+	useEffect(() => {
+		if (dataIndex === "openCourseId") {
+			const fun = async () => {
+				const openCourses = await fetchOpenCourses(record.programId);
+				setOpenCourses(openCourses);
+			};
+			fun();
+		}
+	}, []);
+
+	return (
+		<td {...restProps}>
+			{editing ? (
+				<Form.Item
+					style={{
+						margin: 0,
+					}}
+					name={dataIndex}
+					rules={[
+						{
+							required: required,
+							message: `${title} is required.`,
+						},
+					]}
+				>
+					{dataIndex === "openCourseId" || dataIndex === "programId" ? (
+						<Select
+							options={
+								dataIndex === "openCourseId" ? openCourses : programs
+							}
+							fieldNames={{ label: "name", value: "id" }}
+						/>
+					) : (
+						<Input />
+					)}
+				</Form.Item>
+			) : (
+				children
+			)}
+		</td>
+	);
+};
 
 const EditableTable = ({
 	dataSource,
@@ -23,6 +106,20 @@ const EditableTable = ({
 }) => {
 	const { user } = useAccount();
 	const searchInput = useRef(null);
+	const [form] = Form.useForm();
+	const [editingId, setEditingId] = useState("");
+	const isEditing = (record) => record.id === editingId;
+
+	const edit = (record) => {
+		form.setFieldsValue({
+			...record,
+		});
+		console.log();
+		setEditingId(record.id);
+	};
+	const cancel = () => {
+		setEditingId("");
+	};
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
 		setSearchText([selectedKeys[0]]);
@@ -178,6 +275,8 @@ const EditableTable = ({
 		}
 	};
 
+	console.log(dataSource);
+
 	const defaultColumns = [
 		{
 			title: "ID",
@@ -187,6 +286,7 @@ const EditableTable = ({
 			sorter: (a, b) => a.id - b.id,
 			...getColumnSearchProps("id"),
 			fixed: "left",
+			required: true,
 		},
 		{
 			title: "Name",
@@ -194,6 +294,7 @@ const EditableTable = ({
 			key: "name",
 			width: "20%",
 			editable: true,
+			required: true,
 			...getColumnSearchProps("name"),
 			sorter: (a, b) => textColumnSorter(a.name, b.name),
 		},
@@ -203,6 +304,7 @@ const EditableTable = ({
 			key: "rollNumber",
 			width: "10%",
 			editable: true,
+			required: true,
 			...getColumnSearchProps("rollNumber"),
 			sorter: (a, b) => a.rollNumber - b.rollNumber,
 		},
@@ -212,6 +314,7 @@ const EditableTable = ({
 			key: "semester",
 			width: "10%",
 			editable: true,
+			required: true,
 			sorter: (a, b) => a.semester - b.semester,
 		},
 		{
@@ -219,7 +322,8 @@ const EditableTable = ({
 			dataIndex: "programId",
 			key: "programId",
 			width: "20%",
-			editable: true,
+			// editable: true,
+			required: true,
 			sorter: (a, b) => a.programId - b.programId,
 			render: (_, record) => <span>{record.programName}</span>,
 		},
@@ -227,6 +331,7 @@ const EditableTable = ({
 			title: "aided",
 			dataIndex: "isAided",
 			key: "isAided",
+			required: true,
 		},
 		{
 			title: "Open Course",
@@ -235,6 +340,7 @@ const EditableTable = ({
 			width: "25%",
 			editable: true,
 			type: "select",
+			required: false,
 		},
 		{
 			title: "Email",
@@ -242,6 +348,7 @@ const EditableTable = ({
 			key: "email",
 			width: "15%",
 			editable: true,
+			required: false,
 		},
 		{
 			title: "Contact",
@@ -249,22 +356,49 @@ const EditableTable = ({
 			key: "contact",
 			width: "15%",
 			editable: true,
+			required: false,
 		},
 		{
 			title: "operation",
 			dataIndex: "operation",
 			fixed: "right",
-			render: (_, record) =>
-				dataSource.length >= 1 && user.role === "admin" ? (
-					<Tag color="red" className="cursor-pointer">
-						<Popconfirm
-							title="Sure to delete?"
-							onConfirm={() => handleDelete(record.id)}
+			render: (_, record) => {
+				const editable = isEditing(record);
+				return editable ? (
+					<span>
+						<Typography.Link
+							onClick={() => save(record.id)}
+							style={{
+								marginRight: 8,
+							}}
 						>
-							Delete
+							Save
+						</Typography.Link>
+						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+							<a>Cancel</a>
 						</Popconfirm>
-					</Tag>
-				) : null,
+					</span>
+				) : dataSource.length >= 1 ? (
+					<span className="flex gap-1">
+						<Typography.Link
+							disabled={editingId !== ""}
+							onClick={() => edit(record)}
+						>
+							<Tag color="orange">Edit</Tag>
+						</Typography.Link>
+						{user.role === "admin" && (
+							<Tag color="red" className="cursor-pointer">
+								<Popconfirm
+									title="Sure to delete?"
+									onConfirm={() => handleDelete(record.id)}
+								>
+									Delete
+								</Popconfirm>
+							</Tag>
+						)}
+					</span>
+				) : null;
+			},
 		},
 	];
 
@@ -285,7 +419,7 @@ const EditableTable = ({
 
 	const components = {
 		body: {
-			row: EditableRow,
+			// row: EditableRow,
 			cell: EditableCell,
 		},
 	};
@@ -301,16 +435,19 @@ const EditableTable = ({
 				editable: col.editable,
 				dataIndex: col.dataIndex,
 				title: col.title,
-				handleSave,
+				editing: isEditing(record),
 				programs: programs,
+				required: col.required,
 			}),
 		};
 	});
 
-	const handleSave = async (row) => {
+	const save = async (id) => {
 		try {
+			const row = await form.validateFields();
+			row.id = id;
 			const newData = [...dataSource];
-			const index = newData.findIndex((item) => row.id === item.id);
+			const index = newData.findIndex((item) => id === item.id);
 
 			if (index > -1) {
 				const item = newData[index];
@@ -318,31 +455,38 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				await axios.patch("/api/staff/student", row);
-				message.success("Updated successfully");
-				setDataSource(newData);
+				try {
+					await axios.patch("/api/staff/student", row);
+					message.success("Updated successfully");
+					setDataSource(newData);
+				} catch (error) {
+					if (error.response && error.response.status === 404) {
+						message.error("Staff not found!");
+					} else {
+						console.error("Error updating staff:", error);
+						message.error("Something went wrong! Unable to update.");
+					}
+				}
+				setEditingId("");
 			}
-		} catch (error) {
-			if (error.response && error.response.status === 404) {
-				message.error("Student not found!");
-			} else {
-				console.error("Error updating student:", error);
-				message.error("Something went wrong! Unable to update.");
-			}
+		} catch (errInfo) {
+			console.log("Validate Failed:", errInfo);
 		}
 	};
 
 	return (
-		<Table
-			components={components}
-			rowClassName={() => "editable-row"}
-			dataSource={dataSource}
-			columns={columns}
-			pagination={false}
-			loading={loading}
-			onChange={handleTableChange}
-			rowKey={(record) => record.id}
-		/>
+		<Form form={form} component={false}>
+			<Table
+				components={components}
+				rowClassName={() => "editable-row"}
+				dataSource={dataSource}
+				columns={columns}
+				pagination={false}
+				loading={loading}
+				onChange={handleTableChange}
+				rowKey={(record) => record.id}
+			/>
+		</Form>
 	);
 };
 
