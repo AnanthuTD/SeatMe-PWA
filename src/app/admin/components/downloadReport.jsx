@@ -7,7 +7,7 @@ const DownloadZipButton = ({ fileName }) => {
 	const handleDownload = () => {
 		axios({
 			method: "get",
-			url: `/api/admin/download/report/${fileName}`,
+			url: `/api/staff/download/report/${fileName}`,
 			responseType: "blob",
 		})
 			.then((response) => {

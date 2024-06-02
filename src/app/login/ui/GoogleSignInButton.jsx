@@ -33,9 +33,9 @@ const GoogleSignInButton = () => {
 
 				setUser(user);
 
-				if (user.isAdmin) {
+				if (user.role === "admin" || user.role === "staff") {
 					router.push("/admin"); // Redirect to the admin page
-				} else {
+				} else if (user.role === "invigilator") {
 					router.push("/staff"); // Redirect to the staff page
 				}
 			} catch (error) {

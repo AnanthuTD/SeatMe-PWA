@@ -53,7 +53,7 @@ function CoursesPage() {
 		// console.log(processedCourses);
 
 		try {
-			const result = await axios.post("/api/admin/courseentry/course", {
+			const result = await axios.post("/api/staff/courseentry/course", {
 				courses: processedCourses,
 			});
 			if (result.status === 200) {

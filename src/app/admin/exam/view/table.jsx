@@ -206,7 +206,7 @@ const App = ({
 
 	const handleDelete = async (id) => {
 		try {
-			const response = await axios.delete(`/api/admin/exams/${id}`); // Adjust the endpoint as per your server API
+			const response = await axios.delete(`/api/staff/exams/${id}`); // Adjust the endpoint as per your server API
 
 			if (response.status === 200) {
 				const newData = [...dataSource];
@@ -222,8 +222,10 @@ const App = ({
 				);
 			}
 		} catch (error) {
-			message.error("Error deleting record!");
-			console.error("Error deleting record:", error);
+			if (error.response && error.response.status !== 403) {
+				message.error("Error deleting record!");
+				console.error("Error deleting record:", error);
+			}
 		}
 	};
 
@@ -273,10 +275,18 @@ const App = ({
 
 				// console.log(JSON.stringify(newData));
 
-				await axios.put(`/api/admin/exams/${id}`, row);
-
-				setData(newData);
-				setEditingKey("");
+				axios
+					.put(`/api/staff/exams/${id}`, row)
+					.then(() => {
+						setData(newData);
+						setEditingKey("");
+					})
+					.catch((error) => {
+						if (error.response && error.response.status !== 403) {
+							message.error("Something went wrong!");
+						}
+						console.error("API call failed:", error);
+					});
 
 				message.success("Data updated successfully!");
 			}

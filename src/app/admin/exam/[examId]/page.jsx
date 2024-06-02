@@ -10,7 +10,7 @@ export default function Page({ params }) {
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get(`/api/admin/exams/${params.examId}`);
+			const result = await axios.get(`/api/staff/exams/${params.examId}`);
 			const { course } = result.data || {};
 			const {
 				programs,
@@ -21,8 +21,10 @@ export default function Page({ params }) {
 
 			setData({ programs, semester, courseName, courseId });
 		} catch (error) {
-			// console.log(error);
-			message.error("Something went wrong!");
+			if (error.response && error.response.status !== 403) {
+				message.error("Something went wrong!");
+			}
+			console.error("API call failed:", error);
 		}
 	};
 

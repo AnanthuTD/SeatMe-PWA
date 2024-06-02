@@ -26,10 +26,10 @@ const Login = () => {
 
 			setUser(user);
 
-			if (user.isAdmin) {
+			if (user.role == "admin" || user.role == "staff") {
 				router.push("/admin"); // Redirect to the admin page
-			} else {
-				router.push("/staff"); // Redirect to the staff page
+			} else if (user.role == "invigilator") {
+				router.push("/invigilator"); // Redirect to the staff page
 			}
 		} catch (error) {
 			if (error.response) {
@@ -57,7 +57,7 @@ const Login = () => {
 							className="h-full w-full"
 						/>
 					</div>
-					<GoogleSignInButton/>
+					<GoogleSignInButton />
 					<Form
 						name="basic"
 						labelCol={{

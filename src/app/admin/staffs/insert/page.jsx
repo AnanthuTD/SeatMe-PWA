@@ -26,7 +26,7 @@ const DynamicStudentForm = () => {
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -45,7 +45,7 @@ const DynamicStudentForm = () => {
 		// console.log(staffs);
 
 		try {
-			const result = await axios.post("/api/admin/staff", {
+			const result = await axios.post("/api/staff/staff", {
 				staffs: staffs,
 			});
 

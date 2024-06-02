@@ -8,6 +8,7 @@ import Highlighter from "react-highlight-words";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import PasswordUpdateModal from "./passwordUpdateModel";
+import { useAccount } from "@/context/accountContext";
 
 const EditableTable = ({
 	dataSource,
@@ -21,6 +22,7 @@ const EditableTable = ({
 	setSearchText = () => {},
 	handleReset = () => {},
 }) => {
+	const { user } = useAccount();
 	const searchInput = useRef(null);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
@@ -151,7 +153,7 @@ const EditableTable = ({
 		});
 
 		try {
-			await axios.delete(`/api/admin/staff/${id}`);
+			await axios.delete(`/api/staff/staff/${id}`);
 			setDataSource(newData);
 			message.success("Deleted successfully!");
 		} catch (error) {
@@ -224,7 +226,7 @@ const EditableTable = ({
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
 					<span className="flex gap-1">
-						{dataSource.length >= 1 && (
+						{user.role === "admin" && (
 							<Tag color="red" className="cursor-pointer">
 								<Popconfirm
 									title="Sure to delete?"
@@ -280,7 +282,7 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				await axios.patch(`/api/admin/staff/${row.id}`, row);
+				await axios.patch(`/api/staff/staff/${row.id}`, row);
 				message.success("Updated successfully");
 				setDataSource(newData);
 			}
@@ -311,7 +313,7 @@ const EditableTable = ({
 	const handlePasswordUpdate = async (newPassword) => {
 		try {
 			const response = await axios.patch(
-				`/api/admin/staff/update-password`,
+				`/api/staff/staff/update-password`,
 				{
 					staffId: selectedStaffId,
 					newPassword: newPassword,

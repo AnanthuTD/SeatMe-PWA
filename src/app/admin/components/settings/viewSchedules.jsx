@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "@/lib/axiosPrivate";
 import { Table, Button, Popconfirm } from "antd";
+import { useAccount } from "@/context/accountContext";
 
 const ViewSchedules = ({ updateSchedule }) => {
 	const [schedules, setSchedules] = useState([]);
+	const { user } = useAccount();
 
 	useEffect(() => {
 		axios
-			.get("/api/admin/config/seating-availability-schedule")
+			.get("/api/staff/config/seating-availability-schedule")
 			.then((response) => {
 				if (response.status === 200) {
 					setSchedules(response.data);
@@ -49,7 +51,10 @@ const ViewSchedules = ({ updateSchedule }) => {
 			dataIndex: "timeCode",
 			key: "timeCode",
 		},
-		{
+	];
+
+	if (user.role === "admin")
+		columns.push({
 			title: "Action",
 			key: "action",
 			render: (text, record) => (
@@ -66,12 +71,11 @@ const ViewSchedules = ({ updateSchedule }) => {
 					</Popconfirm>
 				</span>
 			),
-		},
-	];
+		});
 
 	const handleDelete = (id) => {
 		axios
-			.delete(`/api/admin/config/seating-availability-schedule/${id}`)
+			.delete(`/api/staff/config/seating-availability-schedule/${id}`)
 			.then(() => {
 				setSchedules((prevSchedules) =>
 					prevSchedules.filter((schedule) => schedule.id !== id),

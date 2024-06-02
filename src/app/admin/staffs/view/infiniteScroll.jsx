@@ -21,7 +21,7 @@ const App = () => {
 	const [addedDataLength, setAddedDataLength] = useState(0);
 
 	const getTotalDataCount = async () => {
-		const result = await axios.get("/api/admin/staff/count");
+		const result = await axios.get("/api/staff/staff/count");
 		setTotalDataCount(result.data);
 	};
 
@@ -32,7 +32,7 @@ const App = () => {
 		const resultsPerPage = 50;
 		setLoading(true);
 		axios
-			.get(`/api/admin/staff/list`, {
+			.get(`/api/staff/staff/list`, {
 				params: {
 					query: reset ? [""] : searchText,
 					column: reset ? [""] : searchedColumn,

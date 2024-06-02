@@ -196,7 +196,7 @@ const DynamicForm = () => {
 		ids = ids.filter((id) => (id ? true : false));
 		try {
 			const response = await axios.post(
-				"/api/admin/student/supplementary",
+				"/api/staff/student/supplementary",
 				{ courseIds, studentIds: ids },
 			);
 			const { failedRecords } = response.data;

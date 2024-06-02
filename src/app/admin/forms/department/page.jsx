@@ -25,7 +25,9 @@ const DynamicDepartmentForm = () => {
 
 	const handleDelete = async (departmentId) => {
 		try {
-			const result = await axios.delete(`/api/admin/departmententry/department/${departmentId}`);
+			const result = await axios.delete(
+				`/api/staff/department-entry/department/${departmentId}`,
+			);
 			if (result.status === 200) {
 				message.success(result.data.message);
 				// Reload departments after deletion
@@ -38,10 +40,13 @@ const DynamicDepartmentForm = () => {
 			message.error("Something went wrong. Please try again.");
 		}
 	};
-	
+
 	const handleUpdate = async (updatedDepartment) => {
 		try {
-			const result = await axios.patch("/api/admin/departmententry/departmentupdate/", [updatedDepartment]);
+			const result = await axios.patch(
+				"/api/admin/departmententry/departmentupdate/",
+				[updatedDepartment],
+			);
 			if (result.status === 200) {
 				message.success(result.data.message);
 				// Optionally, reload departments or update state with the new data
@@ -58,7 +63,7 @@ const DynamicDepartmentForm = () => {
 	const handleSubmission = async (values) => {
 		try {
 			const result = await axios.post(
-				"/api/admin/departmententry/department",
+				"/api/staff/department-entry/department",
 				{
 					departments: values.departments,
 				},
@@ -90,7 +95,7 @@ const DynamicDepartmentForm = () => {
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -101,14 +106,16 @@ const DynamicDepartmentForm = () => {
 		// Load departments when the component mounts
 		loadDepartments();
 	}, []);
-	
+
 	useEffect(() => {
 		form.setFieldsValue({ departments: [{}] });
 	}, [form]);
 
 	const handleTableChange = (record, field, value) => {
 		const newDepartments = [...departments];
-		const index = newDepartments.findIndex(department => department.id === record.id);
+		const index = newDepartments.findIndex(
+			(department) => department.id === record.id,
+		);
 		if (index !== -1) {
 			newDepartments[index][field] = value;
 			setDepartments(newDepartments);
@@ -130,7 +137,9 @@ const DynamicDepartmentForm = () => {
 			render: (text, record) => (
 				<Input
 					value={text}
-					onChange={(e) => handleTableChange(record, "code", e.target.value)}
+					onChange={(e) =>
+						handleTableChange(record, "code", e.target.value)
+					}
 					onBlur={() => handleUpdate(record)}
 				/>
 			),
@@ -142,7 +151,9 @@ const DynamicDepartmentForm = () => {
 			render: (text, record) => (
 				<Input
 					value={text}
-					onChange={(e) => handleTableChange(record, "name", e.target.value)}
+					onChange={(e) =>
+						handleTableChange(record, "name", e.target.value)
+					}
 					onBlur={() => handleUpdate(record)}
 				/>
 			),

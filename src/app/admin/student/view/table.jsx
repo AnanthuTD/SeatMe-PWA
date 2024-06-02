@@ -7,6 +7,7 @@ import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
+import { useAccount } from "@/context/accountContext";
 
 const EditableTable = ({
 	dataSource,
@@ -20,6 +21,7 @@ const EditableTable = ({
 	setSearchText = () => {},
 	handleReset = () => {},
 }) => {
+	const { user } = useAccount();
 	const searchInput = useRef(null);
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
@@ -165,7 +167,7 @@ const EditableTable = ({
 		});
 
 		try {
-			const response = await axios.delete("/api/admin/student", {
+			const response = await axios.delete("/api/staff/student", {
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
@@ -253,7 +255,7 @@ const EditableTable = ({
 			dataIndex: "operation",
 			fixed: "right",
 			render: (_, record) =>
-				dataSource.length >= 1 ? (
+				dataSource.length >= 1 && user.role === "admin" ? (
 					<Tag color="red" className="cursor-pointer">
 						<Popconfirm
 							title="Sure to delete?"
@@ -270,7 +272,7 @@ const EditableTable = ({
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get("/api/admin/programs");
+			const result = await axios.get("/api/staff/programs");
 			setPrograms(result.data);
 		} catch (error) {
 			console.error("Error fetching programs: ", error);
@@ -316,7 +318,7 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				await axios.patch("/api/admin/student", row);
+				await axios.patch("/api/staff/student", row);
 				message.success("Updated successfully");
 				setDataSource(newData);
 			}

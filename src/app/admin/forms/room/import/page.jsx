@@ -46,7 +46,7 @@ function RoomsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/rooms", rooms);
+			const result = await axios.post("/api/staff/rooms", rooms);
 			if (result.status === 200) {
 				message.success("Import Success");
 				setFailedRecords(result.data);

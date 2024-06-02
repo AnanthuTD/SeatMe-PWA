@@ -24,7 +24,7 @@ const App = () => {
 	const [semester, setSemester] = useState(undefined);
 
 	const getTotalDataCount = async () => {
-		const result = await axios.get("/api/admin/student/count", {
+		const result = await axios.get("/api/staff/student/count", {
 			params: {
 				programId: program,
 				semester,
@@ -44,7 +44,7 @@ const App = () => {
 		getTotalDataCount();
 
 		axios
-			.get(`/api/admin/student/list`, {
+			.get(`/api/staff/student/list`, {
 				params: {
 					query: reset ? [""] : searchText,
 					column: reset ? [""] : searchedColumn,

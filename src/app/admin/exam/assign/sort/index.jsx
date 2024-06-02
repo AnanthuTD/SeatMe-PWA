@@ -3,21 +3,35 @@ import React, { useEffect, useState } from "react";
 import { SortableList } from "./components";
 import "./styles.css";
 import axios from "@/lib/axiosPrivate";
+import { useAccount } from "@/context/accountContext";
+import { useRouter } from "next/navigation";
 
-export default function App({ date,timeCode, onSort }) {
+export default function App({ date, timeCode, onSort }) {
+	const { user } = useAccount();
+
+	if (user.role !== "admin") {
+		const router = useRouter();
+		return router.push("/admin/forbidden");
+	}
+
 	const [items, setItems] = useState([]);
 
 	async function fetchExams() {
-		const response = await axios.get(`/api/admin/exams/program`, {
-			params: {
-				date,
-				timeCode,
-			},
-		});
-
-		const exams = response.data;
-		// console.log(exams);
-		setItems(exams);
+		try {
+			const response = await axios.get(`/api/staff/exams/program`, {
+				params: {
+					date,
+					timeCode,
+				},
+			});
+			const exams = response.data;
+			setItems(exams);
+		} catch (error) {
+			if (error.response && error.response.status !== 403) {
+				message.error("Something went wrong!");
+			}
+			console.error("API call failed:", error);
+		}
 	}
 
 	useEffect(() => {

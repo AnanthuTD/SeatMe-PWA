@@ -7,12 +7,14 @@ import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
+import { useAccount } from "@/context/accountContext";
 
 const StudentList = ({
 	dataSource,
 	setDataSource = () => {},
 	loading = false,
 }) => {
+	const { user } = useAccount();
 	const [searchText, setSearchText] = useState("");
 	const [searchedColumn, setSearchedColumn] = useState("");
 	const searchInput = useRef(null);
@@ -153,7 +155,7 @@ const StudentList = ({
 
 		try {
 			const response = await axios.delete(
-				`/api/admin/student/supplementary/${supplyId}`,
+				`/api/staff/student/supplementary/${supplyId}`,
 			);
 			setDataSource(newData);
 			message.success(response.data.message || "Deleted successfully!"); // Assuming your response has a "message" field
@@ -230,7 +232,7 @@ const StudentList = ({
 			dataIndex: "operation",
 			fixed: "right",
 			render: (_, record) =>
-				dataSource.length >= 1 ? (
+				dataSource.length >= 1 && user.role === "admin" ? (
 					<Tag color="red" className="cursor-pointer">
 						<Popconfirm
 							title="Sure to delete?"
@@ -247,7 +249,7 @@ const StudentList = ({
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get("/api/admin/programs");
+			const result = await axios.get("/api/staff/programs");
 			setPrograms(result.data);
 		} catch (error) {
 			console.error("Error fetching programs: ", error);
@@ -296,8 +298,8 @@ const StudentList = ({
 				row.exams = row.exams.filter((exam) =>
 					row.courses.includes(exam.courseId),
 				);
-				await axios.patch("/api/admin/student", row);
-				await axios.patch("/api/admin/student/supplementary", row);
+				await axios.patch("/api/staff/student", row);
+				await axios.patch("/api/staff/student/supplementary", row);
 				message.success("Updated successfully");
 				setDataSource(newData);
 			}

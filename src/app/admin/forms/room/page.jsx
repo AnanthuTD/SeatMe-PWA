@@ -28,7 +28,7 @@ const DynamicRoomForm = () => {
 
 	const loadBlocks = async () => {
 		try {
-			const result = await axios.get("/api/admin/blocks");
+			const result = await axios.get("/api/staff/blocks");
 			setBlocks(result.data);
 		} catch (error) {
 			console.error("Error fetching blocks: ", error);
@@ -41,7 +41,7 @@ const DynamicRoomForm = () => {
 
 	const handleSubmission = async (values) => {
 		try {
-			const result = await axios.post("/api/admin/roomentry/room", {
+			const result = await axios.post("/api/staff/room-entry/room", {
 				rooms: values.rooms,
 			});
 			// console.log(values.rooms);
@@ -73,7 +73,7 @@ const DynamicRoomForm = () => {
 	const [rooms, setRooms] = useState([]);
 	const loadRooms = async () => {
 		try {
-			const result = await axios.get("/api/admin/rooms");
+			const result = await axios.get("/api/staff/rooms");
 			setRooms(result.data);
 		} catch (error) {
 			console.error("Error fetching rooms: ", error);

@@ -27,7 +27,7 @@ const CourseForm = ({
 	useEffect(() => {
 		const fetchExamInfo = async () => {
 			try {
-				const result = await axios.get("/api/admin/exam/", {
+				const result = await axios.get("/api/staff/exam/", {
 					params: {
 						courseId: formData.courseId,
 					},

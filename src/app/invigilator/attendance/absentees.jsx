@@ -28,7 +28,7 @@ function Absentees({ data, conform, setConform, teacherSeatId, submitted }) {
 		setLoading(true);
 		try {
 			const result = await axios.post(
-				`/api/staff/attendance/${teacherSeatId}`,
+				`/api/invigilator/attendance/${teacherSeatId}`,
 				absentees,
 			);
 

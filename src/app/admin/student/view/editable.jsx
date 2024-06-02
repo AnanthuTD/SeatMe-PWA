@@ -4,7 +4,7 @@ import "./table.css";
 import axios from "@/lib/axiosPrivate";
 
 async function fetchOpenCourses(programId) {
-	const apiUrl = "/api/admin/open-courses";
+	const apiUrl = "/api/staff/open-courses";
 
 	let openCourses = [];
 	try {

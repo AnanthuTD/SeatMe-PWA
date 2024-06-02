@@ -46,7 +46,7 @@ function Page() {
 
 		try {
 			const result = await axios.post(
-				"/api/admin/exams/timetable",
+				"/api/staff/exams/timetable",
 				formData,
 			);
 			if (result.status >= 200 && result.status < 300) {
@@ -57,6 +57,9 @@ function Page() {
 				return false;
 			}
 		} catch (error) {
+			if (error.response && error.response.status !== 403) {
+				return false;
+			}
 			if (error.response) {
 				message.error(error.response.data);
 			} else if (error.request) {

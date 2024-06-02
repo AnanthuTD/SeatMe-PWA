@@ -33,7 +33,7 @@ function Page() {
 
 		try {
 			const result = await axios.post(
-				"/api/admin/student/supplementary",
+				"/api/staff/student/supplementary",
 				{ students },
 			);
 			if (result.status === 200) {

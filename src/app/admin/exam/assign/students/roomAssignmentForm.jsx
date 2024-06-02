@@ -63,8 +63,8 @@ const RoomAssignmentForm = () => {
 	const [timeCode, setTimeCode] = useState(null);
 	const [visible, setVisible] = useState(false);
 	const [triggerSortExam, setTriggerSortExam] = useState(false);
-	const [examOrder, setExamOrder] = useState(undefined)
-	const [bannedStudentsModal, setBannedStudents] = useState(false)
+	const [examOrder, setExamOrder] = useState(undefined);
+	const [bannedStudentsModal, setBannedStudents] = useState(false);
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const [form] = Form.useForm();
@@ -154,7 +154,7 @@ const RoomAssignmentForm = () => {
 	};
 
 	const getExaminesCount = async () => {
-		const response = await axios.get("/api/admin/examines-count", {
+		const response = await axios.get("/api/staff/examines-count", {
 			params: {
 				date,
 				timeCode,
@@ -185,7 +185,7 @@ const RoomAssignmentForm = () => {
 
 	const loadSelectedRooms = async (examType) => {
 		setLoadingRooms(true);
-		const result = await axios.get(`/api/admin/rooms/${examType}`, {
+		const result = await axios.get(`/api/staff/rooms/${examType}`, {
 			params: { availability: true },
 		});
 		setSelectedRooms(result.data);
@@ -207,7 +207,7 @@ const RoomAssignmentForm = () => {
 				timeCode,
 				examName,
 			} = form.getFieldsValue();
-			const result = await axios.get("/api/admin/exams/assign", {
+			const result = await axios.get("/api/staff/exams/assign", {
 				params: {
 					orderBy,
 					date: selectedDate.format("YYYY-MM-DDTHH:mm:ssZ"),
@@ -215,7 +215,7 @@ const RoomAssignmentForm = () => {
 					optimize,
 					timeCode,
 					examName,
-					examOrder
+					examOrder,
 				},
 			});
 
@@ -230,11 +230,8 @@ const RoomAssignmentForm = () => {
 			setFileName(fileName);
 			setVisible(true);
 		} catch (error) {
-			if (
-				error.response &&
-				error.response.data &&
-				error.response.data.error
-			) {
+			if (error.response && error.response.status === 403) {
+			} else if (error?.response?.data?.error) {
 				message.error(error.response.data.error);
 			} else {
 				console.error(error);
@@ -266,7 +263,9 @@ const RoomAssignmentForm = () => {
 				<Form
 					name="exam-assignment"
 					layout="vertical"
-					onFinish={() => { setBannedStudents(true) }}
+					onFinish={() => {
+						setBannedStudents(true);
+					}}
 					form={form}
 				>
 					<Row gutter={16}>
@@ -359,11 +358,17 @@ const RoomAssignmentForm = () => {
 										}
 										onOk={() => setTriggerSortExam(false)}
 									>
-										<SortableExam date={date} timeCode={timeCode} onSort={(exams) => {
-											const examIds = exams.map((exam) => exam.id)
-											// console.log(examIds);
-											setExamOrder(examIds)
-										}} />
+										<SortableExam
+											date={date}
+											timeCode={timeCode}
+											onSort={(exams) => {
+												const examIds = exams.map(
+													(exam) => exam.id,
+												);
+												// console.log(examIds);
+												setExamOrder(examIds);
+											}}
+										/>
 									</Modal>
 								) : null}
 							</Form.Item>
@@ -542,9 +547,14 @@ const RoomAssignmentForm = () => {
 					</Col>
 				</Row>
 			</Modal>
-			{bannedStudentsModal ?
-				<BannedStudentsModal handleModalClose={() => { assign(); setBannedStudents(false) }} />
-				: null}
+			{bannedStudentsModal ? (
+				<BannedStudentsModal
+					handleModalClose={() => {
+						assign();
+						setBannedStudents(false);
+					}}
+				/>
+			) : null}
 		</div>
 	);
 };

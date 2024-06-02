@@ -6,10 +6,19 @@ import axios from "@/lib/axiosPrivate";
 import { useSearchParams } from "next/navigation";
 import { Select, Spin } from "antd";
 import DatePicker from "@/app/admin/components/datePicker";
+import { useAccount } from "@/context/accountContext";
+import { useRouter } from "next/navigation";
 
 const timeOptions = ["AN", "FN"];
 
 function Page() {
+	const { user } = useAccount();
+
+	if (user.role !== "admin") {
+		const router = useRouter();
+		return router.push("/admin/forbidden");
+	}
+
 	const [rooms, setRooms] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const queryDate = useSearchParams().get("date") || new Date();
@@ -18,10 +27,17 @@ function Page() {
 	const [timeCode, setTimeCode] = useState(queryTimeCode || "AN");
 
 	const loadRooms = async () => {
-		const response = await axios.get(
-			`/api/admin/exams/${new Date(date)}/${timeCode}/rooms`,
-		);
-		setRooms(response.data);
+		try {
+			const response = await axios.get(
+				`/api/staff/exams/${new Date(date)}/${timeCode}/rooms`,
+			);
+			setRooms(response.data);
+		} catch (error) {
+			if (error.response && error.response.status !== 403) {
+				message.error("Something went wrong!");
+			}
+			console.error("API call failed:", error);
+		}
 		setLoading(false);
 	};
 

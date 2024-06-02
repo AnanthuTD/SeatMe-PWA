@@ -11,10 +11,10 @@ const Page = ({ params }) => {
 
 	const loadRooms = async (examType) => {
 		setLoading(true);
-		let url = "/api/admin/rooms";
+		let url = "/api/staff/rooms";
 
 		if (examType) {
-			url = `/api/admin/rooms/${examType}`;
+			url = `/api/staff/rooms/${examType}`;
 		}
 
 		const result = await axios.get(url);

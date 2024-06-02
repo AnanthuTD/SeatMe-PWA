@@ -33,10 +33,8 @@ import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAccount } from "@/context/accountContext";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 function Navbar({ examinees = false }) {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -45,27 +43,25 @@ function Navbar({ examinees = false }) {
 	const router = useRouter();
 
 	dayjs.extend(utc);
-dayjs.extend(timezone);
+	dayjs.extend(timezone);
 
-    
-const [attendancetime, setAttendancetime] = useState(false);
+	const [attendancetime, setAttendancetime] = useState(false);
 
-useEffect(() => {
-	// Get current Indian time
-const currentIndianTime = dayjs().tz('Asia/Kolkata').format('HH:mm:ss');
+	useEffect(() => {
+		// Get current Indian time
+		const currentIndianTime = dayjs().tz("Asia/Kolkata").format("HH:mm:ss");
 
-// console.log(currentIndianTime);
-  // Check if the current time in India is between either of the two time ranges
-  const isWithinRange =
-	(currentIndianTime > '09:30:00' && currentIndianTime < '10:30:00') ||
-	(currentIndianTime > '13:30:00' && currentIndianTime < '14:45:00');
-  setAttendancetime(isWithinRange);
-}, []);
-
-
+		// console.log(currentIndianTime);
+		// Check if the current time in India is between either of the two time ranges
+		const isWithinRange =
+			(currentIndianTime > "09:30:00" &&
+				currentIndianTime < "10:30:00") ||
+			(currentIndianTime > "13:30:00" && currentIndianTime < "14:45:00");
+		setAttendancetime(isWithinRange);
+	}, []);
 
 	let pages = ["Schedule", "Examinees"];
-	if (!examinees && !attendancetime) pages = ["Schedule"]
+	if (!examinees && !attendancetime) pages = ["Schedule"];
 
 	const settings = ["Profile", "Logout"];
 

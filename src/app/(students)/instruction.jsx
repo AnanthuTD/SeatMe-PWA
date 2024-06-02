@@ -35,10 +35,11 @@ function Instruction() {
 							നിർവേശങ്ങൾ.
 						</h1>
 						<ul className="list-disc sm:text-xs">
-							ഹാൾ ടിക്കറ്റിൽ നൽകിയിരിക്കുന്ന എല്ലാ നിർദ്ദേശങ്ങള ും നിയമങ്ങള ും പരീക്ഷാ ഹാളിൽ കയറുന്നതിന
-							മുൻപ വായിക്കുക. പ്രദ്ദയേകിച്ച് നിർദ്ദേശങ്ങൾ :
-							6,7,9,10 &12 <br /> <br />
-							• വിദ്യാർത്ഥികൾക്ക് അവരുടെ ഹാൾ  െിക്കറ്റില ാ ല
+							ഹാൾ ടിക്കറ്റിൽ നൽകിയിരിക്കുന്ന എല്ലാ നിർദ്ദേശങ്ങള ും
+							നിയമങ്ങള ും പരീക്ഷാ ഹാളിൽ കയറുന്നതിന മുൻപ വായിക്കുക.
+							പ്രദ്ദയേകിച്ച് നിർദ്ദേശങ്ങൾ : 6,7,9,10 &12 <br />{" "}
+							<br />
+							• വിദ്യാർത്ഥികൾക്ക് അവരുടെ ഹാൾ െിക്കറ്റില ാ ല
 							ാദ്യലേപ്പറില ാ ഒന്ുുംഎഴുതാൻ അനുവാദ്മില്ല. എഴുതിയാൽ
 							മാൽപ്ോക്റ്റിസായി കണക്കാക്കുും. <br /> <br />
 							(എന്ാൽ ല ാദ്യലേപ്പറിൽ ലേരുും രജിസ്റ്റർ നമ്പറുും
@@ -91,12 +92,12 @@ function Instruction() {
 							If anyone wants to do the rough work, the last page
 							of the main book can be used for rough work. Write
 							Rough Work at the top of the page. After use of the
-							page, strike off. <br /> <br />
-							• Students should be present in the examination hall
-							at least before 1.20 pm (1.50 pm on Fridays) for the
-							afternoon examination. Students appearing after 1.30
-							p.m will not be admitted to the examination hall.{" "}
-							<br /> <br />
+							page, strike off. <br /> <br />• Students should be
+							present in the examination hall at least before 1.20
+							pm (1.50 pm on Fridays) for the afternoon
+							examination. Students appearing after 1.30 p.m will
+							not be admitted to the examination hall. <br />{" "}
+							<br />
 							• Nothing is allowed to be brought in the
 							examination hall except hall ticket, pens, pencils
 							and scale. If a student is found to be in possession

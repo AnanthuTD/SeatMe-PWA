@@ -15,12 +15,14 @@ const ProgramList = ({ data, examId }) => {
 	const fetchStudentData = async (programId) => {
 		try {
 			const result = await axios.get(
-				`/api/admin/exams/attendance/${examId}/${programId}`,
+				`/api/staff/exams/attendance/${examId}/${programId}`,
 			);
 			return result.data || [];
 		} catch (error) {
-			// console.log(error);
-			message.error("Error fetching student data");
+			if (error.response && error.response.status !== 403) {
+				message.error("Something went wrong!");
+			}
+			console.error("API call failed:", error);
 			return [];
 		}
 	};

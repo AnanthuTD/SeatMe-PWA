@@ -49,7 +49,7 @@ function DepProSemExaSelect({
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -58,7 +58,7 @@ function DepProSemExaSelect({
 
 	const loadPrograms = async (departmentCode) => {
 		try {
-			const result = await axios.get("/api/admin/programs", {
+			const result = await axios.get("/api/staff/programs", {
 				params: { departmentCode },
 			});
 			setPrograms(result.data);
@@ -81,7 +81,7 @@ function DepProSemExaSelect({
 
 	const loadCourses = async (programId, semester) => {
 		try {
-			const result = await axios.get("/api/admin/courses/exams", {
+			const result = await axios.get("/api/staff/courses/exams", {
 				params: { programId, semester },
 			});
 			setCourses(result.data);

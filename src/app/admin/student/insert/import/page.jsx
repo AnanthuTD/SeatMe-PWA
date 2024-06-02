@@ -42,7 +42,7 @@ function Page() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/student", { students });
+			const result = await axios.post("/api/staff/student", { students });
 			if (result.status === 200) {
 				message.success("Import Success");
 				console.error("failedRecords: ", result.data);
