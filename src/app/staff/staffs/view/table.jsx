@@ -1,14 +1,81 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { Button, Input, Table, Space, Popconfirm, message, Tag } from "antd";
+import React, { useRef, useState, useEffect } from "react";
+import {
+	Button,
+	Input,
+	Table,
+	Space,
+	Popconfirm,
+	message,
+	Tag,
+	Typography,
+	Form,
+	Select,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import Highlighter from "react-highlight-words";
-import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import PasswordUpdateModal from "./passwordUpdateModel";
 import { useAccount } from "@/context/accountContext";
+import SelectDepartment from "../../components/selectDepartment";
+
+const EditableCell = ({
+	editing,
+	dataIndex,
+	title,
+	inputType,
+	record,
+	index,
+	children,
+	departments,
+	...restProps
+}) => {
+	const roles = [
+		{ value: "admin" },
+		{ value: "staff" },
+		{ value: "invigilator" },
+	];
+
+	return (
+		<td {...restProps}>
+			{editing ? (
+				<Form.Item
+					style={{
+						margin: 0,
+					}}
+					name={dataIndex}
+					rules={[
+						{
+							required: true,
+							message: `${title} is required.`,
+						},
+					]}
+				>
+					{dataIndex === "departmentCode" ? (
+						<SelectDepartment options={departments} />
+					) : dataIndex === "role" ? (
+						<Select options={roles} />
+					) : (
+						<Input />
+					)}
+				</Form.Item>
+			) : (
+				children
+			)}
+		</td>
+	);
+};
+
+const loadDepartments = async () => {
+	try {
+		const result = await axios.get("/api/staff/departments");
+		return result.data;
+	} catch (error) {
+		console.error("Error fetching departments: ", error);
+	}
+};
 
 const EditableTable = ({
 	dataSource,
@@ -22,8 +89,34 @@ const EditableTable = ({
 	setSearchText = () => {},
 	handleReset = () => {},
 }) => {
+	const [form] = Form.useForm();
+	const [editingId, setEditingId] = useState("");
+	const [departments, setDepartments] = useState([]);
+	const isEditing = (record) => record.id === editingId;
 	const { user } = useAccount();
 	const searchInput = useRef(null);
+
+	useEffect(() => {
+		const fun = async () => {
+			const departments = await loadDepartments();
+			setDepartments(departments);
+		};
+		fun();
+	}, []);
+
+	const edit = (record) => {
+		form.setFieldsValue({
+			name: "",
+			age: "",
+			address: "",
+			...record,
+		});
+		console.log();
+		setEditingId(record.id);
+	};
+	const cancel = () => {
+		setEditingId("");
+	};
 
 	const handleSearch = async (selectedKeys, confirm, dataIndex) => {
 		setSearchText([selectedKeys[0]]);
@@ -162,7 +255,7 @@ const EditableTable = ({
 		}
 	};
 
-	const defaultColumns = [
+	const columns = [
 		{
 			title: "ID",
 			dataIndex: "id",
@@ -213,6 +306,14 @@ const EditableTable = ({
 			...getColumnSearchProps("email"),
 		},
 		{
+			title: "Role",
+			dataIndex: "role",
+			key: "role",
+			editable: true,
+			type: "select",
+			// ...getColumnSearchProps("role"),
+		},
+		{
 			title: "Contact",
 			dataIndex: "phone",
 			key: "contact",
@@ -223,9 +324,30 @@ const EditableTable = ({
 			title: "Operation",
 			dataIndex: "operation",
 			fixed: "right",
-			render: (_, record) =>
-				dataSource.length >= 1 ? (
+			render: (_, record) => {
+				const editable = isEditing(record);
+				return editable ? (
+					<span>
+						<Typography.Link
+							onClick={() => save(record.id)}
+							style={{
+								marginRight: 8,
+							}}
+						>
+							Save
+						</Typography.Link>
+						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+							<a>Cancel</a>
+						</Popconfirm>
+					</span>
+				) : dataSource.length >= 1 ? (
 					<span className="flex gap-1">
+						<Typography.Link
+							disabled={editingId !== ""}
+							onClick={() => edit(record)}
+						>
+							<Tag color="orange">Edit</Tag>
+						</Typography.Link>
 						{user.role === "admin" && (
 							<Tag color="red" className="cursor-pointer">
 								<Popconfirm
@@ -244,18 +366,12 @@ const EditableTable = ({
 							Password
 						</Tag>
 					</span>
-				) : null,
+				) : null;
+			},
 		},
 	];
 
-	const components = {
-		body: {
-			row: EditableRow,
-			cell: EditableCell,
-		},
-	};
-
-	const columns = defaultColumns.map((col) => {
+	const mergedColumns = columns.map((col) => {
 		if (!col.editable) {
 			return col;
 		}
@@ -263,18 +379,21 @@ const EditableTable = ({
 			...col,
 			onCell: (record) => ({
 				record,
-				editable: col.editable,
+				inputType: col.dataIndex === "age" ? "number" : "text",
 				dataIndex: col.dataIndex,
 				title: col.title,
-				handleSave,
+				editing: isEditing(record),
+				departments: departments,
 			}),
 		};
 	});
 
-	const handleSave = async (row) => {
+	const save = async (id) => {
 		try {
+			const row = await form.validateFields();
+			row.id = id;
 			const newData = [...dataSource];
-			const index = newData.findIndex((item) => row.id === item.id);
+			const index = newData.findIndex((item) => id === item.id);
 
 			if (index > -1) {
 				const item = newData[index];
@@ -282,17 +401,22 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				await axios.patch(`/api/staff/staff/${row.id}`, row);
-				message.success("Updated successfully");
-				setDataSource(newData);
+				try {
+					await axios.patch(`/api/staff/staff/${row.id}`, row);
+					message.success("Updated successfully");
+					setDataSource(newData);
+				} catch (error) {
+					if (error.response && error.response.status === 404) {
+						message.error("Staff not found!");
+					} else {
+						console.error("Error updating staff:", error);
+						message.error("Something went wrong! Unable to update.");
+					}
+				}
+				setEditingId("");
 			}
-		} catch (error) {
-			if (error.response && error.response.status === 404) {
-				message.error("Staff not found!");
-			} else {
-				console.error("Error updating staff:", error);
-				message.error("Something went wrong! Unable to update.");
-			}
+		} catch (errInfo) {
+			console.log("Validate Failed:", errInfo);
 		}
 	};
 
@@ -330,16 +454,22 @@ const EditableTable = ({
 
 	return (
 		<>
-			<Table
-				components={components}
-				rowClassName={() => "editable-row"}
-				dataSource={dataSource}
-				columns={columns}
-				pagination={false}
-				loading={loading}
-				onChange={handleTableChange}
-				rowKey={(record) => record.id}
-			/>
+			<Form form={form} component={false}>
+				<Table
+					components={{
+						body: {
+							cell: EditableCell,
+						},
+					}}
+					rowClassName="editable-row"
+					dataSource={dataSource}
+					columns={mergedColumns}
+					pagination={false}
+					loading={loading}
+					onChange={handleTableChange}
+					rowKey={(record) => record.id}
+				/>
+			</Form>
 			<PasswordUpdateModal
 				visible={passwordUpdateModalVisible}
 				onCancel={hidePasswordUpdateModal}
