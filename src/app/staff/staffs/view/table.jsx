@@ -17,7 +17,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import Highlighter from "react-highlight-words";
 import axios from "@/lib/axiosPrivate";
-import PasswordUpdateModal from "./passwordUpdateModel";
+import PasswordUpdateModal from "./passwordUpdateModel"; 
 import { useAccount } from "@/context/accountContext";
 import SelectDepartment from "../../components/selectDepartment";
 
@@ -106,9 +106,6 @@ const EditableTable = ({
 
 	const edit = (record) => {
 		form.setFieldsValue({
-			name: "",
-			age: "",
-			address: "",
 			...record,
 		});
 		console.log();
