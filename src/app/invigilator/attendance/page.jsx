@@ -45,7 +45,7 @@ function Page() {
 
 		try {
 			axios
-				.get(`/api/staff/attendance/${roomId}/${dateId}`)
+				.get(`/api/invigilator/attendance/${roomId}/${dateId}`)
 				.then((response) => {
 					let std = response.data;
 					setData(std);

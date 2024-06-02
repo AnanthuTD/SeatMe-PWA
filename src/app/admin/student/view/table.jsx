@@ -167,7 +167,7 @@ const EditableTable = ({
 		});
 
 		try {
-			const response = await axios.delete("/api/admin/student", {
+			const response = await axios.delete("/api/staff/student", {
 				params: { studentId: studentId },
 			});
 			setDataSource(newData);
@@ -272,7 +272,7 @@ const EditableTable = ({
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get("/api/admin/programs");
+			const result = await axios.get("/api/staff/programs");
 			setPrograms(result.data);
 		} catch (error) {
 			console.error("Error fetching programs: ", error);
@@ -318,7 +318,7 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				await axios.patch("/api/admin/student", row);
+				await axios.patch("/api/staff/student", row);
 				message.success("Updated successfully");
 				setDataSource(newData);
 			}

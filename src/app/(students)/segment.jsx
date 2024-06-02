@@ -26,16 +26,16 @@ const Segment = ({ seatingInfo, upcomingExams }) => {
 					value={tab}
 				/>
 				<div className="flex-grow overflow-hidden overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-900 scrollbar-thumb-rounded-md">
-					<div style={{ position: 'relative' }}>
+					<div style={{ position: "relative" }}>
 						<div
 							style={{
-								position: 'absolute',
+								position: "absolute",
 								top: 0,
 								left: 0,
-								width: '100%',
-								height: '100%',
-								backdropFilter: 'blur(5px)',
-								backgroundColor: 'rgba(255, 255, 255, 0.5)', // Adjust the opacity as needed
+								width: "100%",
+								height: "100%",
+								backdropFilter: "blur(5px)",
+								backgroundColor: "rgba(255, 255, 255, 0.5)", // Adjust the opacity as needed
 								zIndex: -1, // Move the background behind the content
 							}}
 						/>

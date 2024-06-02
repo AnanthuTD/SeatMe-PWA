@@ -37,7 +37,7 @@ const ScheduleSeatingAvailabilityForm = ({
 			values.endTime = formatTime(values.endTime);
 
 			await axios.post(
-				"/api/admin/config/seating-availability-schedule",
+				"/api/staff/config/seating-availability-schedule",
 				values,
 			);
 

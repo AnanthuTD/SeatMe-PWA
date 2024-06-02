@@ -38,27 +38,28 @@ const DynamicCourseForm = () => {
 	const [programs, setPrograms] = useState([]); // State to store program data
 	const handleDelete = async (courseId) => {
 		try {
-		  // Assuming your server-side API endpoint for course deletion is /api/admin/courseentry/course/:courseId
-		  const result = await axios.delete(`/api/admin/courseentry/course/${courseId}`);
-		//   // console.log(result);
-		  if (result.status === 200) {
-			// If deletion is successful, display a success message
-			const msg = "Course with id : "+ courseId + " deleted" ;
-			message.success(msg);
-	  
-			// Reload the courses after deletion
-			loadCourses(null, semesterOptions);
-		  } else {
-			// If deletion fails, display an error message
-			message.error("Delete failed");
-		  }
+			// Assuming your server-side API endpoint for course deletion is /api/staff/courseentry/course/:courseId
+			const result = await axios.delete(
+				`/api/staff/courseentry/course/${courseId}`,
+			);
+			//   // console.log(result);
+			if (result.status === 200) {
+				// If deletion is successful, display a success message
+				const msg = "Course with id : " + courseId + " deleted";
+				message.success(msg);
+
+				// Reload the courses after deletion
+				loadCourses(null, semesterOptions);
+			} else {
+				// If deletion fails, display an error message
+				message.error("Delete failed");
+			}
 		} catch (error) {
-		  // If an error occurs during the deletion process, log the error and display a generic error message
-		  console.error("Error deleting course: ", error);
-		  message.error("Something went wrong. Please try again.");
+			// If an error occurs during the deletion process, log the error and display a generic error message
+			console.error("Error deleting course: ", error);
+			message.error("Something went wrong. Please try again.");
 		}
-	  };
-	  
+	};
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
@@ -154,7 +155,7 @@ const DynamicCourseForm = () => {
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get("/api/admin/programs");
+			const result = await axios.get("/api/staff/programs");
 			setPrograms(result.data);
 		} catch (error) {
 			console.error("Error fetching programs: ", error);
@@ -169,7 +170,7 @@ const DynamicCourseForm = () => {
 		// console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/courseentry/course", {
+			const result = await axios.post("/api/staff/courseentry/course", {
 				courses: values.courses,
 			});
 			if (result.status === 200) {
@@ -209,7 +210,7 @@ const DynamicCourseForm = () => {
 	]);
 	const loadSemesterOptions = async () => {
 		try {
-			const result = await axios.get("/api/admin/courses");
+			const result = await axios.get("/api/staff/courses");
 			//setSemesterOptions(result.data.map(course => course.semester));
 		} catch (error) {
 			console.error("Error fetching semesters: ", error);
@@ -218,7 +219,7 @@ const DynamicCourseForm = () => {
 
 	const loadCourses = async (programId, semester) => {
 		try {
-			const result = await axios.get("/api/admin/courses", {
+			const result = await axios.get("/api/staff/courses", {
 				params: { programId, semester },
 			});
 			setCourses(result.data);
@@ -244,9 +245,8 @@ const DynamicCourseForm = () => {
 
 	useEffect(() => {
 		// console.log("Semester Options:", semesterOptions);
-	  }, [semesterOptions]);
-	  
-	
+	}, [semesterOptions]);
+
 	return (
 		<div className="p-3">
 			<Link href={"/admin/forms/course/import"}>
@@ -362,30 +362,42 @@ const DynamicCourseForm = () => {
 										</Col>
 
 										<Col xs={24} md={24} lg={10} xxl={10}>
-										<Form.Item
-											name={[field.name, "program"]}
-											label="Program"
-											rules={[
-											{
-												required: true,
-												message: "Please select the program",
-											},
-											]}
-										>
-											<SelectProgram
-											options={programs}
-											placeholder="Select Program"
-											onChange={(value) => {
-												// Handle the change and update the form values
-												form.setFieldsValue({
-												courses: form.getFieldsValue().courses.map((course, index) => ({
-													...course,
-													program: index === field.name ? value : course.program,
-												})),
-												});
-											}}
-											/>
-										</Form.Item>
+											<Form.Item
+												name={[field.name, "program"]}
+												label="Program"
+												rules={[
+													{
+														required: true,
+														message:
+															"Please select the program",
+													},
+												]}
+											>
+												<SelectProgram
+													options={programs}
+													placeholder="Select Program"
+													onChange={(value) => {
+														// Handle the change and update the form values
+														form.setFieldsValue({
+															courses: form
+																.getFieldsValue()
+																.courses.map(
+																	(
+																		course,
+																		index,
+																	) => ({
+																		...course,
+																		program:
+																			index ===
+																			field.name
+																				? value
+																				: course.program,
+																	}),
+																),
+														});
+													}}
+												/>
+											</Form.Item>
 										</Col>
 									</Row>
 								</Card>
@@ -427,54 +439,58 @@ const DynamicCourseForm = () => {
 				}
 
 				<Table
-				 dataSource={courses}
-				 columns={[
-					{
-					  title: 'ID',
-					  dataIndex: 'id',
-					  key: 'id',
-					  ...getColumnSearchProps('id', 'Search ID'),
-					},
-					{
-					  title: 'Name',
-					  dataIndex: 'name',
-					  key: 'name',
-					  ...getColumnSearchProps('name', 'Search Name'),
-					},
-					 {
-					 title: 'Semester',
-					 dataIndex: 'semester',
-					 key: 'semester',
-					 ...getColumnSearchProps('semester', 'Search Semester'),
-					 },
-					 {
-						 title: "Is Open Course",
-						 dataIndex: "isOpenCourse",
-						 key: "isOpenCourse",
-				
-						 
-						 render: (text, record) => (
-						   <span style={{ color: text  ? 'green' : 'red' }}>
-							 {text  ? 'Yes' : 'No'}
-						   </span>
-						 ),
-					   },
-					   {
-						title: 'Operations',
-						dataIndex: 'operations',
-						fixed: 'right',
-						key: 'operations',
-						render: (_, record) => (
-							<Button type="link" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>
-							  Delete
-							</Button>
-						  ),
-					  },
-					  
-				
-				 ]}
-				pagination={false}
-				style={{ width: '100%' }}
+					dataSource={courses}
+					columns={[
+						{
+							title: "ID",
+							dataIndex: "id",
+							key: "id",
+							...getColumnSearchProps("id", "Search ID"),
+						},
+						{
+							title: "Name",
+							dataIndex: "name",
+							key: "name",
+							...getColumnSearchProps("name", "Search Name"),
+						},
+						{
+							title: "Semester",
+							dataIndex: "semester",
+							key: "semester",
+							...getColumnSearchProps(
+								"semester",
+								"Search Semester",
+							),
+						},
+						{
+							title: "Is Open Course",
+							dataIndex: "isOpenCourse",
+							key: "isOpenCourse",
+
+							render: (text, record) => (
+								<span style={{ color: text ? "green" : "red" }}>
+									{text ? "Yes" : "No"}
+								</span>
+							),
+						},
+						{
+							title: "Operations",
+							dataIndex: "operations",
+							fixed: "right",
+							key: "operations",
+							render: (_, record) => (
+								<Button
+									type="link"
+									onClick={() => handleDelete(record.id)}
+									style={{ color: "red" }}
+								>
+									Delete
+								</Button>
+							),
+						},
+					]}
+					pagination={false}
+					style={{ width: "100%" }}
 				/>
 			</Card>
 		</div>
@@ -482,11 +498,6 @@ const DynamicCourseForm = () => {
 };
 
 export default DynamicCourseForm;
-
-
-
-
-
 
 // columns={[
 // 	{
@@ -512,7 +523,6 @@ export default DynamicCourseForm;
 // 		 dataIndex: "isOpenCourse",
 // 		 key: "isOpenCourse",
 
-		 
 // 		 render: (text, record) => (
 // 		   <span style={{ color: text  ? 'green' : 'red' }}>
 // 			 {text  ? 'Yes' : 'No'}
@@ -530,6 +540,5 @@ export default DynamicCourseForm;
 // 			</Button>
 // 		  ),
 // 	  },
-	  
 
 //  ]}

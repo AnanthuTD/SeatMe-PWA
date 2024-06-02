@@ -29,7 +29,7 @@ const Login = () => {
 			if (user.role == "admin" || user.role == "staff") {
 				router.push("/admin"); // Redirect to the admin page
 			} else if (user.role == "invigilator") {
-				router.push("/staff"); // Redirect to the staff page
+				router.push("/invigilator"); // Redirect to the staff page
 			}
 		} catch (error) {
 			if (error.response) {

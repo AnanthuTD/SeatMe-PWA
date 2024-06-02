@@ -44,9 +44,12 @@ function ProgramsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/admin/programentry/program", {
-				programs,
-			});
+			const result = await axios.post(
+				"/api/staff/program-entry/program",
+				{
+					programs,
+				},
+			);
 			if (result.status === 200) {
 				message.success("Import Success");
 				setFailedRecords(result.data.failedRecords);

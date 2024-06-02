@@ -12,43 +12,21 @@ import {
 	message,
 	Alert,
 	FloatButton,
-	Table,
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
 import Link from "next/link";
+import BlockTable from "./table";
 
 const DynamicBlockForm = () => {
 	const [form] = Form.useForm();
 	const [error, setError] = useState(null); // State to store error messages
-	// ...
-	const [editingBlockIndex, setEditingBlockIndex] = useState(null);
-// ...
-
-
-	const handleDelete = async (blockId) => {
-		try {
-			const result = await axios.delete(`/api/admin/blockentry/block/${blockId}`);
-			if (result.status === 200) {
-				const msg = blockId + " Deleted";
-				message.success(msg);
-				// Reload blocks after deletion
-				loadBlocks();
-			} else {
-				message.error("Delete failed");
-			}
-		} catch (error) {
-			console.error(error);
-			message.error("Something went wrong. Please try again.");
-		}
-	};
-	
 
 	const handleSubmission = async (values) => {
 		// console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/blockentry/block", {
+			const result = await axios.post("/api/staff/block-entry/block", {
 				blocks: values.blocks,
 			});
 			if (result.status === 200) {
@@ -74,20 +52,7 @@ const DynamicBlockForm = () => {
 	const handleAlertClose = () => {
 		setError(null); // Clear the error message
 	};
-	const [blocks, setBlocks] = useState([]);
 
-	const loadBlocks = async () => {
-		try {
-			const result = await axios.get("/api/admin/blocks");
-			setBlocks(result.data);
-		} catch (error) {
-			console.error("Error fetching blocks: ", error);
-		}
-	};
-	useEffect(() => {
-		// Load blocks when the component mounts
-		loadBlocks();
-	}, []);
 	useEffect(() => {
 		form.setFieldsValue({ blocks: [{}] });
 	}, [form]);
@@ -142,41 +107,25 @@ const DynamicBlockForm = () => {
 										/>
 									}
 								>
-									<Row gutter={16}>
-										<Col xs={24} md={24} lg={7} xxl={7}>
-											<Form.Item
-												name={[field.name, "id"]}
-												label="Block ID"
-												rules={[
-													{
-														required: true,
-														message:
-															"Please enter the Block ID",
-													},
-												]}
-											>
-												<Input />
-											</Form.Item>
-										</Col>
-										<Col xs={24} md={24} lg={10} xxl={10}>
-											<Form.Item
-												name={[field.name, "name"]}
-												label="Block Name"
-												rules={[
-													{
-														required: true,
-														message:
-															"Please enter the Block name",
-													},
-												]}
-											>
-												<Input />
-											</Form.Item>
-										</Col>
-									</Row>
+									{/* <Row gutter={16}> */}
+									{/* <Col xs={24} md={24} lg={7} xxl={7}> */}
+									<Form.Item
+										name={[field.name, "id"]}
+										label="Block ID"
+										rules={[
+											{
+												required: true,
+												message:
+													"Please enter the Block ID",
+											},
+										]}
+									>
+										<Input />
+									</Form.Item>
+									{/* </Col> */}
 								</Card>
 							))}
-							<Button type="dashed" onClick={() => add()} block>
+							<Button type="primary" onClick={() => add()} block>
 								+ Add Block
 							</Button>
 						</div>
@@ -191,31 +140,10 @@ const DynamicBlockForm = () => {
 					</Col>
 				</Row>
 			</Form>
-			<Card size="small" title="Blocks" style={{ marginTop: 16 }}>
-				<Table
-				dataSource={blocks}
-				columns={[
-					{
-					title: 'ID',
-					dataIndex: 'id',
-					key: 'id',
-					},
-					{
-					title: 'Name',
-					dataIndex: 'name',
-					key: 'name',
-					},
-				]}
-				onRow={(record) => {
-					return {
-					  onClick: () => {
-						// console.log('Block Details:', record);
-					  },
-					};
-				  }}
-				pagination={false}
-				style={{ width: '100%' }}
-				/>
+
+			{/* display */}
+			<Card size="small" title={null} style={{ marginTop: 16 }}>
+				<BlockTable />
 			</Card>
 		</div>
 	);

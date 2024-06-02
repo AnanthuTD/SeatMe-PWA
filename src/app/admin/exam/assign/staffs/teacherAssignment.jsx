@@ -16,7 +16,7 @@ function TeacherAssignment({ rooms = [], date = new Date(), timeCode = "AN" }) {
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -25,7 +25,7 @@ function TeacherAssignment({ rooms = [], date = new Date(), timeCode = "AN" }) {
 
 	const getDateTimeId = async (dateTime) => {
 		try {
-			const result = await axios.get("/api/admin/date-time-id/", {
+			const result = await axios.get("/api/staff/date-time-id/", {
 				params: dateTime,
 			});
 			if (result.data) setDateTimeId(result.data.dateTimeId);
@@ -62,7 +62,7 @@ function TeacherAssignment({ rooms = [], date = new Date(), timeCode = "AN" }) {
 			};
 
 			const response = await axios.post(
-				"/api/admin/staff/assign",
+				"/api/staff/staff/assign",
 				reqData,
 			);
 

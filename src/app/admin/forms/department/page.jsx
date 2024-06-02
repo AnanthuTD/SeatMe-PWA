@@ -24,7 +24,9 @@ const DynamicDepartmentForm = () => {
 
 	const handleDelete = async (departmentId) => {
 		try {
-			const result = await axios.delete(`/api/admin/departmententry/department/${departmentId}`);
+			const result = await axios.delete(
+				`/api/staff/department-entry/department/${departmentId}`,
+			);
 			if (result.status === 200) {
 				message.success(result.message);
 				// Reload departments after deletion
@@ -37,14 +39,13 @@ const DynamicDepartmentForm = () => {
 			message.error("Something went wrong. Please try again.");
 		}
 	};
-	
 
 	const handleSubmission = async (values) => {
 		// console.log("Submitted values:", values);
 
 		try {
 			const result = await axios.post(
-				"/api/admin/departmententry/department",
+				"/api/staff/department-entry/department",
 				{
 					departments: values.departments,
 				},
@@ -76,7 +77,7 @@ const DynamicDepartmentForm = () => {
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);

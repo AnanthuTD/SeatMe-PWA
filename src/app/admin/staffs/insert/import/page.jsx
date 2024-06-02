@@ -44,7 +44,7 @@ function Page() {
 		}
 
 		try {
-			const response = await axios.post("/api/admin/staff", { staffs });
+			const response = await axios.post("/api/staff/staff", { staffs });
 
 			if (response.status === 200) {
 				const result = response.data;

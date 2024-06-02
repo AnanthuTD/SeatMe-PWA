@@ -175,7 +175,7 @@ const App = ({ data }) => {
 				});
 				const { id, priority } = row;
 				if (priority) {
-					await axios.patch("/api/admin/rooms", { id, priority });
+					await axios.patch("/api/staff/rooms", { id, priority });
 					message.success("Updated successfully");
 					setDataSource(newData);
 				}

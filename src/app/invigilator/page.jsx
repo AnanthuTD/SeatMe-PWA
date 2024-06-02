@@ -14,7 +14,7 @@ function page() {
 
 	useEffect(() => {
 		axios
-			.get("/api/staff")
+			.get("/api/invigilator")
 			.then((response) => {
 				let staff = response.data;
 				// console.log(staff);

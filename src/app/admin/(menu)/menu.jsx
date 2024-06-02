@@ -28,7 +28,11 @@ const items = [
 		getItem("Insert", "/admin/staffs/insert", <FileAddOutlined />),
 	]),
 	getItem("Student", "/admin/student", <IdcardOutlined />, [
-		getItem("Student List", "/admin/student/view", <UnorderedListOutlined />),
+		getItem(
+			"Student List",
+			"/admin/student/view",
+			<UnorderedListOutlined />,
+		),
 		getItem("Insert", "/admin/student/insert", <FileAddOutlined />),
 		getItem("Semester", "/admin/student/semester", <IdcardOutlined />),
 	]),
@@ -49,11 +53,7 @@ const items = [
 			"/admin/exam/assign/staffs",
 			<UnorderedListOutlined />,
 		),
-		getItem(
-			"Ban",
-			"/admin/exam/ban",
-			<UnorderedListOutlined />,
-		),
+		getItem("Ban", "/admin/exam/ban", <UnorderedListOutlined />),
 	]),
 	getItem("Forms", "/admin/forms", <FormOutlined />, [
 		getItem(

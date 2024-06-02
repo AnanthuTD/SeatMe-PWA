@@ -14,7 +14,7 @@ function Page() {
 
 	const loadCourses = async (date) => {
 		try {
-			const result = await axios.get("/api/admin/exams", {
+			const result = await axios.get("/api/staff/exams", {
 				params: { query: date, column: "date" },
 			});
 			const { data } = result;
@@ -49,7 +49,7 @@ function Page() {
 		const courseIds = selectedCourses.map((course) => course.id);
 
 		axios
-			.get("/api/admin/student/supplementary", {
+			.get("/api/staff/student/supplementary", {
 				params: {
 					date,
 					courseIds,

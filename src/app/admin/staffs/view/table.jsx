@@ -153,7 +153,7 @@ const EditableTable = ({
 		});
 
 		try {
-			await axios.delete(`/api/admin/staff/${id}`);
+			await axios.delete(`/api/staff/staff/${id}`);
 			setDataSource(newData);
 			message.success("Deleted successfully!");
 		} catch (error) {
@@ -282,7 +282,7 @@ const EditableTable = ({
 					...item,
 					...row,
 				});
-				await axios.patch(`/api/admin/staff/${row.id}`, row);
+				await axios.patch(`/api/staff/staff/${row.id}`, row);
 				message.success("Updated successfully");
 				setDataSource(newData);
 			}
@@ -313,7 +313,7 @@ const EditableTable = ({
 	const handlePasswordUpdate = async (newPassword) => {
 		try {
 			const response = await axios.patch(
-				`/api/admin/staff/update-password`,
+				`/api/staff/staff/update-password`,
 				{
 					staffId: selectedStaffId,
 					newPassword: newPassword,

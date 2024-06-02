@@ -15,7 +15,7 @@ const ProgramList = ({ data, examId }) => {
 	const fetchStudentData = async (programId) => {
 		try {
 			const result = await axios.get(
-				`/api/admin/exams/attendance/${examId}/${programId}`,
+				`/api/staff/exams/attendance/${examId}/${programId}`,
 			);
 			return result.data || [];
 		} catch (error) {

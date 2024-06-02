@@ -29,7 +29,7 @@ const DynamicStudentForm = () => {
 		// console.log("values: ", students);
 
 		try {
-			const result = await axios.post("/api/admin/student", { students });
+			const result = await axios.post("/api/staff/student", { students });
 
 			const { failedRecords } = result.data;
 
@@ -48,7 +48,7 @@ const DynamicStudentForm = () => {
 	};
 
 	const loadSecondLang = async () => {
-		const res = await axios.get("/api/admin/course/common2");
+		const res = await axios.get("/api/staff/course/common2");
 		const { data } = res;
 		// console.log(data);
 		setSecondLangs(data);

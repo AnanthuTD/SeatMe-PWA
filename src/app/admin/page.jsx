@@ -21,7 +21,7 @@ const PDFList = () => {
 
 	const confirmDelete = () => {
 		axios
-			.delete(`api/admin/reports/${fileToDelete}`)
+			.delete(`api/staff/reports/${fileToDelete}`)
 			.then(() => {
 				// Successfully deleted, remove the file from the list
 				setPDFs((prevPDFs) =>
@@ -43,7 +43,7 @@ const PDFList = () => {
 
 	useEffect(() => {
 		axios
-			.get("api/admin/reports")
+			.get("api/staff/reports")
 			.then((response) => {
 				setPDFs(response.data);
 			})

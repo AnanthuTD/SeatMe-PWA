@@ -187,8 +187,8 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 	const save = async (id) => {
 		try {
 			const url = examType
-				? `/api/admin/rooms/${examType}`
-				: `/api/admin/rooms`;
+				? `/api/staff/rooms/${examType}`
+				: `/api/staff/rooms`;
 			const row = await form.validateFields();
 			const newData = [...data];
 			const index = newData.findIndex((item) => id === item.id);
@@ -388,7 +388,7 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 		setSubmitting(true);
 		try {
 			const response = await axios.patch(
-				`/api/admin/rooms-availability`,
+				`/api/staff/rooms-availability`,
 				{
 					roomIds: selectedRowKeys,
 				},

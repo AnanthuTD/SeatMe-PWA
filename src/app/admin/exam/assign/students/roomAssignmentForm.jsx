@@ -154,7 +154,7 @@ const RoomAssignmentForm = () => {
 	};
 
 	const getExaminesCount = async () => {
-		const response = await axios.get("/api/admin/examines-count", {
+		const response = await axios.get("/api/staff/examines-count", {
 			params: {
 				date,
 				timeCode,
@@ -185,7 +185,7 @@ const RoomAssignmentForm = () => {
 
 	const loadSelectedRooms = async (examType) => {
 		setLoadingRooms(true);
-		const result = await axios.get(`/api/admin/rooms/${examType}`, {
+		const result = await axios.get(`/api/staff/rooms/${examType}`, {
 			params: { availability: true },
 		});
 		setSelectedRooms(result.data);
@@ -207,7 +207,7 @@ const RoomAssignmentForm = () => {
 				timeCode,
 				examName,
 			} = form.getFieldsValue();
-			const result = await axios.get("/api/admin/exams/assign", {
+			const result = await axios.get("/api/staff/exams/assign", {
 				params: {
 					orderBy,
 					date: selectedDate.format("YYYY-MM-DDTHH:mm:ssZ"),

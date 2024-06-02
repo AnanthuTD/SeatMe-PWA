@@ -10,7 +10,7 @@ export default function Page({ params }) {
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get(`/api/admin/exams/${params.examId}`);
+			const result = await axios.get(`/api/staff/exams/${params.examId}`);
 			const { course } = result.data || {};
 			const {
 				programs,

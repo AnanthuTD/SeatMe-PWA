@@ -21,7 +21,7 @@ const YourComponent = () => {
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);

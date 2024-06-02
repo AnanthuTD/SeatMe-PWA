@@ -9,7 +9,7 @@ const ViewSchedules = ({ updateSchedule }) => {
 
 	useEffect(() => {
 		axios
-			.get("/api/admin/config/seating-availability-schedule")
+			.get("/api/staff/config/seating-availability-schedule")
 			.then((response) => {
 				if (response.status === 200) {
 					setSchedules(response.data);
@@ -75,7 +75,7 @@ const ViewSchedules = ({ updateSchedule }) => {
 
 	const handleDelete = (id) => {
 		axios
-			.delete(`/api/admin/config/seating-availability-schedule/${id}`)
+			.delete(`/api/staff/config/seating-availability-schedule/${id}`)
 			.then(() => {
 				setSchedules((prevSchedules) =>
 					prevSchedules.filter((schedule) => schedule.id !== id),

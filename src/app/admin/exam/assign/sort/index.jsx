@@ -18,7 +18,7 @@ export default function App({ date, timeCode, onSort }) {
 
 	async function fetchExams() {
 		try {
-			const response = await axios.get(`/api/admin/exams/program`, {
+			const response = await axios.get(`/api/staff/exams/program`, {
 				params: {
 					date,
 					timeCode,

@@ -25,7 +25,7 @@ const App = () => {
 	const [courses, setCourses] = useState([]);
 
 	const getTotalDataCount = async () => {
-		const result = await axios.get("/api/admin/student/count");
+		const result = await axios.get("/api/staff/student/count");
 		setTotalDataCount(result.data);
 	};
 
@@ -37,7 +37,7 @@ const App = () => {
 		const resultsPerPage = 50;
 		setLoading(true);
 		axios
-			.get(`/api/admin/student/supplementary/list`, {
+			.get(`/api/staff/student/supplementary/list`, {
 				params: {
 					query: reset ? [""] : searchText,
 					column: reset ? [""] : searchedColumn,

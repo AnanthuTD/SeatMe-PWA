@@ -22,7 +22,7 @@ const App = () => {
 
 	const getTotalDataCount = async () => {
 		axios
-			.get("/api/admin/exams/count")
+			.get("/api/staff/exams/count")
 			.then((result) => {
 				setTotalDataCount(result.data);
 			})
@@ -41,7 +41,7 @@ const App = () => {
 		const resultsPerPage = 30;
 		setLoading(true);
 		axios
-			.get(`/api/admin/exams/`, {
+			.get(`/api/staff/exams/`, {
 				params: {
 					query: reset ? "" : searchText,
 					column: reset ? "" : searchedColumn,

@@ -51,7 +51,7 @@ const SettingsButton = () => {
 
 	const onFinish = async (values) => {
 		try {
-			const response = await axios.patch("/api/admin/profile", values);
+			const response = await axios.patch("/api/staff/profile", values);
 			const { user } = response.data;
 			setUser(user);
 			message.success("Profile updated successfully");

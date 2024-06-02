@@ -29,25 +29,27 @@ const DynamicProgramForm = () => {
 	const [selectedDepartmentCode, setSelectedDepartmentCode] = useState(null);
 	const handleDelete = async (record) => {
 		try {
-		  // Make an API call or perform the necessary logic to delete the program
-		  // You can use axios or any other method for API calls
-		  const result = await axios.delete(`/api/admin/programentry/program/${record.id}`);
-		  if (result.status === 200) {
-			const msg= "Program with id "+record.id+" deleted";
-			message.success(msg);
-			// Reload the programs after deletion
-			loadPrograms();
-		  } else {
-			message.error("Delete failed");
-		  }
+			// Make an API call or perform the necessary logic to delete the program
+			// You can use axios or any other method for API calls
+			const result = await axios.delete(
+				`/api/staff/program-entry/program/${record.id}`,
+			);
+			if (result.status === 200) {
+				const msg = "Program with id " + record.id + " deleted";
+				message.success(msg);
+				// Reload the programs after deletion
+				loadPrograms();
+			} else {
+				message.error("Delete failed");
+			}
 		} catch (error) {
-		  console.error(error);
-		  message.error("Something went wrong. Please try again.");
+			console.error(error);
+			message.error("Something went wrong. Please try again.");
 		}
-	  };
+	};
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			// console.log("departments data", result.data);
 			setDepartments(result.data);
 		} catch (error) {
@@ -63,9 +65,12 @@ const DynamicProgramForm = () => {
 		// console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/admin/programentry/program", {
-				programs: values.programs,
-			});
+			const result = await axios.post(
+				"/api/staff/program-entry/program",
+				{
+					programs: values.programs,
+				},
+			);
 			if (result.status === 200) {
 				message.success(result.message);
 				setError(null); // Clear any previous errors
@@ -96,7 +101,7 @@ const DynamicProgramForm = () => {
 
 	const loadPrograms = async () => {
 		try {
-			const result = await axios.get("/api/admin/programs");
+			const result = await axios.get("/api/staff/programs");
 			setPrograms(result.data);
 		} catch (error) {
 			console.error("Error fetching programs: ", error);
@@ -156,11 +161,11 @@ const DynamicProgramForm = () => {
 			title: "Actions",
 			key: "actions",
 			render: (_, record) => (
-			  <Button type="link" danger onClick={() => handleDelete(record)}>
-				Delete
-			  </Button>
+				<Button type="link" danger onClick={() => handleDelete(record)}>
+					Delete
+				</Button>
 			),
-		  },
+		},
 	];
 
 	return (

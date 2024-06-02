@@ -29,7 +29,7 @@ function Page() {
 	const loadRooms = async () => {
 		try {
 			const response = await axios.get(
-				`/api/admin/exams/${new Date(date)}/${timeCode}/rooms`,
+				`/api/staff/exams/${new Date(date)}/${timeCode}/rooms`,
 			);
 			setRooms(response.data);
 		} catch (error) {

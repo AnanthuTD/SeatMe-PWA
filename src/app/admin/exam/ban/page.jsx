@@ -16,7 +16,7 @@ const BanUnbanStudents = () => {
 	const banStudent = async (values) => {
 		try {
 			const response = await axios.patch(
-				`/api/admin/student/ban/${values.studentId}`,
+				`/api/staff/student/ban/${values.studentId}`,
 			);
 			message.success(response.data.message);
 			form.resetFields();
@@ -28,7 +28,7 @@ const BanUnbanStudents = () => {
 
 	const fetchBannedStudents = async () => {
 		try {
-			const response = await axios.get("/api/admin/student/banned");
+			const response = await axios.get("/api/staff/student/banned");
 			setBannedStudents(response.data);
 		} catch (error) {
 			console.error("Error fetching banned students:", error);

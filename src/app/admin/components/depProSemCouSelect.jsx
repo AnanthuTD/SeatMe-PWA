@@ -8,7 +8,7 @@ import CourseSelect from "./courseSelect";
 import { Row, Col, Divider, Select } from "antd";
 
 function DepProSemCouSelect({
-	value = ({department, program, courses, semester}) => {},
+	value = ({ department, program, courses, semester }) => {},
 	courseField = true,
 	reset = false,
 }) {
@@ -49,7 +49,7 @@ function DepProSemCouSelect({
 
 	const loadDepartments = async () => {
 		try {
-			const result = await axios.get("/api/admin/departments");
+			const result = await axios.get("/api/staff/departments");
 			setDepartments(result.data);
 		} catch (error) {
 			console.error("Error fetching departments: ", error);
@@ -58,7 +58,7 @@ function DepProSemCouSelect({
 
 	const loadPrograms = async (departmentCode) => {
 		try {
-			const result = await axios.get("/api/admin/programs", {
+			const result = await axios.get("/api/staff/programs", {
 				params: { departmentCode },
 			});
 			setPrograms(result.data);
@@ -81,7 +81,7 @@ function DepProSemCouSelect({
 
 	const loadCourses = async (programId, semester) => {
 		try {
-			const result = await axios.get("/api/admin/courses", {
+			const result = await axios.get("/api/staff/courses", {
 				params: { programId, semester },
 			});
 			setCourses(result.data);

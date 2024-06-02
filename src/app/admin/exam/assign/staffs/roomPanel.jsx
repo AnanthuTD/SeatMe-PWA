@@ -35,7 +35,7 @@ function RoomPanel({
 	const loadTeachers = async (selectedDepartment) => {
 		try {
 			const result = await axios.get(
-				`/api/admin/staff/${selectedDepartment}`,
+				`/api/staff/staff/${selectedDepartment}`,
 			);
 			const { data } = result;
 			if (!data.error) {

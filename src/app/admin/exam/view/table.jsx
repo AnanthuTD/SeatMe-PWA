@@ -206,7 +206,7 @@ const App = ({
 
 	const handleDelete = async (id) => {
 		try {
-			const response = await axios.delete(`/api/admin/exams/${id}`); // Adjust the endpoint as per your server API
+			const response = await axios.delete(`/api/staff/exams/${id}`); // Adjust the endpoint as per your server API
 
 			if (response.status === 200) {
 				const newData = [...dataSource];
@@ -276,7 +276,7 @@ const App = ({
 				// console.log(JSON.stringify(newData));
 
 				axios
-					.put(`/api/admin/exams/${id}`, row)
+					.put(`/api/staff/exams/${id}`, row)
 					.then(() => {
 						setData(newData);
 						setEditingKey("");
