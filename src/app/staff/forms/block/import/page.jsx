@@ -8,10 +8,7 @@ import ErrorModel from "@/app/staff/components/errorModel";
 import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
-const requiredFields = [
-	{ key: "id", value: "Block ID" },
-	{ key: "name", value: "Block Name" },
-];
+const requiredFields = [{ key: "id", value: "Block ID" }];
 
 function BlockPage() {
 	const [data, setData] = useState([]);
@@ -19,18 +16,18 @@ function BlockPage() {
 
 	const handleSubmission = async (blocks) => {
 		setData([]);
-		const missingBlocks = blocks.filter((block) => {
+		/* const missingBlocks = blocks.filter((block) => {
 			// Check if any of the required fields are missing for a block
-			return !block.hasOwnProperty("name");
-		});
+			// return !block.hasOwnProperty("name");
+		}); */
 
-		if (missingBlocks.length > 0) {
+		/* if (missingBlocks.length > 0) {
 			message.error(`The following fields are required (Block Name)`);
 			return;
-		}
+		} */
 
 		try {
-			const result = await axios.post("/api/staffblock/block", {
+			const result = await axios.post("/api/staff/block", {
 				blocks,
 			});
 			if (result.status === 200) {
