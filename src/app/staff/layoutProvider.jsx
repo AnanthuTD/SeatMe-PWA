@@ -5,6 +5,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, theme } from "antd";
 import Menu from "./(menu)/menu";
 import SettingsButton from "./components/settings/settings";
+import Image from "next/image";
 const { Header, Sider, Content } = Layout;
 
 const App = ({ children }) => {
@@ -27,7 +28,15 @@ const App = ({ children }) => {
 				collapsed={collapsed}
 				theme="light"
 			>
-				<div className="demo-logo-vertical">Logo</div>
+				<div className="demo-logo-vertical">
+					<Image
+						src={"/seatme.svg"}
+						alt="logo"
+						className="rounded-full"
+						width={25}
+						height={25}
+					/>
+				</div>
 				<Menu />
 			</Sider>
 			<Layout>
