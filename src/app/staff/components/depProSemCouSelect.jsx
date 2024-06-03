@@ -11,6 +11,7 @@ function DepProSemCouSelect({
 	value = ({ department, program, courses, semester }) => {},
 	courseField = true,
 	reset = false,
+	semesterField = false,
 }) {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
@@ -162,18 +163,20 @@ function DepProSemCouSelect({
 						sortByValue
 					/>
 				</Col>
-				<Col xs={24} sm={12} md={12} lg={4} xl={5}>
-					<label className="block text-lg font-semibold mb-2">
-						Semester:
-					</label>
-					<Select
-						options={semesters}
-						onChange={handleSemesterChange}
-						placeholder="Select Semester"
-						fieldNames={{ label: "name", value: "id", key: "id" }}
-						value={selectedSemester}
-					/>
-				</Col>
+				{semesterField ? (
+					<Col xs={24} sm={12} md={12} lg={4} xl={5}>
+						<label className="block text-lg font-semibold mb-2">
+							Semester:
+						</label>
+						<Select
+							options={semesters}
+							onChange={handleSemesterChange}
+							placeholder="Select Semester"
+							fieldNames={{ label: "name", value: "id", key: "id" }}
+							value={selectedSemester}
+						/>
+					</Col>
+				) : null}
 			</Row>
 			{courseField ? (
 				<>
