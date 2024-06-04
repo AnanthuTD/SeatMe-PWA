@@ -11,20 +11,7 @@ const withPWA = require("next-pwa")({
 	openAnalyzer: false,
 }); */
 
-/** @type {import('next').NextConfig} */
-const proxy = {
-	async rewrites() {
-		return [
-			{
-				source: "/api/:path*",
-				destination: process.env.API + "/:path*",
-			},
-		];
-	},
-};
-
 module.exports = withPWA({
-	...proxy,
 	// reactStrictMode: false,
 	eslint: {
 		// Warning: This allows production builds to successfully complete even if
