@@ -29,7 +29,7 @@ const NavigationPage = () => {
 							block
 							className="bg-green-500 hover:bg-green-700 text-white"
 						>
-							Admin
+							Staff / Admin
 						</Button>
 					</Link>
 				</Col>
@@ -41,7 +41,7 @@ const NavigationPage = () => {
 							block
 							className="bg-yellow-500 hover:bg-yellow-700 text-white"
 						>
-							Staff
+							Invigilator
 						</Button>
 					</Link>
 				</Col>
