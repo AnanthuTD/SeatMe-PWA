@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button, Row, Col } from "antd";
 import { UserOutlined, TeamOutlined, SafetyOutlined } from "@ant-design/icons";
-import "./styles.css"; // Ensure the path is correct
+import styles from "./styles.module.css";
 
 const NavigationPage = () => {
 	return (
@@ -17,7 +17,9 @@ const NavigationPage = () => {
 				/>
 			</div>
 			<div className="w-fit mb-10">
-				<h1 className="text-5xl font-extrabold text-center text-black drop-shadow-lg typing-text">
+				<h1
+					className={`text-5xl font-extrabold text-center text-black drop-shadow-lg ${styles.typing_text}`}
+				>
 					Welcome to SeatMe
 				</h1>
 			</div>

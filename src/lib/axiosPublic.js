@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
 						refreshError.response &&
 						refreshError.response.status === 401
 					) {
-						window.location.href = "/login";
+						window.location.href = "/sign-in";
 					}
 
 					// Reject the stored promises with the refresh error

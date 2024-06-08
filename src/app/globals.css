@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Ephesis&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Paytone+One&family=Shadows+Into+Light&display=swap");
 /* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
@@ -27,7 +28,6 @@
     rgb(var(--background-start-rgb));
 }*/
 
-@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Ephesis&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Paytone+One&family=Shadows+Into+Light&display=swap");
 
 .navhead_title {
 	font-family: "Shadows Into Light", cursive;

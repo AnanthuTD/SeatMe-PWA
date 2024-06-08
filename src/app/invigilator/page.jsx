@@ -8,11 +8,11 @@ import OffDuty from "./offDuty";
 import axios from "@/lib/axiosPrivate";
 import { useState, useEffect } from "react";
 
-function page() {
+function Page() {
 	const [onDuty, setOnDuty] = useState();
 	const [examDetails, setExamDetails] = useState(undefined);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		axios
 			.get("/api/invigilator")
 			.then((response) => {
@@ -33,15 +33,15 @@ function page() {
 					console.error("Request failed:", error.message);
 				}
 			});
-	}, []);
+	}, []); */
 
-	useEffect(() => {
+/* 	useEffect(() => {
 		localStorage.setItem("onDuty", onDuty);
 	}, [onDuty]);
 
 	useEffect(() => {
 		localStorage.setItem("examDetails", JSON.stringify(examDetails));
-	}, [examDetails]);
+	}, [examDetails]); */
 
 	return (
 		<div>
@@ -59,4 +59,4 @@ function page() {
 	);
 }
 
-export default page;
+export default Page;

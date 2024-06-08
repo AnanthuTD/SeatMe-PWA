@@ -15,7 +15,7 @@ import { LogoutOutlined, SettingFilled } from "@ant-design/icons";
 import axios from "axios";
 import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import { useRouter } from "next/navigation";
-import { useAccount } from "@/context/accountContext";
+// import { useAccount } from "@/context/accountContext";
 import ScheduleSeatingAvailabilityForm from "./seatingAvailableTimeConfig";
 import Title from "antd/es/typography/Title";
 import ViewSchedules from "./viewSchedules";
@@ -42,7 +42,7 @@ const SettingsButton = () => {
 			setVisible(false);
 			setAuthorizationToken();
 			localStorage.removeItem("user");
-			router.push("/login");
+			router.push("/sign-in");
 		} catch (e) {
 			console.error(e);
 			message.error("Logout failed!");

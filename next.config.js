@@ -18,4 +18,18 @@ module.exports = withPWA({
 		// your project has ESLint errors.
 		ignoreDuringBuilds: true,
 	},
+	async redirects() {
+		return [
+			{
+				source: "/home",
+				destination: "/",
+				permanent: true,
+			},
+			{
+				source: "/login",
+				destination: "/sign-in",
+				permanent: true,
+			},
+		];
+	},
 });

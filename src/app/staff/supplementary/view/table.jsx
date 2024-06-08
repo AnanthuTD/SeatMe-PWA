@@ -7,7 +7,7 @@ import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
-import { useAccount } from "@/context/accountContext";
+// import { useAccount } from "@/context/accountContext";
 
 const StudentList = ({
 	dataSource,

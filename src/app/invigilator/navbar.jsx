@@ -20,21 +20,18 @@ import dayjs from "dayjs";
 
 import {
 	Modal,
-	Anchor,
 	Form,
 	Input,
 	Row,
 	Col,
 	message,
 	Descriptions,
-	Divider,
 } from "antd";
-import { setAuthorizationToken } from "@/lib/axiosPrivate";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAccount } from "@/context/accountContext";
+// import { useAccount } from "@/context/accountContext";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { LogOut } from "../sign-in/actions";
 
 function Navbar({ examinees = false }) {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -47,7 +44,7 @@ function Navbar({ examinees = false }) {
 
 	const [attendancetime, setAttendancetime] = useState(false);
 
-	useEffect(() => {
+	/* 	useEffect(() => {
 		// Get current Indian time
 		const currentIndianTime = dayjs().tz("Asia/Kolkata").format("HH:mm:ss");
 
@@ -57,7 +54,7 @@ function Navbar({ examinees = false }) {
 			(currentIndianTime > "09:30:00" && currentIndianTime < "10:30:00") ||
 			(currentIndianTime > "13:30:00" && currentIndianTime < "14:45:00");
 		setAttendancetime(isWithinRange);
-	}, []);
+	}, []); */
 
 	let pages = ["Schedule", "Examinees"];
 	if (!examinees && !attendancetime) pages = ["Schedule"];
@@ -80,13 +77,7 @@ function Navbar({ examinees = false }) {
 	};
 	const handleLogout = async () => {
 		try {
-			await axios.delete("/api/auth/logout");
-			setVisible(false);
-			setAuthorizationToken();
-			localStorage.removeItem("user");
-			localStorage.removeItem("onDuty");
-			localStorage.removeItem("examDetails");
-			router.push("/login");
+			await LogOut();
 		} catch (e) {
 			console.error(e);
 			message.error("Logout failed!");
@@ -95,7 +86,9 @@ function Navbar({ examinees = false }) {
 
 	const [visibleprofile, setVisibleprofile] = useState(false);
 	const [descriptionItems, setDescriptionItems] = useState([]);
-	const { user, setUser } = useAccount();
+	// const { user, setUser } = useAccount();
+	const user = { name: "name", email: "email", password: "password" };
+	const setUser = (user) => {};
 
 	const handleSettingsClick = () => {
 		setVisibleprofile(true);
@@ -120,7 +113,7 @@ function Navbar({ examinees = false }) {
 		  },
 	  ]; */
 
-	useEffect(() => {
+	/* 	useEffect(() => {
 		const descriptionItems = [
 			{
 				key: "1",
@@ -144,7 +137,7 @@ function Navbar({ examinees = false }) {
 			},
 		];
 		setDescriptionItems(descriptionItems);
-	}, [user]);
+	}, [user]); */
 
 	return (
 		<>

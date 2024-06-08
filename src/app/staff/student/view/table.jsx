@@ -17,7 +17,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import axios from "@/lib/axiosPrivate";
 import Highlighter from "react-highlight-words";
-import { useAccount } from "@/context/accountContext";
+// import { useAccount } from "@/context/accountContext";
 
 async function fetchOpenCourses(programId) {
 	const apiUrl = "/api/staff/open-courses";

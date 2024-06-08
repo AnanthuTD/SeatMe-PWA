@@ -54,7 +54,6 @@ export const metadata = {
 	],
 };
 
-import { AccountProvider } from "@/context/accountContext";
 
 const RootLayout = ({ children }) => {
 	return (
@@ -75,9 +74,7 @@ const RootLayout = ({ children }) => {
 			<meta name="theme-color" content="#fff" />
 			<body className={[inter.className, "h-screen"].join(" ")}>
 				<StyledComponentsRegistry>
-					<AccountProvider>
 						{children} <Analytics />
-					</AccountProvider>
 				</StyledComponentsRegistry>
 				<SpeedInsights />
 			</body>

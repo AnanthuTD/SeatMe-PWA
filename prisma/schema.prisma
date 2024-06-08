@@ -1,0 +1,293 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @db.VarChar(7)
+  name           String?
+  username       String?         @unique
+  email          String?         @unique
+  phone          BigInt?
+  emailVerified  DateTime?
+  password       String?         @db.VarChar(72)
+  image          String?
+  designation    String?         @db.VarChar(100)
+  departmentCode String?         @db.VarChar(20)
+  role           UserRole?       @default(invigilator)
+  department     Department?     @relation(fields: [departmentCode], references: [code])
+  teacherSeats   TeacherSeat[]
+  Session        Session[]
+  Account        Account?
+  // Optional for WebAuthn support
+  Authenticator  Authenticator[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([departmentCode])
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String  @unique
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  user                     User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+model BannedStudent {
+  studentId BigInt   @id @db.UnsignedBigInt
+  createdAt DateTime @db.DateTime(0)
+  updatedAt DateTime @db.DateTime(0)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Block {
+  id    String @id @db.VarChar(100)
+  rooms Room[]
+}
+
+model Course {
+  id                  String      @id @db.VarChar(100)
+  name                String      @db.VarChar(100)
+  type                CourseType?
+  semester            Int         @db.UnsignedTinyInt
+  exams               Exam[]
+  openCourseStudents  Student[]   @relation("students_open_course_idTocourses")
+  secondLang1Students Student[]   @relation("students_second_lang_1Tocourses")
+  secondLang2Students Student[]   @relation("students_second_lang_2Tocourses")
+  programs            Program[]   @relation("ProgramCourses")
+}
+
+model ExamDateTime {
+  id           Int               @id @default(autoincrement())
+  date         DateTime?         @db.Date
+  timeCode     DateTimesTimeCode
+  exams        Exam[]
+  teacherSeats TeacherSeat[]
+}
+
+model Department {
+  id       Int?      @unique() @db.UnsignedTinyInt
+  code     String    @id @db.VarChar(20)
+  name     String    @unique() @db.VarChar(100)
+  users    User[]
+  programs Program[]
+}
+
+model Exam {
+  id              Int             @id @default(autoincrement()) @db.UnsignedInt
+  dateTimeId      Int?
+  courseId        String?         @db.VarChar(100)
+  dateTime        ExamDateTime?   @relation(fields: [dateTimeId], references: [id], onDelete: Cascade)
+  course          Course?         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  studentSeats    StudentSeat[]
+  supplementaries Supplementary[]
+
+  @@unique([dateTimeId, courseId])
+  @@index([courseId])
+}
+
+model Program {
+  id             Int          @id @db.UnsignedTinyInt
+  name           String       @db.VarChar(100)
+  duration       Int          @db.UnsignedTinyInt
+  level          ProgramLevel
+  isAided        Boolean?     @default(true)
+  hasOpenCourse  Boolean?     @default(false)
+  abbreviation   String       @db.VarChar(50)
+  departmentCode String?      @db.VarChar(20)
+  department     Department?  @relation(fields: [departmentCode], references: [code])
+  students       Student[]
+  courses        Course[]     @relation("ProgramCourses")
+
+  @@index([departmentCode])
+}
+
+model Room {
+  id           Int           @id @db.UnsignedInt
+  internalRows Int           @db.UnsignedTinyInt
+  internalCols Int           @db.UnsignedTinyInt
+  finalRows    Int           @db.UnsignedTinyInt
+  finalCols    Int           @db.UnsignedTinyInt
+  isAvailable  Boolean       @default(false)
+  floor        Int?          @db.UnsignedTinyInt
+  description  String?       @db.VarChar(255)
+  priority     Int           @default(1) @db.UnsignedTinyInt
+  blockId      String?       @db.VarChar(100)
+  block        Block?        @relation(fields: [blockId], references: [id])
+  studentSeats StudentSeat[]
+  teacherSeats TeacherSeat[]
+
+  @@index([blockId])
+}
+
+model SeatingTimeConfig {
+  id        Int                        @id @default(autoincrement())
+  day       String                     @db.VarChar(255)
+  startTime DateTime                   @db.Time(0)
+  endTime   DateTime                   @db.Time(0)
+  timeCode  SeatingTimeConfigTimeCode? @default(AN)
+
+  @@unique([day, timeCode])
+}
+
+model StudentSeat {
+  id         Int     @id @default(autoincrement())
+  seatNumber Int?    @db.UnsignedInt
+  studentId  BigInt  @db.UnsignedBigInt
+  examId     Int     @db.UnsignedInt
+  isPresent  Boolean @default(true)
+  roomId     Int?    @db.UnsignedInt
+  student    Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  exam       Exam    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  room       Room?   @relation(fields: [roomId], references: [id])
+
+  @@unique([studentId, examId])
+  @@index([examId])
+  @@index([roomId])
+}
+
+model Student {
+  id                BigInt          @id @db.UnsignedBigInt
+  rollNumber        Int             @unique() @db.UnsignedInt
+  programId         Int             @db.UnsignedTinyInt
+  semester          Int             @db.UnsignedTinyInt
+  name              String          @db.VarChar(100)
+  email             String?         @db.VarChar(320)
+  phone             BigInt?         @db.UnsignedBigInt
+  openCourseId      String?         @db.VarChar(100)
+  secondLang1Id     String?         @db.VarChar(100)
+  secondLang2Id     String?         @db.VarChar(100)
+  bannedStudent     BannedStudent?
+  studentSeats      StudentSeat[]
+  program           Program         @relation(fields: [programId], references: [id], onDelete: Cascade)
+  openCourse        Course?         @relation("students_open_course_idTocourses", fields: [openCourseId], references: [id])
+  secondLang1Course Course?         @relation("students_second_lang_1Tocourses", fields: [secondLang1Id], references: [id])
+  secondLang2Course Course?         @relation("students_second_lang_2Tocourses", fields: [secondLang2Id], references: [id])
+  supplementaries   Supplementary[]
+
+  @@index([openCourseId])
+  @@index([programId])
+  @@index([secondLang1Id])
+  @@index([secondLang2Id])
+}
+
+model Supplementary {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  examId    Int?     @db.UnsignedInt
+  studentId BigInt?  @db.UnsignedBigInt
+  exam      Exam?    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, studentId])
+  @@index([studentId])
+}
+
+model TeacherSeat {
+  id                  Int           @id @default(autoincrement())
+  roomId              Int?          @db.UnsignedInt
+  dateTimeId          Int?
+  attendanceSubmitted Boolean       @default(false)
+  room                Room?         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  dateTime            ExamDateTime? @relation(fields: [dateTimeId], references: [id], onDelete: Cascade)
+  user                User?         @relation(fields: [userId], references: [id])
+  userId              String?       @db.VarChar(7)
+
+  @@unique([roomId, dateTimeId])
+  @@index([userId])
+  @@index([dateTimeId])
+}
+
+enum CourseType {
+  core
+  common
+  complementary
+  optional
+  elective
+  open
+  skill
+  general
+  project
+  vocational
+  choice
+  language
+  common2
+}
+
+enum DateTimesTimeCode {
+  AN
+  FN
+}
+
+enum ProgramLevel {
+  UG
+  PG
+}
+
+enum SeatingTimeConfigTimeCode {
+  AN
+  FN
+}
+
+enum UserRole {
+  admin
+  staff
+  invigilator
+}
