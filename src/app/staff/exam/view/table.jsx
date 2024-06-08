@@ -364,7 +364,7 @@ const App = ({
 					</span>
 				) : (
 					<span className="gap-2 flex">
-						<Link href={`/admin/exam/${record.id}`}>
+						<Link href={`/staff/exam/${record.id}`}>
 							<Tag color="green">Attendance</Tag>
 						</Link>
 						<Tag

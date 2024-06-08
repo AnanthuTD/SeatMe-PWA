@@ -448,7 +448,7 @@ const RoomAssignmentForm = () => {
 							xs={24}
 							className="flex items-center"
 						>
-							<Link href={`/admin/rooms/${examType}/${totalExaminees}`}>
+							<Link href={`/staff/rooms/${examType}/${totalExaminees}`}>
 								<Button type="primary">Select Rooms</Button>
 							</Link>
 						</Col>
@@ -521,7 +521,7 @@ const RoomAssignmentForm = () => {
 					{/* Assign Teachers Section */}
 					<Col span={24}>
 						<Link
-							href={`/admin/exam/assign/staffs?date=${date}&timeCode=${timeCode}`}
+							href={`/staff/exam/assign/staffs?date=${date}&timeCode=${timeCode}`}
 						>
 							<Button type="primary">Assign Teachers</Button>
 						</Link>
