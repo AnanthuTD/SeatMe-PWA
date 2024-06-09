@@ -21,6 +21,6 @@
 			}
 		]
 	},
-	"include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/app/sign-in/page.tsx"],
+	"include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/app/auth/sign-in/page.tsx"],
 	"exclude": ["node_modules"]
 }

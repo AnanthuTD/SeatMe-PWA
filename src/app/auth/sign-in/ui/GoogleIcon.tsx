@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 const GoogleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (

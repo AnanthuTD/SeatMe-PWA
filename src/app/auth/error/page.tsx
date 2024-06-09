@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Result } from "antd";
-import { useRouter } from "next/router";
 
 enum Error {
 	Configuration = "Configuration",
@@ -42,7 +41,7 @@ const AuthErrorPage = ({
 					<Button type="primary" href="/" key="home">
 						Go Home
 					</Button>,
-					<Button type="primary" href="/sign-in" key="home">
+					<Button type="primary" href="/auth/sign-in" key="home">
 						Sign-In
 					</Button>,
 				]}

@@ -4,8 +4,16 @@ import Image from "next/image";
 import MagicLinkForm from "./ui/MagicLinkForm";
 import CredentialForm from "./ui/CredentialForm";
 import GoogleButton from "./ui/GoogleButton";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-const Login = () => {
+const Login = async () => {
+	const session = await auth();
+	if (session?.user) {
+		const { role } = session.user;
+		if (role === "admin" || role === "staff") return redirect("/staff");
+		else if (role === "invigilator") return redirect("/invigilator");
+	}
 	return (
 		<div className="flex justify-center items-center bg-gray-50 h-screen">
 			<div className="w-5/12 bg-white border p-8 rounded-lg shadow border-gray-200 flex flex-col text-sm">

@@ -27,9 +27,12 @@ module.exports = withPWA({
 			},
 			{
 				source: "/login",
-				destination: "/sign-in",
+				destination: "/auth/sign-in",
 				permanent: true,
 			},
 		];
+	},
+	experimental: {
+		typedRoutes: true,
 	},
 });

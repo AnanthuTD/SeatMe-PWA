@@ -1,7 +1,8 @@
+"use client";
 import { Button } from "antd";
 import React from "react";
 import GoogleIcon from "./GoogleIcon";
-import { authenticate } from "../actions";
+import { authenticate } from "../../actions/authenticate";
 
 function GoogleButton() {
 	const [googleSignInPending, setGoogleSignInPending] = React.useState(false);

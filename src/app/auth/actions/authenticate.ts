@@ -1,12 +1,17 @@
 "use server";
-import { signIn, signOut } from "@/auth";
+import { signIn } from "@/auth";
+import { PasswordNotSetError } from "@/lib/errors/authError";
 import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
+import { handlePasswordCreation } from "./createPassword";
+import { isRedirectError } from "next/dist/client/components/redirect";
 
 interface FormData {
 	provider: "google" | "resend" | "nodemailer" | "credentials";
 	email?: string | null;
 	password?: string | null;
 }
+
 export async function authenticate(
 	prevState: string | undefined,
 	formData: FormData,
@@ -39,19 +44,19 @@ export async function authenticate(
 				throw new Error("Unsupported provider");
 		}
 	} catch (error) {
-		if (error instanceof AuthError) {
+		console.error("Error from actions: " + JSON.stringify(error));
+		if (isRedirectError(error)) throw error;
+		if (error instanceof PasswordNotSetError) {
+			return handlePasswordCreation({ email: formData.email });
+		} else if (error instanceof AuthError) {
 			switch (error.type) {
 				case "CredentialsSignin":
 					return "Invalid credentials.";
+				case "CallbackRouteError":
+					return "CallbackRouterError";
 				default:
 					return "Something went wrong.";
 			}
 		}
-		throw error;
 	}
-}
-
-export async function LogOut() {
-	"use server";
-	await signOut();
 }

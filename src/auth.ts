@@ -8,6 +8,9 @@ import { sendVerificationRequest } from "./lib/authSendRequest";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import { PasswordNotSetError } from "./lib/errors/authError";
+
+const prisma = new PrismaClient();
 
 async function getUser(email: string): Promise<User | undefined> {
 	try {
@@ -27,17 +30,15 @@ async (email: string) => {
 	return user ? true : false;
 };
 
-const prisma = new PrismaClient();
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	...authConfig,
 	adapter: PrismaAdapter(prisma),
 	providers: [
-		Google,
+		Google({ allowDangerousEmailAccountLinking: true }),
 		Nodemailer({
 			server: {
 				host: process.env.EMAIL_SERVER_HOST,
-				port: process.env.EMAIL_SERVER_PORT,
+				port: process.env.EMAIL_SERVER_PORT as unknown as number,
 				auth: {
 					user: process.env.EMAIL_SERVER_USER,
 					pass: process.env.EMAIL_SERVER_PASSWORD,
@@ -59,17 +60,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					const { email, password } = parsedCredentials.data;
 					const user = await getUser(email);
 					if (!user) return null;
+					if (!user.password) {
+						// Redirect to a set password page
+						throw new PasswordNotSetError();
+					}
 					const passwordsMatch = await bcrypt.compare(
 						password,
 						user.password,
 					);
-
 					delete user.password;
-
 					if (passwordsMatch) return user;
 				}
-
-				console.log("Invalid credentials");
 				return null;
 			},
 		}),

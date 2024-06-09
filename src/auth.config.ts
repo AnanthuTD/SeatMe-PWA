@@ -13,45 +13,49 @@ const userExists = async (email: string) => {
 export default {
 	providers: [],
 	pages: {
-		signIn: "/sign-in",
-		error: "/error",
-		signOut: "/sign-in",
+		signIn: "/auth/sign-in",
+		error: "/auth/error",
 	},
 	callbacks: {
 		async signIn({ account, user, credentials, email, profile }) {
-			console.log("profile: ", profile);
-			console.log("account: ", account);
-			console.log("user: ", user);
-			console.log("email: ", email);
-			console.log("credentials: ", credentials);
-
 			if (["google", "nodemailer", "resend"].includes(account.provider)) {
 				const emailToCheck = profile?.email || account?.providerAccountId;
 				if (emailToCheck) {
 					if (!(await userExists(emailToCheck))) {
-						return "/error?error=AccessDenied";
+						return "/auth/error?error=AccessDenied";
 					}
+				} else {
+					return "/auth/error?error=AccessDenied";
 				}
 			}
 
 			return true;
 		},
 		authorized({ auth, request: { nextUrl } }) {
-			console.log("auth: ", auth);
-
 			const isLoggedIn = !!auth?.user;
-
-			console.log("isLoggedIn: ", isLoggedIn);
-
-			return isLoggedIn;
+			const { pathname } = nextUrl;
+			if (isLoggedIn) {
+				const { user } = auth;
+				const isStaffRoute = pathname.startsWith("/staff");
+				const isInvigilatorRoute = pathname.startsWith("/invigilator");
+				if (["admin", "staff"].includes(user.role) && isStaffRoute)
+					return true;
+				if (["invigilator"].includes(user.role) && isInvigilatorRoute)
+					return true;
+			}
+			return false;
 		},
 		async jwt({ token, user }) {
+			console.log("user: ", user);
+
 			if (user) {
 				token.role = user.role; // Assign role to the token
 			}
 			return token;
 		},
 		async session({ session, token }) {
+			console.log("token: ", token);
+
 			session.user.role = token.role as string; // Make role available on session
 			return session;
 		},

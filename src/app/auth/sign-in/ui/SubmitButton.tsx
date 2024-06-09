@@ -1,22 +1,21 @@
+"use client";
 import React from "react";
 import { Button } from "antd";
-import { useFormStatus } from "react-dom";
 
 function SubmitButton({
-	Icon = null,
 	value,
+	loading = false,
 }: {
 	Icon?: React.ReactNode;
 	value: string;
+	loading?: boolean;
 }) {
-	const { pending } = useFormStatus();
 	return (
 		<Button
 			className="w-full "
 			htmlType="submit"
 			style={{ padding: "1.25rem", fontWeight: "500" }}
-			icon={Icon}
-			loading={pending}
+			loading={loading}
 			type="primary"
 		>
 			{value.toString()}
