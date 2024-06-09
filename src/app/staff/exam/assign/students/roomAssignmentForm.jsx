@@ -11,7 +11,7 @@ import {
 	Statistic,
 	Input,
 } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import dayjs from "dayjs";
 import { usePathname, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";

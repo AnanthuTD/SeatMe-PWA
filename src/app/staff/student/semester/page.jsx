@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Divider, message, Radio, DatePicker } from "antd";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import dayjs from "dayjs";
 
 const PromoteDemotePassout = () => {

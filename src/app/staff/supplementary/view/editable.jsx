@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 import "./table.css";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import CoursesSelect from "../../components/courseSelect";
 
 const EditableContext = React.createContext(null);

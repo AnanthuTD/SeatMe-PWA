@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { LogoutOutlined, SettingFilled } from "@ant-design/icons";
 import axios from "axios";
-import { setAuthorizationToken } from "@/lib/axiosPrivate";
+import { setAuthorizationToken } from "axios";
 import { useRouter } from "next/navigation";
 // import { useAccount } from "@/context/accountContext";
 import ScheduleSeatingAvailabilityForm from "./seatingAvailableTimeConfig";
@@ -34,19 +34,6 @@ const SettingsButton = () => {
 
 	const handleCancel = () => {
 		setVisible(false);
-	};
-
-	const handleLogout = async () => {
-		try {
-			await axios.delete("/api/auth/logout");
-			setVisible(false);
-			setAuthorizationToken();
-			localStorage.removeItem("user");
-			router.push("/sign-in");
-		} catch (e) {
-			console.error(e);
-			message.error("Logout failed!");
-		}
 	};
 
 	const onFinish = async (values) => {

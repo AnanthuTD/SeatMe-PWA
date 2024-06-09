@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, message, Descriptions } from "antd";
 import TeacherSelector from "./teacherSelector";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import DepartmentSelector from "../../../components/selectDepartment";
 
 function RoomPanel({

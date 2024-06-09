@@ -9,7 +9,7 @@ import {
 	Table,
 	Typography,
 } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 
 const EditableCell = ({
 	editing,

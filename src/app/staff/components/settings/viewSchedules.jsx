@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { Table, Button, Popconfirm } from "antd";
 // import { useAccount } from "@/context/accountContext";
 

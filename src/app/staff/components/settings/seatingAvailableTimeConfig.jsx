@@ -1,7 +1,7 @@
 // Import necessary dependencies
 import { Form, Button, TimePicker, Select, Row, Col } from "antd";
 import { useState } from "react";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import dayjs from "dayjs";
 
 // Constants for the day and time options

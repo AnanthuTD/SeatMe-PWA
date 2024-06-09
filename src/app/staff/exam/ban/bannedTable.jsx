@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button, message } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 
 function BannedTable({ bannedStudents, setBannedStudents }) {
 	const unBanStudent = async (studentId) => {

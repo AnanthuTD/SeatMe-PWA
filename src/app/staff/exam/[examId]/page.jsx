@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { message } from "antd";
 import ProgramList from "./programList";
 

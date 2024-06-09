@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { FileExcelOutlined } from "@ant-design/icons";
 import { CloseOutlined } from "@ant-design/icons";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import Link from "next/link";
 import ErrorModel from "@/app/staff/components/errorModel";
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { message, FloatButton } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import ErrorModel from "@/app/staff/components/errorModel";
 import Link from "next/link";
 import { FormOutlined } from "@ant-design/icons";

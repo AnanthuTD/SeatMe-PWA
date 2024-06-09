@@ -5,7 +5,7 @@ import { Button, Form, InputNumber } from "antd";
 import Segment from "./segment";
 import Studentnav from "./studentnav";
 import Instruction from "./instruction";
-import axios from "@/lib/axiosPublic";
+import axios from "";
 import { deleteCookie, getCookie } from "cookies-next";
 import Container from "./container";
 

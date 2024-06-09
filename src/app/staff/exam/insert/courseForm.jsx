@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 
 import "./style.css";
 

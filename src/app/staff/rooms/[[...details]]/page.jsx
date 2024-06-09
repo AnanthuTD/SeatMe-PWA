@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import RoomDetail from "./roomDetails";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { Spin } from "antd";
 
 const Page = ({ params }) => {

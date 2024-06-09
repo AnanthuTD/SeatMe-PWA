@@ -5,7 +5,7 @@ import Navbar from "./navbar";
 import Calendar from "./calender";
 import RoomDetails from "./roomDetails";
 import OffDuty from "./offDuty";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 function Page() {

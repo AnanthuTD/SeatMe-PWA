@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Divider, Skeleton, Statistic, Card, Row, Col } from "antd";
 import Table from "./table";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
 
 const App = () => {

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { message, Collapse, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import * as XLSX from "xlsx";

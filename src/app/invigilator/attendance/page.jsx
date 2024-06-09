@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../navbar";
 import Absentees from "./absentees";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import OffDuty from "../offDuty";
 import StudentsList from "./studentsList";
 

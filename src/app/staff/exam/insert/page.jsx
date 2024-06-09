@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import CourseForm from "./courseForm";
 import { Row, Col, Divider, FloatButton, message } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";

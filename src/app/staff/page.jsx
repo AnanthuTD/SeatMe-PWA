@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { List, Button, Modal, Input } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import DownloadButton from "./components/downloadReport";
 // import { useAccount } from "@/context/accountContext";
 

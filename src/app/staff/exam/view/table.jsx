@@ -17,7 +17,7 @@ import {
 import "./table.css";
 import dayjs from "dayjs";
 import Link from "next/link";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 
 const EditableCell = ({
 	editing,

@@ -21,7 +21,7 @@ import {
 	Checkbox,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 // import SelectProgram from "../../components/selectDepartment";
 import SelectProgram from "../../components/selectProgram";
 

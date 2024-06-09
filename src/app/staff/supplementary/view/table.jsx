@@ -5,7 +5,7 @@ import { Button, Input, Table, Space, Popconfirm, message, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import { EditableCell, EditableRow } from "./editable";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import Highlighter from "react-highlight-words";
 // import { useAccount } from "@/context/accountContext";
 

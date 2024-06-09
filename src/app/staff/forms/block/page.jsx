@@ -14,7 +14,7 @@ import {
 	FloatButton,
 } from "antd";
 import { CloseOutlined, FileExcelOutlined } from "@ant-design/icons";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import Link from "next/link";
 import BlockTable from "./table";
 

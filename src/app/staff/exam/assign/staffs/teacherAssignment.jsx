@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Collapse, Button, message, Divider, Descriptions } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import DownloadButton from "../../../components/downloadReport";
 import RoomPanel from "./roomPanel";
 

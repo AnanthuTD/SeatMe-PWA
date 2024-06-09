@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { StopOutlined } from "@ant-design/icons";
 import BannedTable from "./bannedTable";
 // import { useAccount } from "@/context/accountContext";

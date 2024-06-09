@@ -2,7 +2,7 @@
 
 import React from "react";
 import { message, Button } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 

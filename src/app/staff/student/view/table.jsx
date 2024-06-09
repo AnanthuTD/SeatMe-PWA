@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import Highlighter from "react-highlight-words";
 // import { useAccount } from "@/context/accountContext";
 

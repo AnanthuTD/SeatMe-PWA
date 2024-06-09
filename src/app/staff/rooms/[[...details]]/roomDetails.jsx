@@ -13,7 +13,7 @@ import {
 	Card,
 	message,
 } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import { SearchOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import Highlighter from "react-highlight-words";

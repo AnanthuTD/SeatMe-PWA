@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import SelectDepartment from "./selectDepartment";
 import SelectProgram from "./selectProgram";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import CourseSelect from "./courseSelect";
 import { Row, Col, Divider, Select } from "antd";
 

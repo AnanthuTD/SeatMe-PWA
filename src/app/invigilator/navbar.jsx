@@ -18,20 +18,12 @@ import Link from "next/link";
 import Title from "antd/es/typography/Title";
 import dayjs from "dayjs";
 
-import {
-	Modal,
-	Form,
-	Input,
-	Row,
-	Col,
-	message,
-	Descriptions,
-} from "antd";
+import { Modal, Form, Input, Row, Col, message, Descriptions } from "antd";
 import { useRouter } from "next/navigation";
 // import { useAccount } from "@/context/accountContext";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { LogOut } from "../sign-in/actions";
+import { LogOut } from "@/app/auth/actions/logout";
 
 function Navbar({ examinees = false }) {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);

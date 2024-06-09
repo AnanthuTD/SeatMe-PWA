@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { SortableList } from "./components";
 import "./styles.css";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 // import { useAccount } from "@/context/accountContext";
 import { useRouter } from "next/navigation";
 

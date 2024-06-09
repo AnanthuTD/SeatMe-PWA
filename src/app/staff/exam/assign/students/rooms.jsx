@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button, Form, Input, Select, Table, message } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 
 const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {

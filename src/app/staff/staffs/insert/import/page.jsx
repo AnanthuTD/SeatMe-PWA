@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import DragDrop from "../../../components/dragDropXLSX";
 import { message, FloatButton, List, Modal, Divider } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import ErrorModel from "@/app/staff/components/errorModel";
 import { FormOutlined } from "@ant-design/icons";
 import Link from "next/link";

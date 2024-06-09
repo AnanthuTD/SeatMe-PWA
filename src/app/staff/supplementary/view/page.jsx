@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CoursesSelect from "../../components/courseSelect";
 import { DatePicker, message, Row, Col, Statistic, Card } from "antd";
 import dayjs from "dayjs";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import StudentList from "./table";
 
 function Page() {

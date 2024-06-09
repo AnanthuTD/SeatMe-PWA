@@ -16,7 +16,7 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import "./table.css";
 import Highlighter from "react-highlight-words";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 import PasswordUpdateModal from "./passwordUpdateModel"; 
 // import { useAccount } from "@/context/accountContext";
 import SelectDepartment from "../../components/selectDepartment";

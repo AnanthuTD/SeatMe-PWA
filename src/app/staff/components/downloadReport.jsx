@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "antd";
-import axios from "@/lib/axiosPrivate";
+import axios from "axios";
 
 const DownloadZipButton = ({ fileName }) => {
 	// console.log(fileName);
