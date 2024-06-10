@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useRouter, usePathname } from "next/navigation";
+import { useAccount } from "@/context/accountContext";
 
 function getItem(label, key, icon, children, type) {
 	return {
@@ -66,7 +67,23 @@ const items = [
 
 const App = () => {
 	const router = useRouter();
+	const { user } = useAccount();
 	const pathname = usePathname();
+
+	useEffect(() => {
+		const adminRoutes = [
+			"/staff/staffs",
+			"/staff/student/semester",
+			"/staff/forms",
+		];
+		const isAdminRoute = adminRoutes.some((route) =>
+			pathname.startsWith(route),
+		);
+		if (isAdminRoute && user.role !== "admin") {
+			console.log("This is an admin route");
+			router.replace("/staff/forbidden");
+		}
+	}, [pathname, router]);
 
 	// const { activeMenu, setMenu } = useMenuContext();
 	const [activeMenu, setMenu] = useState(null);

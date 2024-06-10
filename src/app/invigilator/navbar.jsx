@@ -17,18 +17,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import Title from "antd/es/typography/Title";
 import dayjs from "dayjs";
-
-import {
-	Modal,
-	Anchor,
-	Form,
-	Input,
-	Row,
-	Col,
-	message,
-	Descriptions,
-	Divider,
-} from "antd";
+import { Modal, Form, Input, Row, Col, message, Descriptions } from "antd";
 import { setAuthorizationToken } from "@/lib/axiosPrivate";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -95,7 +84,7 @@ function Navbar({ examinees = false }) {
 
 	const [visibleprofile, setVisibleprofile] = useState(false);
 	const [descriptionItems, setDescriptionItems] = useState([]);
-	const { user, setUser } = useAccount();
+	const { user } = useAccount();
 
 	const handleSettingsClick = () => {
 		setVisibleprofile(true);
