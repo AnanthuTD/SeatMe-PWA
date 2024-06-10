@@ -11,7 +11,7 @@ function DepProSemCouSelect({
 	value = ({ department, program, courses, semester }) => {},
 	courseField = true,
 	reset = false,
-	semesterField = false,
+	semesterField = true,
 }) {
 	const [departments, setDepartments] = useState([]);
 	const [selectedDepartment, setSelectedDepartment] = useState(null);
