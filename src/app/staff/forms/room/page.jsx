@@ -14,7 +14,6 @@ import {
 	FloatButton,
 	Checkbox,
 	Select,
-	Avatar,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import axios from "@/lib/axiosPrivate";
@@ -28,7 +27,7 @@ const DynamicRoomForm = () => {
 
 	const loadBlocks = async () => {
 		try {
-			const result = await axios.get("/api/staff/blocks");
+			const result = await axios.get("/api/staff/block");
 			setBlocks(result.data);
 		} catch (error) {
 			console.error("Error fetching blocks: ", error);
