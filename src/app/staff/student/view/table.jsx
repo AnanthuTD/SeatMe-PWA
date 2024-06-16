@@ -282,7 +282,6 @@ const EditableTable = ({
 			title: "ID",
 			dataIndex: "id",
 			key: "id",
-			width: "10%",
 			sorter: (a, b) => a.id - b.id,
 			...getColumnSearchProps("id"),
 			fixed: "left",
@@ -292,7 +291,6 @@ const EditableTable = ({
 			title: "Name",
 			dataIndex: "name",
 			key: "name",
-			width: "20%",
 			editable: true,
 			required: true,
 			...getColumnSearchProps("name"),
@@ -302,7 +300,6 @@ const EditableTable = ({
 			title: "Roll Number",
 			dataIndex: "rollNumber",
 			key: "rollNumber",
-			width: "10%",
 			editable: true,
 			required: true,
 			...getColumnSearchProps("rollNumber"),
@@ -312,7 +309,6 @@ const EditableTable = ({
 			title: "Semester",
 			dataIndex: "semester",
 			key: "semester",
-			width: "10%",
 			editable: true,
 			required: true,
 			sorter: (a, b) => a.semester - b.semester,
@@ -321,8 +317,6 @@ const EditableTable = ({
 			title: "Program",
 			dataIndex: "programId",
 			key: "programId",
-			width: "20%",
-			// editable: true,
 			required: true,
 			sorter: (a, b) => a.programId - b.programId,
 			render: (_, record) => <span>{record.programName}</span>,
@@ -337,16 +331,34 @@ const EditableTable = ({
 			title: "Open Course",
 			dataIndex: "openCourseId",
 			key: "openCourseId",
-			width: "25%",
 			editable: true,
 			type: "select",
 			required: false,
 		},
 		{
+			title: "Second Lang - 1",
+			dataIndex: "secondLang_1",
+			key: "secondLang_1",
+			editable: true,
+			type: "text",
+			width:"50%",
+			required: false,
+			render: (_, record) => <span>{record.secondLang_1 ?? "Null"}</span>,
+		},
+		{
+			title: "Second Lang - 2",
+			dataIndex: "secondLang_2",
+			key: "secondLang_2",
+			width:"50%",
+			editable: true,
+			type: "text",
+			required: false,
+			render: (_, record) => <span>{record.secondLang_2 ?? "Null"}</span>,
+		},
+		{
 			title: "Email",
 			dataIndex: "email",
 			key: "email",
-			width: "15%",
 			editable: true,
 			required: false,
 		},
@@ -354,7 +366,6 @@ const EditableTable = ({
 			title: "Contact",
 			dataIndex: "phone",
 			key: "contact",
-			width: "15%",
 			editable: true,
 			required: false,
 		},
@@ -478,7 +489,7 @@ const EditableTable = ({
 		<Form form={form} component={false}>
 			<Table
 				components={components}
-				rowClassName={() => "editable-row"}
+				rowClassName="editable-row"
 				dataSource={dataSource}
 				columns={columns}
 				pagination={false}
