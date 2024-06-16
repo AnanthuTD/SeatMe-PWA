@@ -16,6 +16,7 @@ const requiredFields = [
 	{ key: "name", value: "name" },
 	{ key: "phone", value: "phone" },
 	{ key: "email", value: "email" },
+	{ key: "openCourseId", value: "Open Course" },
 	{ key: "secondLang_1", value: "Second Language Sem 1" },
 	{ key: "secondLang_2", value: "Second Language Sem 2" },
 ];
@@ -34,13 +35,13 @@ function Page() {
 			);
 		});
 
-		if (missingStudents.length > 0) {
+		/* if (missingStudents.length > 0) {
 			message.error(
 				`The following fields are required (program, semester, id, rollNumber, name)`,
 			);
 			return;
 		}
-
+ */
 		try {
 			const result = await axios.post("/api/staff/student", { students });
 			if (result.status === 200) {

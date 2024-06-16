@@ -230,6 +230,33 @@ const DynamicStudentForm = () => {
 											</Form.Item>
 										</Col>
 									</Row>
+									{/* second Lang */}
+									<Row gutter={16}>
+										<Col>
+											<Form.Item
+												name={[field.name, "secondLang_1"]}
+												label="Second Language 1"
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
+												name={[field.name, "secondLang_2"]}
+												label="Second Language 2"
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
+												name={[field.name, "openCourseId"]}
+												label="Open Course"
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+									</Row>
 									<Row gutter={16}>
 										{courseOptions[field.name]?.map(
 											(section, index) => (
