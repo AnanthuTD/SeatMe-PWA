@@ -44,7 +44,7 @@ function ProgramsPage() {
 		}
 
 		try {
-			const result = await axios.post("/api/staff/program-entry/program", {
+			const result = await axios.post("/api/staff/program/program", {
 				programs,
 			});
 			if (result.status === 200) {

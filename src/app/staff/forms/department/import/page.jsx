@@ -38,7 +38,7 @@ function DepartmentPage() {
 
 		try {
 			const result = await axios.post(
-				"/api/staff/department-entry/department",
+				"/api/staff/department/department",
 				{
 					departments,
 				},

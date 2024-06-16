@@ -38,9 +38,9 @@ const DynamicCourseForm = () => {
 	const [programs, setPrograms] = useState([]); // State to store program data
 	const handleDelete = async (courseId) => {
 		try {
-			// Assuming your server-side API endpoint for course deletion is /api/staff/course-entry/course/:courseId
+			// Assuming your server-side API endpoint for course deletion is /api/staff/course/course/:courseId
 			const result = await axios.delete(
-				`/api/staff/course-entry/course/${courseId}`,
+				`/api/staff/course/course/${courseId}`,
 			);
 			//   // console.log(result);
 			if (result.status === 200) {
@@ -163,7 +163,7 @@ const DynamicCourseForm = () => {
 		// console.log("Submitted values:", values);
 
 		try {
-			const result = await axios.post("/api/staff/course-entry/course", {
+			const result = await axios.post("/api/staff/course/course", {
 				courses: values.courses,
 			});
 			if (result.status === 200) {
@@ -258,7 +258,7 @@ const DynamicCourseForm = () => {
 		console.log(`Updating record with ID ${updatedCourse.id}`);
 		try {
 			const result = await axios.patch(
-				"/api/staff/course-entry/courseupdate/",
+				"/api/staff/course/courseupdate/",
 				[updatedCourse],
 			);
 			if (result.status === 200) {

@@ -26,7 +26,7 @@ const DynamicDepartmentForm = () => {
 	const handleDelete = async (departmentId) => {
 		try {
 			const result = await axios.delete(
-				`/api/staff/department-entry/department/${departmentId}`,
+				`/api/staff/department/department/${departmentId}`,
 			);
 			if (result.status === 200) {
 				message.success(result.data.message);
@@ -44,7 +44,7 @@ const DynamicDepartmentForm = () => {
 	const handleUpdate = async (updatedDepartment) => {
 		try {
 			const result = await axios.patch(
-				"/api/staff/department-entry/departmentupdate/",
+				"/api/staff/department/departmentupdate/",
 				[updatedDepartment],
 			);
 			if (result.status === 200) {
@@ -63,7 +63,7 @@ const DynamicDepartmentForm = () => {
 	const handleSubmission = async (values) => {
 		try {
 			const result = await axios.post(
-				"/api/staff/department-entry/department",
+				"/api/staff/department/department",
 				{
 					departments: values.departments,
 				},

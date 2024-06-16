@@ -77,7 +77,7 @@ const DynamicProgramForm = () => {
 		console.log(`Updating record with ID ${updatedProgram.id}`);
 		try {
 			const result = await axios.patch(
-				"/api/staff/program-entry/programupdate/",
+				"/api/staff/program/programupdate/",
 				[updatedProgram],
 			);
 			if (result.status === 200) {
@@ -96,7 +96,7 @@ const DynamicProgramForm = () => {
 		try {
 			console.log(`----------------------------------------result`);
 			const result = await axios.delete(
-				`/api/staff/program-entry/program/${record.id}`,
+				`/api/staff/program/program/${record.id}`,
 			);
 			console.log(
 				`----------------------------------------result: ${result}`,
@@ -115,7 +115,7 @@ const DynamicProgramForm = () => {
 
 	const handleSubmission = async (values) => {
 		try {
-			const result = await axios.post("/api/staff/program-entry/program", {
+			const result = await axios.post("/api/staff/program/program", {
 				programs: values.programs,
 			});
 
