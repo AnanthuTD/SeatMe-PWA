@@ -60,6 +60,11 @@ const items = [
 		),
 		getItem("Program", "/staff/forms/program", <UnorderedListOutlined />),
 		getItem("Course", "/staff/forms/course", <UnorderedListOutlined />),
+		getItem(
+			"Program-Course",
+			"/staff/forms/program-course",
+			<UnorderedListOutlined />,
+		),
 		getItem("Block", "/staff/forms/block", <UnorderedListOutlined />),
 		getItem("Room", "/staff/forms/room", <UnorderedListOutlined />),
 	]),
@@ -105,6 +110,8 @@ const App = () => {
 				"/staff/forms/department",
 				"/staff/forms/program",
 				"/staff/forms/course",
+				"/staff/forms/program-course",
+				"/staff/forms/room",
 			].includes(pathname)
 		)
 			return "/staff/forms";
@@ -140,6 +147,7 @@ const App = () => {
 		"/staff/forms/department": "/staff/forms/department",
 		"/staff/forms/program": "/staff/forms/program",
 		"/staff/forms/course": "/staff/forms/course",
+		"/staff/forms/program-course": "/staff/forms/program-course",
 		"/staff/forms/block": "/staff/forms/block",
 		"/staff/forms/room": "/staff/forms/room",
 	};
