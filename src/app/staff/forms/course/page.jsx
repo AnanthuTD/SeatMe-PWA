@@ -28,6 +28,23 @@ import SelectProgram from "../../components/selectProgram";
 import Link from "next/link";
 import { FileExcelOutlined } from "@ant-design/icons";
 
+const options = [
+	{ label: "NULL", value: "" },
+	{ label: "core", value: "core" },
+	{ label: "skill", value: "skill" },
+	{ label: "common", value: "common" },
+	{ label: "common2", value: "common2" },
+	{ label: "complementary", value: "complementary" },
+	{ label: "vocational", value: "vocational" },
+	{ label: "choice", value: "choice" },
+	{ label: "open", value: "open" },
+	{ label: "optional", value: "optional" },
+	{ label: "general", value: "general" },
+	{ label: "elective", value: "elective" },
+	{ label: "language", value: "language" },
+	{ label: "project", value: "project" },
+];
+
 const DynamicCourseForm = () => {
 	const [searchText, setSearchText] = useState(""); // State to store the search text
 	const [searchedColumn, setSearchedColumn] = useState(""); // State to store the column being searched
@@ -257,10 +274,9 @@ const DynamicCourseForm = () => {
 	const handleUpdate = async (updatedCourse) => {
 		console.log(`Updating record with ID ${updatedCourse.id}`);
 		try {
-			const result = await axios.patch(
-				"/api/staff/course/courseupdate/",
-				[updatedCourse],
-			);
+			const result = await axios.patch("/api/staff/course/courseupdate/", [
+				updatedCourse,
+			]);
 			if (result.status === 200) {
 				message.success(result.data.message);
 				loadPrograms();
@@ -371,12 +387,13 @@ const DynamicCourseForm = () => {
 										</Col>
 										<Col xs={24} md={24} lg={7} xxl={7}>
 											<Form.Item
-												name={[field.name, "isOpenCourse"]}
-												label="Is Open Course"
-												initialValue={false}
-												valuePropName="checked"
+												name={[field.name, "type"]}
+												label="Type"
 											>
-												<Checkbox defaultChecked={false} />
+												<Select
+													defaultValue={""}
+													options={options}
+												/>
 											</Form.Item>
 										</Col>
 
@@ -384,12 +401,12 @@ const DynamicCourseForm = () => {
 											<Form.Item
 												name={[field.name, "program"]}
 												label="Program"
-												rules={[
+												/* rules={[
 													{
 														required: true,
 														message: "Please select the program",
 													},
-												]}
+												]} */
 											>
 												<SelectProgram
 													options={programs}

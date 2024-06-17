@@ -14,6 +14,7 @@ const requiredFields = [
 	{ key: "semester", value: "Semester" },
 	{ key: "type", value: "Type" },
 	{ key: "programId", value: "Program Id" },
+	{ key: "type", value: "Type" },
 ];
 
 function CoursesPage() {
@@ -24,10 +25,13 @@ function CoursesPage() {
 		const missingCourses = courses.filter((course) => {
 			// Check if any of the required fields are missing for a course
 			return !(
-				course.hasOwnProperty("id") &&
-				course.hasOwnProperty("name") &&
-				course.hasOwnProperty("semester") &&
-				course.hasOwnProperty("programId")
+				(
+					course.hasOwnProperty("id") &&
+					course.hasOwnProperty("name") &&
+					course.hasOwnProperty("semester") &&
+					course.hasOwnProperty("type")
+				)
+				// course.hasOwnProperty("programId")
 			);
 		});
 
