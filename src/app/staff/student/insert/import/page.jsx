@@ -19,6 +19,8 @@ const requiredFields = [
 	{ key: "openCourseId", value: "Open Course" },
 	{ key: "secondLang_1", value: "Second Language Sem 1" },
 	{ key: "secondLang_2", value: "Second Language Sem 2" },
+	{ key: "secondLang_3", value: "Second Language Sem 3" },
+	{ key: "secondLang_4", value: "Second Language Sem 4" },
 ];
 
 function Page() {

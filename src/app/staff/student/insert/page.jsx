@@ -250,6 +250,22 @@ const DynamicStudentForm = () => {
 										</Col>
 										<Col>
 											<Form.Item
+												name={[field.name, "secondLang_3"]}
+												label="Second Language 3"
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
+												name={[field.name, "secondLang_4"]}
+												label="Second Language 4"
+											>
+												<Input />
+											</Form.Item>
+										</Col>
+										<Col>
+											<Form.Item
 												name={[field.name, "openCourseId"]}
 												label="Open Course"
 											>
