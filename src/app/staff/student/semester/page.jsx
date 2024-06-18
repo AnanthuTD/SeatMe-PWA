@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Form, Input, Divider, message, Radio, DatePicker } from "antd";
+import { Button, Form, Divider, message, Radio, DatePicker } from "antd";
 import DepProSemCouSelect from "../../components/depProSemCouSelect";
 import axios from "@/lib/axiosPrivate";
 import dayjs from "dayjs";
@@ -12,7 +12,6 @@ const PromoteDemotePassout = () => {
 
 	const handlePromote = async () => {
 		try {
-			// Send PATCH request to promote endpoint
 			await axios.patch("/api/staff/student/promote", {
 				year,
 				program,
@@ -21,13 +20,12 @@ const PromoteDemotePassout = () => {
 			message.success("Promotion successful");
 		} catch (error) {
 			console.error("Error promoting:", error);
-			message.error(error.response.data.error || "Failed to promote");
+			message.error(error.response?.data?.error || "Failed to promote");
 		}
 	};
 
 	const handleDemote = async () => {
 		try {
-			// Send PATCH request to demote endpoint
 			await axios.patch("/api/staff/student/demote", {
 				year,
 				program,
@@ -36,13 +34,12 @@ const PromoteDemotePassout = () => {
 			message.success("Demotion successful");
 		} catch (error) {
 			console.error("Error demoting:", error);
-			message.error(error.response.data.error || "Failed to demote");
+			message.error(error.response?.data?.error || "Failed to demote");
 		}
 	};
 
 	const handlePassout = async () => {
 		try {
-			// Send PATCH request to passout endpoint
 			await axios.patch("/api/staff/student/passout", {
 				year,
 				program,
@@ -51,18 +48,16 @@ const PromoteDemotePassout = () => {
 			message.success("Passout successful");
 		} catch (error) {
 			console.error("Error passing out:", error);
-			message.error(error.response.data.error || "Failed to pass out");
+			message.error(error.response?.data?.error || "Failed to pass out");
 		}
 	};
 
 	const handleLevelChange = (value) => {
-		setLevel("none");
-		setProgram("");
-
-		if (["ug", "pg", "bvoc"].includes(value)) {
-			setLevel(value);
-		} else if (["20", "30"].includes(value)) {
+		setLevel(value);
+		if (["20", "30"].includes(value)) {
 			setProgram(value);
+		} else {
+			setProgram("");
 		}
 	};
 
@@ -70,7 +65,7 @@ const PromoteDemotePassout = () => {
 		setYear(dateString);
 	};
 
-	const isButtonEnabled = (program && year) || (year && level);
+	const isButtonEnabled = (program && year) || (year && level !== "none");
 
 	return (
 		<Form layout="vertical">
@@ -100,7 +95,6 @@ const PromoteDemotePassout = () => {
 			<Form.Item label="Education Level">
 				<Radio.Group
 					onChange={(e) => handleLevelChange(e.target.value)}
-					defaultValue={"none"}
 					value={level}
 				>
 					<Radio value="none">None</Radio>
@@ -112,7 +106,6 @@ const PromoteDemotePassout = () => {
 				</Radio.Group>
 			</Form.Item>
 
-			{/* Buttons for promote, demote, and pass out */}
 			<Form.Item>
 				<Button
 					type="primary"
