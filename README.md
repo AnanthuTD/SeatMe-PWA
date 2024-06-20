@@ -1,34 +1,109 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Seating Arrangement PWA
+
+Welcome to the **Seating Arrangement PWA**. This Progressive Web Application (PWA) is designed to help you manage and organize seating arrangements efficiently. Built with cutting-edge technologies like Next.js for the frontend, Ant Design (antd) for the UI components, Tailwind CSS for styling, and Husky for Git hooks management, this application ensures a seamless and high-performance user experience.
+
+## Table of Contents
+
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [Usage](#usage)
+- [License](#license)
+- [Contact](#contact)
+
+## Features
+
+- **Dynamic Seating Arrangements**: Create and manage seating arrangements easily.
+- **Responsive Design**: Optimized student and invigilator pages for desktop and mobile devices.
+- **User Authentication**: Secure login functionality.
+- **Role-based Access Control**: Different access levels for admins, staffs, invigilators and users.
+- **Drag and Drop Interface**: Intuitive drag and drop functionality for arranging rooms.
+- **Export and Import**: Export seating plans and import them back when needed.
+
+## Technologies Used
+
+- **Next.js**: For server-side rendering and static site generation.
+- **Ant Design (antd)**: For a rich set of UI components.
+- **Tailwind CSS**: For utility-first CSS styling.
+- **Husky**: For Git hooks management to ensure code quality.
+- **React**: For building the user interface.
+- **Node.js**: For the backend server.
+- **Express.js**: For handling server-side logic.
+- **MySql**: For database management.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Make sure you have the following installed on your machine:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js (>= 14.x)
+- npm or yarn
+- MongoDB (local or cloud instance)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/seating-arrangement-pwa.git
+    cd seating-arrangement-pwa
+    ```
 
-## Learn More
+2. **Install dependencies**:
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Set up environment variables**:
 
--  [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--  [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   Create a `.env.local` file in the root directory and add the following environment variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    ```env
+    NEXT_PUBLIC_API_URL=http://localhost:3000/api
+    MONGODB_URI=mongodb://localhost:27017/seating-arrangement
+    JWT_SECRET=your_jwt_secret
+    ```
 
-## Deploy on Vercel
+### Running the Application
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Run the development server**:
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+2. **Run Husky pre-commit hooks**:
+    Husky is configured to run linting and tests before every commit to ensure code quality.
+
+## Usage
+
+- **Creating a Seating Arrangement**:
+  Navigate to the "Create" page, select the number of seats, and use the drag and drop interface to arrange them as needed.
+
+- **Managing Users**:
+  Admins can navigate to the "Users" page to manage user roles and access levels.
+
+- **Exporting and Importing Plans**:
+  Use the "Export" button to save your seating plan as a file and the "Import" button to load a previously saved plan.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Contact
+
+For any questions or feedback, please contact:
+
+- **Name**: Your Name
+- **Email**: your.email@example.com
+- **GitHub**: [yourusername](https://github.com/yourusername)
+
+Thank you for using the **Seating Arrangement PWA**! We hope it meets your needs and enhances your event management experience.
