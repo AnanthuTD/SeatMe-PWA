@@ -123,7 +123,7 @@ const CourseForm = ({
 						format={"YYYY-MM-DD"}
 						className="w-full"
 						allowClear
-						disabledDate={disabledDate}
+						// disabledDate={disabledDate}
 					/>
 				</Form.Item>
 
