@@ -14,7 +14,7 @@ function CustomDatePicker({ value, onChange = () => {} }) {
 			format="YYYY-MM-DD"
 			className="date-picker"
 			onChange={onChange}
-			disabledDate={disabledDate}
+			// disabledDate={disabledDate}
 			value={dayjs(value)}
 		/>
 	);
