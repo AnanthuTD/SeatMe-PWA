@@ -12,6 +12,7 @@ import {
 	Statistic,
 	Card,
 	message,
+	Tag,
 } from "antd";
 import axios from "@/lib/axiosPrivate";
 import { SearchOutlined } from "@ant-design/icons";
@@ -212,6 +213,29 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 		}
 	};
 
+	const handleDelete = async (id) => {
+		try {
+			const response = await axios.delete(`/api/staff/room/${id}`); // Adjust the endpoint as per your server API
+
+			if (response.status === 200) {
+				const newData = [...data];
+				const index = newData.findIndex((item) => id === item.id);
+				if (index > -1) {
+					newData.splice(index, 1);
+					setData(newData);
+				}
+				message.success("Record deleted successfully!");
+			} else {
+				message.error(response.data.error || "Failed to delete record.");
+			}
+		} catch (error) {
+			if (error.response && error.response.status !== 403) {
+				message.error("Error deleting record!");
+				console.error("Error deleting record:", error);
+			}
+		}
+	};
+
 	let columns = [
 		{
 			title: "ID",
@@ -307,12 +331,22 @@ const RoomDetail = ({ data, setData, examinesCount, examType }) => {
 						</Popconfirm>
 					</span>
 				) : (
-					<Typography.Link
-						disabled={editingKey !== ""}
-						onClick={() => edit(record)}
-					>
-						Edit
-					</Typography.Link>
+					<span className="gap-2 flex">
+						<Typography.Link
+							disabled={editingKey !== ""}
+							onClick={() => edit(record)}
+						>
+							Edit
+						</Typography.Link>
+						<Tag color="red" className="cursor-pointer">
+							<Popconfirm
+								title="Sure to delete?"
+								onConfirm={() => handleDelete(record.id)}
+							>
+								Delete
+							</Popconfirm>
+						</Tag>
+					</span>
 				);
 			},
 		},
