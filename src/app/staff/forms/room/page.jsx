@@ -40,7 +40,7 @@ const DynamicRoomForm = () => {
 
 	const handleSubmission = async (values) => {
 		try {
-			const result = await axios.post("/api/staff/room/room", {
+			const result = await axios.post("/api/staff/room", {
 				rooms: values.rooms,
 			});
 			// console.log(values.rooms);
